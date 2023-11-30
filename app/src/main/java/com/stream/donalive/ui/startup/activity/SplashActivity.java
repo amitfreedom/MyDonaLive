@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.stream.donalive.R;
 
 public class SplashActivity extends AppCompatActivity {
-    private static final int SPLASH_SCREEN_TIME_OUT = 8000;
+    private static final int SPLASH_SCREEN_TIME_OUT = 2000;
     //Animations
     Animation topAnimantion,bottomAnimation,middleAnimation;
     private RelativeLayout relativeLayout;
@@ -39,9 +39,9 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
 //                if (user == null) {
-//                    Intent intent = new Intent(SplashActivity.this, OnboardingActivity.class);
-//                    startActivity(intent);
-//                    finish();
+                    Intent intent = new Intent(SplashActivity.this, OnboardingActivity.class);
+                    startActivity(intent);
+                    finish();
 //                }
 //                else {
 //                    Intent mainIntent = new Intent(SplashActivity.this, HomeActivity.class);
