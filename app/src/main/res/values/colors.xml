@@ -8,4 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="system_accent2_700">#374955</color>
+    <color name="btn_google">#DB4437</color>
+    <color name="btn_fb">#2196F3</color>
+    <color name="btn_email">#009688</color>
+    <color name="gray">#DDDDDD</color>
+    <color name="top_color">#dc2626</color>
+    <color name="center_color">#db2777</color>
+    <color name="bottom_color">#4f46e5</color>
 </resources>

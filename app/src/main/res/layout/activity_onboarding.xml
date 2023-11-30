@@ -1,9 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
     tools:context=".ui.startup.activity.OnboardingActivity">
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_100dp"
+        app:srcCompat="@drawable/logo1" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/main_logo"-->
+<!--        android:layout_width="180dp"-->
+<!--        android:layout_height="180dp"-->
+<!--        android:layout_marginTop="@dimen/_100dp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:background="@drawable/circle_bg">-->
+
+<!--        <androidx.appcompat.widget.AppCompatImageView-->
+<!--            android:layout_width="140dp"-->
+<!--            android:layout_height="140dp"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            app:srcCompat="@drawable/logo1" />-->
+
+<!--    </RelativeLayout>-->
+
+
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/btn_email"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/circular_button_email"
+            android:layout_marginHorizontal="@dimen/_40dp"
+            >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_email"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/email"
+                android:layout_marginLeft="20dp"
+                android:tint="@color/white"
+                android:layout_centerVertical="true"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/_14sp"
+                android:text="@string/email"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn_google"
+            android:layout_below="@id/btn_email"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/circular_button_google"
+            android:layout_marginHorizontal="@dimen/_40dp"
+            android:layout_marginVertical="@dimen/_15dp"
+            >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_google"
+                android:layout_marginLeft="20dp"
+                android:tint="@color/white"
+                android:layout_centerVertical="true"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/_14sp"
+                android:text="@string/google"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn_facebook"
+            android:layout_below="@id/btn_google"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/circular_button_facebook"
+            android:layout_marginHorizontal="@dimen/_40dp"
+            >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_facebook"
+                android:layout_marginLeft="20dp"
+                android:tint="@color/white"
+                android:layout_centerVertical="true"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/_14sp"
+                android:text="@string/facebook"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/or"
+            android:layout_below="@id/btn_facebook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:weightSum="10"
+            android:layout_marginHorizontal="@dimen/_40dp"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="4.2"
+                android:layout_gravity="center_vertical"
+                android:background="@color/gray"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.6"
+                android:gravity="center"
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/gray"
+                android:layout_marginTop="-3dp"
+                android:text="or"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="4.2"
+                android:background="@color/gray"/>
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_terms"
+            android:layout_below="@id/or"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/_12sp"
+            android:layout_marginVertical="@dimen/_20dp"
+            android:textColor="@color/white"
+            android:text="Login means you agree to our Terms &amp; Privacy Policy"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
