@@ -2,15 +2,18 @@ package com.stream.donalive.ui.startup.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
+import android.view.View;
 
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityOnboardingBinding;
+import com.stream.donalive.ui.auth.activity.LoginActivity;
 
 public class OnboardingActivity extends AppCompatActivity {
     private ActivityOnboardingBinding binding;
@@ -21,6 +24,12 @@ public class OnboardingActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         spannableString();
+        binding.btnEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(OnboardingActivity.this, LoginActivity.class));
+            }
+        });
 
     }
 
