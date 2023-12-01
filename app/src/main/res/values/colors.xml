@@ -15,4 +15,16 @@
     <color name="top_color">#dc2626</color>
     <color name="center_color">#db2777</color>
     <color name="bottom_color">#4f46e5</color>
+    <color name="light_gray">#F2F2F2</color>
+    <color name="highlight_text_color">#2196F3</color>
+    <color name="app_color1">#D8DBAD3A</color>
+    <color name="app_color2">#D947A5E7</color>
+    <color name="app_color3">#F1719D</color>
+    <color name="start_color">#933782</color>
+    <color name="pink">#933782</color>
+    <color name="red_color">#F41C0C</color>
+    <color name="end_color">#061147</color>
+    <color name="green">#66E66B</color>
+    <color name="very_light">#99EDEBEB</color>
+    <color name="peach">#f29781</color>
 </resources>

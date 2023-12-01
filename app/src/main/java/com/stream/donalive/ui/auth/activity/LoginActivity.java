@@ -5,12 +5,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.stream.donalive.R;
+import com.stream.donalive.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private ActivityLoginBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding=null;
     }
 }
