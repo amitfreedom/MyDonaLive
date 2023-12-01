@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "150849685541",
+    "project_id": "mydreamlive-c1586",
+    "storage_bucket": "mydreamlive-c1586.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150849685541:android:3d32cd810aa9859dfad7cc",
+        "android_client_info": {
+          "package_name": "com.amilive.mydreamlive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyMuRtHLTDM_Tlyu9TilQYoBSZk4kK6Wk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150849685541:android:b5b4078a4e222e51fad7cc",
+        "android_client_info": {
+          "package_name": "com.stream.donalive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyMuRtHLTDM_Tlyu9TilQYoBSZk4kK6Wk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
