@@ -1,9 +1,261 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
     tools:context=".ui.auth.activity.RegisterActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="30dp">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/iv_back"
+            android:background="@color/white"
+            android:padding="5dp"/>
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            style="@style/HeaderTextStyle"-->
+<!--            android:text="@string/txt_login_header"-->
+<!--            android:textSize="30sp" />-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="12dp"-->
+<!--            style="@style/NormalTextStyle"-->
+<!--            android:text="@string/txt_login_subheader"-->
+<!--            android:textColor="@color/light_gray"-->
+<!--            android:textSize="16sp" />-->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            style="@style/HeaderTextStyle"
+            android:text="@string/txt_username" />
+
+        <EditText
+            android:id="@+id/txt_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edit_text_bg"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:hint="@string/txt_username_hint"
+            android:inputType="textCapWords|textCapSentences"
+            android:minHeight="48dp"
+            android:textSize="@dimen/_14sp"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/light_gray"
+            android:autofillHints="" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp"
+            style="@style/HeaderTextStyle"
+            android:text="@string/txt_phone" />
+
+        <EditText
+            android:id="@+id/txt_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edit_text_bg"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:hint="@string/txt_phone_hint"
+            android:inputType="phone"
+            android:minHeight="48dp"
+            android:textSize="@dimen/_14sp"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/light_gray"
+            android:autofillHints="" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp"
+            style="@style/HeaderTextStyle"
+            android:text="@string/txt_email" />
+
+        <EditText
+            android:id="@+id/txt_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edit_text_bg"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:hint="@string/txt_email_hint"
+            android:inputType="textEmailAddress"
+            android:minHeight="48dp"
+            android:textSize="@dimen/_14sp"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/light_gray"
+            android:autofillHints="" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp"
+            android:text="@string/txt_password"
+            style="@style/HeaderTextStyle"/>
+
+        <EditText
+            android:id="@+id/txt_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edit_text_bg"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:hint="@string/txt_password_hint"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:textSize="@dimen/_14sp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/light_gray"
+            android:autofillHints="" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10dp"
+            android:text="@string/txt_confirm_password"
+            style="@style/HeaderTextStyle"/>
+
+        <EditText
+            android:id="@+id/txt_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edit_text_bg"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:hint="@string/txt_password_hint"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:textSize="@dimen/_14sp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/light_gray"
+            android:autofillHints="" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_login"
+            style="@style/MyButtonStyle_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:text="@string/txt_register_header"
+            android:textAllCaps="true"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/btn_sign_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            style="@style/NormalTextStyle"
+            android:padding="8dp"
+            android:text="@string/txt_already_have_account"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:visibility="visible"
+            android:id="@+id/or"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:weightSum="10"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="4.2"
+                android:layout_gravity="center_vertical"
+                android:background="@color/gray"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.6"
+                android:gravity="center"
+                android:textSize="@dimen/_14sp"
+                android:textColor="@color/gray"
+                android:layout_marginTop="-3dp"
+                android:text="or"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="4.2"
+                android:background="@color/gray"/>
+
+        </LinearLayout>
+
+        <!-- res/layout/circular_social_button.xml -->
+        <LinearLayout
+            android:layout_marginVertical="@dimen/_10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btn_facebook"
+                android:layout_width="@dimen/_60dp"
+                android:layout_height="@dimen/_60dp"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="200dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_facebook"
+                    android:scaleType="centerInside"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="16dp"
+                    app:tint="@android:color/holo_blue_dark" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btn_google"
+                android:layout_width="@dimen/_60dp"
+                android:layout_height="@dimen/_60dp"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="200dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_google"
+                    android:scaleType="centerInside"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="16dp"/>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+</ScrollView>

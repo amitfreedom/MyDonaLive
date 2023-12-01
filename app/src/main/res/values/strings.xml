@@ -7,7 +7,7 @@
     <string name="txt_register_header">Create New Account</string>
     <string name="txt_register_subheader">Please provide all the required information</string>
     <string name="txt_username">Username</string>
-    <string name="txt_username_hint">amitcode</string>
+    <string name="txt_username_hint">Username</string>
     <string name="txt_email">Email</string>
     <string name="txt_phone">Phone</string>
     <string name="txt_email_hint">Email</string>
@@ -51,4 +51,5 @@
     <string name="user">User</string>
     <string name="txt_enter_phone">Enter your phone number to continue</string>
     <string name="forgot_password">Forgot Password?</string>
+    <string name="txt_confirm_password">Confirm Password</string>
 </resources>
