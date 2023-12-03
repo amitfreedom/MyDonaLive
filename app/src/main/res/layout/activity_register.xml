@@ -20,22 +20,22 @@
             android:background="@color/white"
             android:padding="5dp"/>
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            style="@style/HeaderTextStyle"-->
-<!--            android:text="@string/txt_login_header"-->
-<!--            android:textSize="30sp" />-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            style="@style/HeaderTextStyle"
+            android:text="@string/txt_register_header"
+            android:textSize="30sp" />
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="12dp"-->
-<!--            style="@style/NormalTextStyle"-->
-<!--            android:text="@string/txt_login_subheader"-->
-<!--            android:textColor="@color/light_gray"-->
-<!--            android:textSize="16sp" />-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:text="@string/txt_register_subheader"
+            android:textColor="@color/light_gray"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -67,21 +67,52 @@
             style="@style/HeaderTextStyle"
             android:text="@string/txt_phone" />
 
-        <EditText
-            android:id="@+id/txt_phone"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/edit_text_bg"
-            android:fontFamily="@font/sf_pro_display_regular"
-            android:hint="@string/txt_phone_hint"
-            android:inputType="phone"
-            android:minHeight="48dp"
-            android:textSize="@dimen/_14sp"
-            android:padding="10dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/light_gray"
-            android:autofillHints="" />
+            android:background="@drawable/edit_text_bg">
+
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/ccp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:ccp_showFlag="false"
+                app:ccp_autoDetectCountry="true"
+                app:ccp_autoFormatNumber="true"
+                app:ccp_contentColor="@color/light_gray"/>
+
+
+            <EditText
+                android:id="@+id/txt_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/ccp"
+                android:background="@android:color/transparent"
+                android:fontFamily="@font/sf_pro_display_semibold"
+                android:hint="@string/txt_phone_hint"
+                android:inputType="phone"
+                android:padding="10dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/light_gray" />
+
+        </RelativeLayout>
+
+<!--        <EditText-->
+<!--            android:id="@+id/txt_phone"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:background="@drawable/edit_text_bg"-->
+<!--            android:fontFamily="@font/sf_pro_display_regular"-->
+<!--            android:hint="@string/txt_phone_hint"-->
+<!--            android:inputType="phone"-->
+<!--            android:minHeight="48dp"-->
+<!--            android:textSize="@dimen/_14sp"-->
+<!--            android:padding="10dp"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textColorHint="@color/light_gray"-->
+<!--            android:autofillHints="" />-->
 
         <TextView
             android:layout_width="wrap_content"
@@ -154,7 +185,7 @@
             android:autofillHints="" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_login"
+            android:id="@+id/btn_sign_up"
             style="@style/MyButtonStyle_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -164,8 +195,9 @@
             android:textAllCaps="true"
             android:textSize="16sp" />
 
+
         <TextView
-            android:id="@+id/btn_sign_up"
+            android:id="@+id/btn_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -176,7 +208,7 @@
             android:textSize="14sp" />
 
         <LinearLayout
-            android:visibility="visible"
+            android:visibility="gone"
             android:id="@+id/or"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -212,6 +244,7 @@
 
         <!-- res/layout/circular_social_button.xml -->
         <LinearLayout
+            android:visibility="gone"
             android:layout_marginVertical="@dimen/_10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
