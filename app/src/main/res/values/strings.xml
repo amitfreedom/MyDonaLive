@@ -52,4 +52,9 @@
     <string name="txt_enter_phone">Enter your phone number to continue</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="txt_confirm_password">Confirm Password</string>
+    <string name="default_web_client_id">150849685541-vjkp5db0rfi61deiq5ggd11qmc69svff.apps.googleusercontent.com</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

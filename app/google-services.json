@@ -12,7 +12,20 @@
           "package_name": "com.amilive.mydreamlive"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "150849685541-ahrvttg2vton79lf8grrgdmfbsg6coeh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amilive.mydreamlive",
+            "certificate_hash": "6a57872f97806c5f796cb7d5f3fd6844da06c616"
+          }
+        },
+        {
+          "client_id": "150849685541-vjkp5db0rfi61deiq5ggd11qmc69svff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDyMuRtHLTDM_Tlyu9TilQYoBSZk4kK6Wk"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150849685541-vjkp5db0rfi61deiq5ggd11qmc69svff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -31,7 +49,20 @@
           "package_name": "com.stream.donalive"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "150849685541-stfe6icbkl3opne9j4ofalvomuooirnb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.stream.donalive",
+            "certificate_hash": "6a57872f97806c5f796cb7d5f3fd6844da06c616"
+          }
+        },
+        {
+          "client_id": "150849685541-vjkp5db0rfi61deiq5ggd11qmc69svff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDyMuRtHLTDM_Tlyu9TilQYoBSZk4kK6Wk"
@@ -39,7 +70,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150849685541-vjkp5db0rfi61deiq5ggd11qmc69svff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
