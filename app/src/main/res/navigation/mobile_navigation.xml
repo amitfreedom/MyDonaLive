@@ -10,16 +10,25 @@
         android:name="com.stream.donalive.ui.home.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
-
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.stream.donalive.ui.home.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
-
+        android:id="@+id/navigation_explore"
+        android:name="com.stream.donalive.ui.home.ui.explore.ExploreFragment"
+        android:label="fragment_explore"
+        tools:layout="@layout/fragment_explore" />
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.stream.donalive.ui.home.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_live"
+        android:name="com.stream.donalive.ui.home.ui.live.LiveFragment"
+        android:label="fragment_live"
+        tools:layout="@layout/fragment_live" />
+    <fragment
+        android:id="@+id/navigation_chat"
+        android:name="com.stream.donalive.ui.home.ui.chat.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" />
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.stream.donalive.ui.home.ui.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+
 </navigation>

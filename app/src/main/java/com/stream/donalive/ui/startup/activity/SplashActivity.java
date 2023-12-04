@@ -12,7 +12,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.stream.donalive.R;
+import com.stream.donalive.ui.home.HomeActivity;
 
 public class SplashActivity extends AppCompatActivity {
     private static final int SPLASH_SCREEN_TIME_OUT = 2000;
@@ -20,6 +23,7 @@ public class SplashActivity extends AppCompatActivity {
     Animation topAnimantion,bottomAnimation,middleAnimation;
     private RelativeLayout relativeLayout;
     private TextView txt_logo;
+    private FirebaseAuth mAuth;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -28,6 +32,7 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
+        mAuth = FirebaseAuth.getInstance();
         relativeLayout=findViewById(R.id.main_logo);
         txt_logo=findViewById(R.id.txt_logo);
 
@@ -38,17 +43,18 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-//                if (user == null) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user == null) {
                     Intent intent = new Intent(SplashActivity.this, OnboardingActivity.class);
                     startActivity(intent);
                     finish();
-//                }
-//                else {
-//                    Intent mainIntent = new Intent(SplashActivity.this, HomeActivity.class);
-//                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(mainIntent);
-//                    finish();
-//                }
+                }
+                else {
+                    Intent mainIntent = new Intent(SplashActivity.this, HomeActivity.class);
+                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(mainIntent);
+                    finish();
+                }
             }
         }, SPLASH_SCREEN_TIME_OUT);
     }
