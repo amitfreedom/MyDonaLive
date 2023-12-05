@@ -9,8 +9,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.stream.donalive.databinding.FragmentHomeBinding;
+import com.stream.donalive.ui.home.ui.home.adapter.MyPagerAdapter;
 
 public class HomeFragment extends Fragment {
 
@@ -18,15 +20,26 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        setupViewPager(binding.viewPager);
+        binding.tabLayout.setupWithViewPager(binding.viewPager);
+
         return root;
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        MyPagerAdapter adapter = new MyPagerAdapter(getChildFragmentManager());
+        adapter.addFragment(new PopulerFragment(), "All");
+        adapter.addFragment(new PopulerFragment(), "Popular");
+        adapter.addFragment(new PopulerFragment(), "Live");
+        adapter.addFragment(new PopulerFragment(), "Audio live");
+        adapter.addFragment(new PopulerFragment(), "Pk live");
+        // Add more fragments as needed
+
+        viewPager.setAdapter(adapter);
     }
 
     @Override
