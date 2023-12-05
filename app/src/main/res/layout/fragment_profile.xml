@@ -1,14 +1,440 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".ui.home.ui.profile.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical">
 
-</FrameLayout>
+        <RelativeLayout
+            android:background="@color/top_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="25dp">
+
+            <RelativeLayout
+                android:id="@+id/mainLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center_vertical">
+
+                <ImageButton
+                    android:id="@+id/btn_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:background="@null"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_edit"
+                    app:tint="@color/white" />
+
+                <ImageButton
+                    android:id="@+id/btn_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@null"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_settings"
+                    app:tint="@color/white" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_below="@id/mainLayout"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/profile_image"
+                    android:layout_width="@dimen/_100dp"
+                    android:layout_height="@dimen/_100dp"
+                    android:src="@drawable/logo"
+                    app:civ_border_width="3dp"
+                    app:civ_border_color="@color/app_color2"/>
+                <TextView
+                    android:layout_marginTop="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Amit kumar"
+                    style="@style/HeaderTextStyle"/>
+
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ID:1000002"
+                        style="@style/SmallTextStyle"/>
+
+                    <View
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_width="1dp"
+                        android:layout_height="8dp"
+                        android:background="@color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="India"
+                        style="@style/SmallTextStyle"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:text="Lv1"
+                        android:gravity="center"
+                        android:paddingHorizontal="6dp"
+                        android:background="@drawable/level_bg"
+                        style="@style/SmallTextStyle"/>
+
+                    <View
+                        android:layout_marginHorizontal="6dp"
+                        android:layout_width="1dp"
+                        android:layout_height="8dp"
+                        android:background="@color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:text="0"
+                        android:gravity="center"
+                        android:drawablePadding="2dp"
+                        android:drawableLeft="@drawable/ic_baseline_favorite_24"
+                        android:paddingHorizontal="4dp"
+                        android:background="@drawable/level_bg_1"
+                        style="@style/SmallTextStyle"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_marginVertical="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:id="@+id/btn_top_up"
+                android:padding="10dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:gravity="center_vertical"
+                    android:drawableLeft="@drawable/ic_bean"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    android:drawablePadding="6dp"
+                    style="@style/HeaderTextStyle"
+                    android:drawableTint="#FF9800"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btn_balance"
+                android:padding="10dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:drawableLeft="@drawable/ic_diamond"
+                    android:textColor="@color/black"
+                    android:drawablePadding="6dp"
+                    style="@style/HeaderTextStyle"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:id="@+id/btn_friends"
+                android:padding="10dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    style="@style/HeaderTextStyle"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Friends"
+                    style="@style/NormalTextStyle"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btn_followers"
+                android:padding="10dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    style="@style/HeaderTextStyle"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Followers"
+                    style="@style/NormalTextStyle"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btn_following"
+                android:padding="10dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    style="@style/HeaderTextStyle"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Following"
+                    style="@style/NormalTextStyle"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+
+        <TextView
+            android:id="@+id/btn_hostRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Host registration form"
+            style="@style/NormalTextStyle"
+            android:drawableLeft="@drawable/ic_register"
+            android:drawablePadding="10dp"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+        <TextView
+            android:id="@+id/btn_live_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Host live History"
+            android:drawableLeft="@drawable/ic_live"
+            android:drawablePadding="10dp"
+            style="@style/NormalTextStyle"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wallet"
+            android:drawableLeft="@drawable/ic_wallet"
+            android:drawablePadding="10dp"
+            style="@style/NormalTextStyle"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Buy vip"
+            android:drawableLeft="@drawable/ic__vip_24"
+            android:drawablePadding="10dp"
+            style="@style/NormalTextStyle"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Store"
+            android:drawableLeft="@drawable/ic_shop"
+            android:drawablePadding="10dp"
+            style="@style/NormalTextStyle"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+        <TextView
+            android:id="@+id/btn_level"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Level"
+            android:drawableLeft="@drawable/ic_level_24"
+            android:drawablePadding="10dp"
+            style="@style/NormalTextStyle"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Black list"
+            android:drawableLeft="@drawable/ic_baseline_list_alt_24"
+            android:drawablePadding="10dp"
+            style="@style/NormalTextStyle"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Help"
+            android:drawableLeft="@drawable/ic_help"
+            android:drawablePadding="10dp"
+            style="@style/NormalTextStyle"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:drawableLeft="@drawable/ic_logout"
+            android:drawablePadding="10dp"
+            style="@style/NormalTextStyle"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

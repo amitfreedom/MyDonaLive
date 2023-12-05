@@ -11,23 +11,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/top_color"
+        android:background="@color/start_color1"
         android:padding="@dimen/_10dp">
 
         <ImageView
             android:id="@+id/left_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_home" />
+            android:src="@drawable/trophy" />
 
         <EditText
             android:layout_marginHorizontal="@dimen/_10dp"
-            android:padding="@dimen/_10dp"
+            android:padding="5dp"
             android:id="@+id/search_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/edit_text_bg"
+            android:drawableLeft="@drawable/search"
+            android:background="@drawable/edit_text_round_bg"
             android:layout_weight="1"
             android:hint="Search here" />
 
@@ -36,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/baseline_supervised_user_circle_24" />
+            android:src="@drawable/ic_notifications_black_24dp" />
     </LinearLayout>
 
 

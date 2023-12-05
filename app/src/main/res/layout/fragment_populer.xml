@@ -1,14 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.home.ui.home.PopulerFragment">
 
-    <Button
-        android:id="@+id/getData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get"/>
+    <RelativeLayout
+        android:layout_marginHorizontal="@dimen/_15dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_marginBottom="@dimen/_20dp"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
 
-</FrameLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:layout_above="@+id/dotsLayout"
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"/>
+
+        <LinearLayout
+            android:id="@+id/dotsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/_10dp"
+            android:gravity="center"
+            android:orientation="horizontal"/>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_marginHorizontal="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Global"
+            style="@style/HeaderTextStyle"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:drawableLeft="@drawable/icons8_globe"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"/>
+
+        <ImageButton
+            android:id="@+id/ic_filter"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/filter_list"
+            android:background="@null"
+            android:layout_alignParentRight="true"
+            android:padding="8dp"/>
+
+
+    </RelativeLayout>
+
+</LinearLayout>
