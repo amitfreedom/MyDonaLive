@@ -24,20 +24,22 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        setupViewPager(binding.viewPager);
-        binding.tabLayout.setupWithViewPager(binding.viewPager);
+            setupViewPager(binding.viewPager);
+
+            binding.tabLayout.setupWithViewPager(binding.viewPager);
+
 
         return root;
     }
 
     private void setupViewPager(ViewPager viewPager) {
         MyPagerAdapter adapter = new MyPagerAdapter(getChildFragmentManager());
+        adapter.addFragment(new PopulerFragment(), "Fresher");
         adapter.addFragment(new PopulerFragment(), "Popular");
         adapter.addFragment(new PopulerFragment(), "Live");
         adapter.addFragment(new PopulerFragment(), "Audio live");
         adapter.addFragment(new PopulerFragment(), "Pk battle");
         // Add more fragments as needed
-
         viewPager.setAdapter(adapter);
     }
 

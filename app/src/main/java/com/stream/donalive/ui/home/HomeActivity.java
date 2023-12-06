@@ -16,6 +16,7 @@ import com.stream.donalive.databinding.ActivityHomeBinding;
 public class HomeActivity extends AppCompatActivity {
 
     private ActivityHomeBinding binding;
+    public static String STATUS="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
