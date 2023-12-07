@@ -2,6 +2,7 @@ package com.stream.donalive.ui.home.ui.home;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,9 +17,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -31,8 +35,10 @@ import com.stream.donalive.ui.home.ui.home.adapter.LiveUserAdapter;
 import com.stream.donalive.ui.home.ui.home.models.LiveUser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class PopulerFragment extends Fragment {
@@ -88,7 +94,8 @@ public class PopulerFragment extends Fragment {
 //                itemList.add(new LiveUser(itemList.size() + 1, "New Item"));
 //                itemList.add(new LiveUser("123"+itemList.size() + 1, "1236q"+itemList.size() + 1,"Amit"+itemList.size() + 1));
 
-                liveUserAdapter.setItems(itemList);
+//                liveUserAdapter.setItems(itemList);
+                testUserEnter();
             }
         });
 
@@ -111,6 +118,35 @@ public class PopulerFragment extends Fragment {
 
 
         return root;
+    }
+
+    private void testUserEnter() {
+
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", "Amit");
+        user.put("city", "mohali");
+        user.put("category", "demo");
+        user.put("photo", "http://");
+        user.put("price", 500);
+        user.put("numRatings", 105);
+        user.put("avgRating", 4.5);
+
+// Add a new document with a generated ID
+        db.collection("restaurants")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("TAG", "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("TAG", "Error adding document", e);
+                    }
+                });
     }
 
     private void fetChData() {

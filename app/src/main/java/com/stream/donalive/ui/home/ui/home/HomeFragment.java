@@ -34,8 +34,8 @@ public class HomeFragment extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         MyPagerAdapter adapter = new MyPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new PopulerFragment(), "Fresher");
-        adapter.addFragment(new PopulerFragment(), "Popular");
+//        adapter.addFragment(new MainFragment(), "Fresher");
+        adapter.addFragment(new ActiveUserFragment(), "Popular");
         adapter.addFragment(new PopulerFragment(), "Live");
         adapter.addFragment(new PopulerFragment(), "Audio live");
         adapter.addFragment(new PopulerFragment(), "Pk battle");
