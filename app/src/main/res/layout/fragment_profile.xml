@@ -64,6 +64,7 @@
                     app:civ_border_width="3dp"
                     app:civ_border_color="@color/app_color2"/>
                 <TextView
+                    android:id="@+id/txt_username"
                     android:layout_marginTop="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -78,6 +79,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/txt_uid"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ID:1000002"
@@ -90,6 +92,7 @@
                         android:background="@color/black"/>
 
                     <TextView
+                        android:id="@+id/txt_country"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="India"
@@ -419,6 +422,7 @@
             android:background="@color/very_light"/>
 
         <TextView
+            android:id="@+id/btn_logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Logout"

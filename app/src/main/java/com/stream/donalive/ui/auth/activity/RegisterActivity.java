@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -19,21 +20,33 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.hbb20.CountryCodePicker;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityRegisterBinding;
 import com.stream.donalive.ui.common.BaseActivity;
+import com.stream.donalive.ui.common.GenerateUserId;
+import com.stream.donalive.ui.home.HomeActivity;
+import com.stream.donalive.ui.startup.activity.OnboardingActivity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends BaseActivity {
     private static final String TAG = "RegisterActivity";
     private ActivityRegisterBinding binding;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore firestore;
     private ProgressDialog progressDialog;
+    String countryName = "";
+    String countryCode="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         mAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
         progressDialog= new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -43,6 +56,9 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void init(){
+
+        countryName = binding.ccp.getSelectedCountryName();
+        countryCode = binding.ccp.getSelectedCountryCode();
         binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,7 +86,6 @@ public class RegisterActivity extends BaseActivity {
                     createAccount(emailAddress, password);
                 }
 
-
             }
         });
     }
@@ -82,12 +97,10 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "createUserWithEmail:success");
-                    Toast.makeText(RegisterActivity.this, "createUserWithEmail:success",
+                    Toast.makeText(RegisterActivity.this, "I have logged in successfully",
                             Toast.LENGTH_SHORT).show();
                     FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
+                    checkUserExistenceInFirestore(user);
                 } else {
                     String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
 
@@ -175,9 +188,114 @@ public class RegisterActivity extends BaseActivity {
 
     }
 
-    private void updateUI(FirebaseUser user) {
-        Log.i(TAG, "updateUI: "+user.toString());
+    private void checkUserExistenceInFirestore(FirebaseUser user) {
+        FirebaseFirestore.getInstance().collection("login_details")
+                .whereEqualTo("email", user.getEmail())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().isEmpty()) {
+                            Log.i("Onboard", "checkUserExistenceInFirestore: if"+task.getResult());
+                            // User doesn't exist in Firestore
+                            // You might perform actions like creating a new user document
+                            checkLastId(user);
+                        } else {
+                            Log.i("Onboard", "checkUserExistenceInFirestore:  else"+task.getResult());
+                            // User exists in Firestore
+                            // You can retrieve the user's information if needed
+                            moveNextPage();
+                        }
+                    } else {
+                        // Handle Firestore query failure
+                    }
+                });
+//        checkLastId(user);
+    }
 
+    private void checkLastId(FirebaseUser user){
+        GenerateUserId.getLastUserId(firestore, "login_details", new GenerateUserId.UserIdCallback() {
+            @Override
+            public void onUserIdReceived(int userId) {
+                Log.i("MainActivity", "Last user ID: " + userId);
+
+                // Example: Get the next user ID (increment by 1)
+                int nextUserId = userId + 1;
+                Log.i("MainActivity", "Next user ID: " + nextUserId);
+                updateUI(user,nextUserId);
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.i("MainActivity", "Exception: " + e);
+                if (e==null){
+                    updateUI(user,1000000);
+                }
+            }
+        });
+    }
+
+    private void updateUI(FirebaseUser user, int nextUserId) {
+        long timestamp = System.currentTimeMillis();
+        Map<String, Object> loginDetails = new HashMap<>();
+        loginDetails.put("userId", user.getUid());
+        loginDetails.put("uid", nextUserId);
+        loginDetails.put("username", binding.txtUsername.getText().toString().trim());
+        loginDetails.put("email", user.getEmail());
+        loginDetails.put("phone", binding.txtPhone.getText().toString().trim());
+        loginDetails.put("country_code", "+"+countryCode);
+        loginDetails.put("country_name", countryName);
+        loginDetails.put("login_type", "email");
+        loginDetails.put("image", user.getPhotoUrl()!=null?user.getPhotoUrl():"");
+        loginDetails.put("reg_id", "");
+        loginDetails.put("device_id", "");
+        loginDetails.put("beans", "0");
+        loginDetails.put("coins", "0");
+        loginDetails.put("level", "1");
+        loginDetails.put("diamond", "0");
+        loginDetails.put("latitude", "0");
+        loginDetails.put("longitude", "0");
+        loginDetails.put("friends", "0");
+        loginDetails.put("followers", "0");
+        loginDetails.put("following", "0");
+        loginDetails.put("loginTime", timestamp);
+
+        // Add the login details to Firestore
+        firestore.collection("login_details")
+                .add(loginDetails)
+                .addOnSuccessListener(documentReference -> {
+                    // Login details added successfully
+                    Toast.makeText(RegisterActivity.this, "I have logged in successfully",
+                            Toast.LENGTH_SHORT).show();
+                    moveNextPage();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(RegisterActivity.this, "Error adding login details"+e,Toast.LENGTH_SHORT).show();
+                    // Handle failure
+                    Log.e("MainActivity", "Error adding login details", e);
+                });
+
+
+    }
+
+    private void moveNextPage() {
+        Intent mainIntent = new Intent(RegisterActivity.this, HomeActivity.class);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(mainIntent);
+        finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding.ccp.setOnCountryChangeListener(new CountryCodePicker.OnCountryChangeListener() {
+            @Override
+            public void onCountrySelected() {
+                countryName = binding.ccp.getSelectedCountryName();
+                countryCode = binding.ccp.getSelectedCountryCode();
+                Log.i("MainActivity", "countryName : " + countryName);
+            }
+        });
     }
 
     @Override

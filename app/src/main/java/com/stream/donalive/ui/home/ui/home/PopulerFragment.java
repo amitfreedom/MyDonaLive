@@ -17,19 +17,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.FragmentPopulerBinding;
+import com.stream.donalive.ui.common.GenerateUserId;
 import com.stream.donalive.ui.home.ui.home.adapter.ImageSliderAdapter;
 import com.stream.donalive.ui.home.ui.home.adapter.LiveUserAdapter;
 import com.stream.donalive.ui.home.ui.home.models.LiveUser;
@@ -91,24 +98,22 @@ public class PopulerFragment extends Fragment {
             @Override
             public void onClick(View view) {
 //                showBottomSheetDialog();
-//                itemList.add(new LiveUser(itemList.size() + 1, "New Item"));
-//                itemList.add(new LiveUser("123"+itemList.size() + 1, "1236q"+itemList.size() + 1,"Amit"+itemList.size() + 1));
-
-//                liveUserAdapter.setItems(itemList);
-                testUserEnter();
+//                testUserEnter();
+//                getAllId();
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    String userId = currentUser.getUid();
+                    // Use this userId to fetch user details from Firestore
+                    fetchUserDetails("SK7FSe8F65Z9X9ADMuSmo6zbrv72");
+                } else {
+                    // User is not logged in
+                }
             }
         });
 
             liveUserAdapter = new LiveUserAdapter();
 //            binding.rvLiveUser.setLayoutManager(new GridLayoutManager(getActivity(),new RecyclerView.LayoutManager()));
             binding.rvLiveUser.setAdapter(liveUserAdapter);
-
-//            itemList.add((new LiveUser("123", "1236q", "Amit")));
-//            itemList.add((new LiveUser("1232", "1235q", "Test")));
-//            itemList.add((new LiveUser("1233", "1234q", "Amit123")));
-
-            // Set initial data to the adapter
-//            liveUserAdapter.setItems(itemList);
 
             fetChData();
 
@@ -120,33 +125,88 @@ public class PopulerFragment extends Fragment {
         return root;
     }
 
+    private void fetchUserDetails(String userId) {
+        CollectionReference usersRef = db.collection("test123");
+
+        Query query = usersRef.whereEqualTo("userid", "SK7FSe8F65Z9X9ADMuSmo6zbrv72");
+
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {
+                        String userName = document.getString("name"); // Replace "name" with your field name
+//                        String uid = document.getString("uid"); // Replace "email" with your field name
+
+                        // Use the retrieved user details as needed
+                        Log.i("MainActivity", "User Name: " + userName);
+                    }
+                } else {
+                    // Handle failure
+                    Log.e("MainActivity", "Error getting user document: ", task.getException());
+                }
+            }
+        });
+    }
+
+    private void getAllId() {
+        GenerateUserId.getLastUserId(db, "test123", new GenerateUserId.UserIdCallback() {
+            @Override
+            public void onUserIdReceived(int userId) {
+                Log.i("MainActivity", "Last user ID: " + userId);
+
+                // Example: Get the next user ID (increment by 1)
+                int nextUserId = userId + 1;
+                Log.i("MainActivity", "Next user ID: " + nextUserId);
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.i("MainActivity", "Exception: " + e);
+            }
+        });
+//        db.collection("test123")
+//                .orderBy("uid", Query.Direction.DESCENDING) // Assuming "userId" is the field name for user IDs
+//                .limit(1)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        // If there are existing users, get the last user ID and increment by 1
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            if (document.contains("uid")) {
+//                                int lastUserId = document.getLong("uid").intValue();
+//                                Log.i("check_uid", "onComplete: uid ="+lastUserId);
+////                                newUserId = lastUserId + 1;
+//                            }
+//                        }
+//                    }
+//                });
+    }
+
     private void testUserEnter() {
 
 
-        Map<String, Object> user = new HashMap<>();
-        user.put("name", "Amit");
-        user.put("city", "mohali");
-        user.put("category", "demo");
-        user.put("photo", "http://");
-        user.put("price", 500);
-        user.put("numRatings", 105);
-        user.put("avgRating", 4.5);
-
-// Add a new document with a generated ID
-        db.collection("restaurants")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("TAG", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("TAG", "Error adding document", e);
-                    }
-                });
+//        Map<String, Object> user = new HashMap<>();
+//        user.put("uid", 1000000);
+//        user.put("name", "Amit");
+//        db.collection("test123")
+//                .add(user)
+//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                    @Override
+//                    public void onSuccess(DocumentReference documentReference) {
+//                        Toast.makeText(getActivity(), ""+documentReference.getId(), Toast.LENGTH_SHORT).show();
+//                        Log.d("TAG", "DocumentSnapshot added with ID: " + documentReference.getId());
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(getActivity(), "Error adding document"+e, Toast.LENGTH_SHORT).show();
+//                        Log.w("TAG", "Error adding document", e);
+//                    }
+//                });
     }
 
     private void fetChData() {
@@ -195,22 +255,6 @@ public class PopulerFragment extends Fragment {
                 }
             }
         });
-    }
-
-    private void modifyuser(int position, DocumentSnapshot modifiedUser) {
-        String live = modifiedUser.getString("live");
-        String userId = modifiedUser.getString("userId");
-        String roomId = modifiedUser.getString("roomId");
-        String userName = modifiedUser.getString("userName");
-
-        // Create a User model instance and populate it
-        LiveUser modifiedLiveUser = new LiveUser(live, userId, roomId, userName);
-
-        // Update the item at the specific position in itemList
-        if (position != RecyclerView.NO_POSITION && position < itemList.size()) {
-            itemList.set(position, modifiedLiveUser);
-            liveUserAdapter.setItems(itemList);
-        }
     }
 
     private void fetchWithScroll() {
