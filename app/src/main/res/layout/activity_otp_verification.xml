@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    tools:context=".ui.auth.activity.OtpVerificationActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            style="@style/HeaderTextStyle"
+            android:text="@string/txt_otp_verification"
+            android:textSize="30sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            style="@style/NormalTextStyle"
+            android:text="@string/txt_otp_sent"
+            android:textColor="@color/light_gray"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="72dp"
+            style="@style/HeaderTextStyle"
+            android:textAllCaps="true"
+            android:text="@string/txt_otp" />
+
+        <EditText
+            android:id="@+id/txt_otp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/edit_text_bg"
+            android:fontFamily="@font/sf_pro_display_semibold"
+            android:hint="@string/txt_code"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/white"
+            android:padding="10dp"
+            android:textColorHint="@color/light_gray" />
+
+
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_verify"
+            style="@style/MyButtonStyle_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:text="@string/txt_verify"
+            android:textAllCaps="true"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/btn_resend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            style="@style/NormalTextStyle"
+            android:padding="8dp"
+            android:text="@string/txt_resend"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

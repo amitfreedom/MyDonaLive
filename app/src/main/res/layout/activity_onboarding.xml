@@ -95,8 +95,38 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/btn_facebook"
+            android:id="@+id/btn_phone"
             android:layout_below="@id/btn_google"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/bachground_bg_phone"
+            android:layout_marginHorizontal="@dimen/_40dp"
+            android:layout_marginVertical="@dimen/_15dp"
+            >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_phone"
+                android:layout_marginLeft="20dp"
+                android:tint="@color/white"
+                android:layout_centerVertical="true"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/_14sp"
+                android:text="@string/phone_title_text"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn_facebook"
+            android:layout_below="@id/btn_phone"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:background="@drawable/circular_button_facebook"

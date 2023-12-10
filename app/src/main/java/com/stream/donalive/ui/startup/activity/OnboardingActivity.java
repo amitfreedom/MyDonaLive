@@ -43,6 +43,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityOnboardingBinding;
 import com.stream.donalive.ui.auth.activity.LoginActivity;
+import com.stream.donalive.ui.auth.activity.PhoneActivity;
 import com.stream.donalive.ui.common.GenerateUserId;
 import com.stream.donalive.ui.home.HomeActivity;
 
@@ -91,6 +92,14 @@ public class OnboardingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 googleSignIn();
+            }
+        });
+
+        binding.btnPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(OnboardingActivity.this, PhoneActivity.class));
+
             }
         });
 
