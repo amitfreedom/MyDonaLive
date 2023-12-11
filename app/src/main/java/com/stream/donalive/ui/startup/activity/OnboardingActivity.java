@@ -42,6 +42,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityOnboardingBinding;
+import com.stream.donalive.streaming.internal.sdk.ZEGOSDKManager;
+import com.stream.donalive.streaming.internal.sdk.basic.ZEGOSDKCallBack;
 import com.stream.donalive.ui.auth.activity.LoginActivity;
 import com.stream.donalive.ui.auth.activity.PhoneActivity;
 import com.stream.donalive.ui.common.GenerateUserId;
@@ -328,6 +330,24 @@ public class OnboardingActivity extends AppCompatActivity {
         if (currentUser == null) {
             oneTapSignIn();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        signInZEGOSDK("amit123", "testuser123", (errorCode, message) -> {
+//            if (errorCode == 0) {
+//
+//            }
+//            System.out.println(errorCode+"<=code123");
+//            System.out.println(message.toString()+"<=message123");
+//
+//        });
+
+    }
+
+    private void signInZEGOSDK(String userID, String userName, ZEGOSDKCallBack callback) {
+        ZEGOSDKManager.getInstance().connectUser(userID, userName, callback);
     }
 
     @Override

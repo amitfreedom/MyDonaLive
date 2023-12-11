@@ -9,10 +9,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.stream.donalive.R;
-import com.stream.donalive.databinding.FragmentHomeBinding;
 import com.stream.donalive.databinding.FragmentLiveBinding;
+import com.stream.donalive.global.ApplicationClass;
 
 
 public class LiveFragment extends Fragment {
@@ -29,8 +29,16 @@ public class LiveFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding.mainHostVideo.startPreviewOnly();
 
+        ApplicationClass.getSharedpref().saveString("name123","amitkumar");
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        ApplicationClass.getSharedpref().getString("name123");
+//        Toast.makeText(getActivity(), ApplicationClass.getSharedpref().getString("name123"), Toast.LENGTH_SHORT).show();
     }
 
     @Override
