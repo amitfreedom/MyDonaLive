@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.stream.donalive.ApplicationClass;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.FragmentHomeBinding;
 import com.stream.donalive.databinding.FragmentLiveBinding;

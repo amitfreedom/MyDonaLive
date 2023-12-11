@@ -4,12 +4,11 @@ import android.app.Application;
 import android.content.Context;
 
 import com.google.firebase.crashlytics.internal.model.CrashlyticsReport;
-import com.omninos.util_data.AppPreferences;
 
 public class ApplicationClass extends Application {
     private static final String TAG = "ApplicationClass";
     private Context context;
-    private static AppPreferences appPreference;
+//    private static AppPreferences appPreference;
     private static Singleton singleton;
     public static ApplicationClass appInstance;
     public static ApplicationClass getInstance()
@@ -21,15 +20,15 @@ public class ApplicationClass extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-        appPreference = AppPreferences.init(context, "MyDonaLiveDb");
+//        appPreference = AppPreferences.init(context, "MyDonaLiveDb");
         singleton=new Singleton();
 
 
     }
 
-    public static AppPreferences getAppPreference() {
-        return appPreference;
-    }
+//    public static AppPreferences getAppPreference() {
+//        return appPreference;
+//    }
 
 
     public static Singleton getSingleton() {

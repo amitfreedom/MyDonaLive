@@ -79,7 +79,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
     implementation "com.google.code.gson:gson:2.9.1"
 
-    implementation 'com.github.manjhi:util_repo:0.1.2'
+//    implementation 'com.github.manjhi:util_repo:0.1.2'
+//    implementation 'com.androidadvance:topsnackbar:1.1.1'
 
 
 
