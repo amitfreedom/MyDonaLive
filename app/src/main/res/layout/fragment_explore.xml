@@ -5,10 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.ui.explore.ExploreFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <Button
+        android:id="@+id/watch_live_streaming"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:text="Watch LiveStreaming" />
 
 </FrameLayout>

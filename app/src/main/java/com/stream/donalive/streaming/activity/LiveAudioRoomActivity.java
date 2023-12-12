@@ -46,7 +46,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             return;
         }
 
-        getSupportActionBar().setTitle("Live Audio Room");
+//        getSupportActionBar().setTitle("Live Audio Room");
 
         binding.liveAudioroomTopbar.setRoomID(roomID);
         // two rows, four columns

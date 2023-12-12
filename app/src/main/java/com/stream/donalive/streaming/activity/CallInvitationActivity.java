@@ -45,7 +45,7 @@ public class CallInvitationActivity extends AppCompatActivity {
         binding = ActivityCallInvitationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        getSupportActionBar().setTitle("CallInvitationActivity");
+//        getSupportActionBar().setTitle("CallInvitationActivity");
 
         callInfo = FullCallInfo.parse(getIntent().getStringExtra("callInfo"));
 

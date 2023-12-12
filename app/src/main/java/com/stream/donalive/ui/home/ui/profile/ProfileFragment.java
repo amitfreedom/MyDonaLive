@@ -24,6 +24,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.FragmentHomeBinding;
 import com.stream.donalive.databinding.FragmentProfileBinding;
+import com.stream.donalive.global.AppConstants;
+import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.ui.auth.activity.LoginActivity;
 import com.stream.donalive.ui.home.HomeActivity;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
@@ -58,7 +60,8 @@ public class ProfileFragment extends Fragment {
         usersRef = db.collection(Constant.LOGIN_DETAILS);
 
         init();
-        fetchUserDetails("sRRvN0AQndXsdvXAfKKJhV3nTin2");
+//        fetchUserDetails("sRRvN0AQndXsdvXAfKKJhV3nTin2");
+        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
     }
 

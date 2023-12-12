@@ -5,7 +5,10 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
@@ -63,7 +66,7 @@ public class LiveStreamingActivity extends AppCompatActivity {
         binding = ActivityLiveStreamingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        getSupportActionBar().setTitle("Live Streaming");
+//        getSupportActionBar().setTitle("Live Streaming");
 
         boolean isHost = getIntent().getBooleanExtra("host", true);
         liveID = getIntent().getStringExtra("liveID");
@@ -168,6 +171,7 @@ public class LiveStreamingActivity extends AppCompatActivity {
             public void onReceiveStreamAdd(List<ZEGOSDKUser> userList) {
                 List<ZEGOSDKUser> coHostUserList = new ArrayList<>();
                 for (ZEGOSDKUser zegosdkUser : userList) {
+                    Log.i("checkmethod", "onReceiveStreamAdd: "+zegosdkUser.userName);
                     if (ZEGOLiveStreamingManager.getInstance().isHost(zegosdkUser.userID)) {
                         binding.mainHostVideo.setUserID(zegosdkUser.userID);
                         binding.mainHostVideoIcon.setLetter(zegosdkUser.userName);

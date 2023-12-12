@@ -46,7 +46,7 @@ public class CallWaitActivity extends AppCompatActivity {
         binding = ActivityCallWaitBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        getSupportActionBar().setTitle("CallWaitActivity");
+//        getSupportActionBar().setTitle("CallWaitActivity");
         callInfo = FullCallInfo.parse(getIntent().getStringExtra("callInfo"));
         LogUtil.d("onCreate: " + callInfo);
 

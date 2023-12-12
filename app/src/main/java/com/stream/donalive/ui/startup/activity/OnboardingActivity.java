@@ -42,6 +42,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityOnboardingBinding;
+import com.stream.donalive.global.AppConstants;
+import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.donalive.streaming.internal.sdk.basic.ZEGOSDKCallBack;
 import com.stream.donalive.ui.auth.activity.LoginActivity;
@@ -239,6 +241,7 @@ public class OnboardingActivity extends AppCompatActivity {
                             Log.i("Onboard", "checkUserExistenceInFirestore:  else"+task.getResult());
                             // User exists in Firestore
                             // You can retrieve the user's information if needed
+                            ApplicationClass.getSharedpref().saveString(AppConstants.USER_ID, user.getUid());
                             moveNextPage();
                         }
                     } else {
@@ -272,6 +275,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user, int nextUserId) {
+        ApplicationClass.getSharedpref().saveString(AppConstants.USER_ID, user.getUid());
             long timestamp = System.currentTimeMillis();
             Map<String, Object> loginDetails = new HashMap<>();
             loginDetails.put("userId", user.getUid());

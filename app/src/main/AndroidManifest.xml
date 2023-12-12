@@ -42,7 +42,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".streaming.activity.LiveAudioRoomActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".streaming.activity.LiveStreamingActivity"

@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.stream.donalive.R;
+import com.stream.donalive.global.AppConstants;
+import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.ui.home.HomeActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -44,12 +46,14 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 FirebaseUser user = mAuth.getCurrentUser();
+
                 if (user == null) {
                     Intent intent = new Intent(SplashActivity.this, OnboardingActivity.class);
                     startActivity(intent);
                     finish();
                 }
                 else {
+                    ApplicationClass.getSharedpref().saveString(AppConstants.USER_ID, user.getUid());
                     Intent mainIntent = new Intent(SplashActivity.this, HomeActivity.class);
                     mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(mainIntent);

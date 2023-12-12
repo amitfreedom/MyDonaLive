@@ -2,6 +2,7 @@ package com.stream.donalive.streaming.internal.sdk;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.stream.donalive.streaming.internal.sdk.basic.MergeCallBack;
 import com.stream.donalive.streaming.internal.sdk.basic.ZEGOSDKCallBack;
@@ -170,6 +171,8 @@ public class ZEGOSDKManager {
             public void onRoomEntered(ZIMRoomFullInfo roomInfo, ZIMError errorInfo) {
                 if (errorInfo.code == ZIMErrorCode.SUCCESS) {
                     expressService.setRoomScenario(scenario);
+
+                    Log.i("checkmethod", "onRoomEntered: "+roomInfo.baseInfo.roomID);
                     expressService.loginRoom(roomID, new IZegoRoomLoginCallback() {
                         @Override
                         public void onRoomLoginResult(int errorCode, JSONObject extendedData) {
