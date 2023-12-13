@@ -5,13 +5,22 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityMainBinding;
+import com.stream.donalive.global.AppConstants;
+import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.streaming.activity.CallWaitActivity;
 import com.stream.donalive.streaming.activity.LiveAudioRoomActivity;
 import com.stream.donalive.streaming.activity.LiveStreamingActivity;
@@ -22,6 +31,9 @@ import com.stream.donalive.streaming.internal.business.call.CallExtendedData;
 import com.stream.donalive.streaming.internal.business.call.FullCallInfo;
 import com.stream.donalive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.donalive.streaming.internal.sdk.basic.ZEGOSDKUser;
+import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
+import com.stream.donalive.ui.utill.Constant;
+
 import im.zego.zim.callback.ZIMCallInvitationSentCallback;
 import im.zego.zim.entity.ZIMCallInvitationSentInfo;
 import im.zego.zim.entity.ZIMError;
@@ -33,6 +45,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private FirebaseFirestore firestore;
+    private FirebaseAuth mAuth;
+    private CollectionReference usersRef;
+    private UserDetailsModel userDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +56,20 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        mAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+        usersRef = firestore.collection(Constant.LOGIN_DETAILS);
+
         ZEGOSDKUser localUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
         binding.liveUserinfoUserid.setText(localUser.userID);
         binding.liveUserinfoUsername.setText(localUser.userName);
 
         binding.startLiveStreaming.setOnClickListener(v -> {
-            String liveID = binding.liveIdStreaming.getEditText().getText().toString();
-            if (TextUtils.isEmpty(liveID)) {
-                binding.liveIdStreaming.setError("please input liveID");
-                return;
-            }
+//            String liveID = binding.liveIdStreaming.getEditText().getText().toString();
+//            if (TextUtils.isEmpty(liveID)) {
+//                binding.liveIdStreaming.setError("please input liveID");
+//                return;
+//            }
             List<String> permissions = Arrays.asList(permission.CAMERA, permission.RECORD_AUDIO);
             requestPermissionIfNeeded(permissions, new RequestCallback() {
                 @Override
@@ -58,7 +78,10 @@ public class MainActivity extends AppCompatActivity {
                     if (allGranted) {
                         Intent intent = new Intent(MainActivity.this, LiveStreamingActivity.class);
                         intent.putExtra("host", true);
-                        intent.putExtra("liveID", liveID);
+                        intent.putExtra("liveID", userDetails.getUserId());
+                        intent.putExtra("userId", userDetails.getUserId());
+                        intent.putExtra("username", userDetails.getUsername());
+                        intent.putExtra("uid", userDetails.getUid());
                         startActivity(intent);
                     }
                 }
@@ -78,11 +101,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.startLiveAudioroom.setOnClickListener(v -> {
-            String liveID = binding.liveIdAudioRoom.getEditText().getText().toString();
-            if (TextUtils.isEmpty(liveID)) {
-                binding.liveIdAudioRoom.setError("please input liveID");
-                return;
-            }
+//            String liveID = binding.liveIdAudioRoom.getEditText().getText().toString();
+//            if (TextUtils.isEmpty(liveID)) {
+//                binding.liveIdAudioRoom.setError("please input liveID");
+//                return;
+//            }
             List<String> permissions = Arrays.asList(permission.RECORD_AUDIO);
             requestPermissionIfNeeded(permissions, new RequestCallback() {
                 @Override
@@ -91,7 +114,10 @@ public class MainActivity extends AppCompatActivity {
                     if (allGranted) {
                         Intent intent = new Intent(MainActivity.this, LiveAudioRoomActivity.class);
                         intent.putExtra("host", true);
-                        intent.putExtra("liveID", liveID);
+                        intent.putExtra("liveID", userDetails.getUserId());
+                        intent.putExtra("userId", userDetails.getUserId());
+                        intent.putExtra("username", userDetails.getUsername());
+                        intent.putExtra("uid", userDetails.getUid());
                         startActivity(intent);
                     }
                 }
@@ -186,6 +212,29 @@ public class MainActivity extends AppCompatActivity {
         ZEGOCallInvitationManager.getInstance().init();
         Intent intent = new Intent(this, CallBackgroundService.class);
         startService(intent);
+
+//        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
+    }
+
+    private void fetchUserDetails(String userId) {
+
+        usersRef.whereEqualTo("userId", userId)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle error
+                        Log.e("test2334", "Listen failed: " + error.getMessage());
+                        return;
+                    }
+
+                    for (DocumentSnapshot document : value) {
+                        userDetails = document.toObject(UserDetailsModel.class);
+//
+                    }
+                });
+
+
     }
 
     protected void onPause() {

@@ -1,5 +1,6 @@
 package com.stream.donalive.ui.home.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import com.stream.donalive.databinding.FragmentHomeBinding;
+import com.stream.donalive.streaming.activity.LiveAudioRoomActivity;
+import com.stream.donalive.streaming.activity.LiveStreamingActivity;
 import com.stream.donalive.ui.home.ui.home.adapter.MyPagerAdapter;
+import com.stream.donalive.ui.search.activity.SearchUserActivity;
+
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -28,6 +34,16 @@ public class HomeFragment extends Fragment {
 
             binding.tabLayout.setupWithViewPager(binding.viewPager);
 
+            binding.rightIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent;
+
+                    intent = new Intent(getActivity().getApplication(), SearchUserActivity.class);
+                    startActivity(intent);
+                }
+            });
+
 
         return root;
     }
@@ -36,9 +52,9 @@ public class HomeFragment extends Fragment {
         MyPagerAdapter adapter = new MyPagerAdapter(getChildFragmentManager());
 //        adapter.addFragment(new MainFragment(), "Fresher");
         adapter.addFragment(new ActiveUserFragment(), "Popular");
-        adapter.addFragment(new PopulerFragment(), "Live");
-        adapter.addFragment(new PopulerFragment(), "Audio live");
-        adapter.addFragment(new PopulerFragment(), "Pk battle");
+//        adapter.addFragment(new PopulerFragment(), "Live");
+//        adapter.addFragment(new PopulerFragment(), "Audio live");
+//        adapter.addFragment(new PopulerFragment(), "Pk battle");
         // Add more fragments as needed
         viewPager.setAdapter(adapter);
     }

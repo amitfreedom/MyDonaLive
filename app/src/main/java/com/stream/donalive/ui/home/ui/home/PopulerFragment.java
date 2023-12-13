@@ -38,7 +38,6 @@ import com.stream.donalive.R;
 import com.stream.donalive.databinding.FragmentPopulerBinding;
 import com.stream.donalive.ui.common.GenerateUserId;
 import com.stream.donalive.ui.home.ui.home.adapter.ImageSliderAdapter;
-import com.stream.donalive.ui.home.ui.home.adapter.LiveUserAdapter;
 import com.stream.donalive.ui.home.ui.home.models.LiveUser;
 
 import java.util.ArrayList;
@@ -55,7 +54,7 @@ public class PopulerFragment extends Fragment {
 
     private String[] images = {"https://restream.io/blog/content/images/size/w2000/2023/06/how-to-stream-live-video-on-your-website.JPG","https://kingscourtbrampton.org/wp-content/uploads/2022/08/istockphoto-1306922705-612x612-1.jpg","https://wave.video/blog/wp-content/uploads/2021/10/Instagram-Live-Streaming-for-Business-How-to-Get-Started-1.jpg"}; // Replace with your image resource IDs
     private ImageSliderAdapter imageSliderAdapter;
-    private LiveUserAdapter liveUserAdapter;
+//    private LiveUserAdapter liveUserAdapter;
     private List<LiveUser> itemList;
 //    private NestedScrollView scrollView;
     private boolean isLoading = false;
@@ -111,9 +110,8 @@ public class PopulerFragment extends Fragment {
             }
         });
 
-            liveUserAdapter = new LiveUserAdapter();
-//            binding.rvLiveUser.setLayoutManager(new GridLayoutManager(getActivity(),new RecyclerView.LayoutManager()));
-            binding.rvLiveUser.setAdapter(liveUserAdapter);
+//            liveUserAdapter = new LiveUserAdapter();
+//            binding.rvLiveUser.setAdapter(liveUserAdapter);
 
             fetChData();
 
@@ -236,9 +234,9 @@ public class PopulerFragment extends Fragment {
 
                                 if (Objects.equals(live, "1")){
                                     // Create a User model instance and populate it
-                                    LiveUser user = new LiveUser(live,userId, roomId, userName);
-                                    itemList.add(user);
-                                    liveUserAdapter.setItems(itemList);
+//                                    LiveUser user = new LiveUser(live,userId, roomId, userName);
+//                                    itemList.add(user);
+//                                    liveUserAdapter.setItems(itemList);
                                 }
 
                                 break;
@@ -330,6 +328,6 @@ public class PopulerFragment extends Fragment {
         super.onDestroyView();
         binding=null;
         mSnapshots.clear();
-        liveUserAdapter.notifyDataSetChanged();
+//        liveUserAdapter.notifyDataSetChanged();
     }
 }

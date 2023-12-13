@@ -1,79 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
-    android:orientation="vertical"
     android:padding="8dp">
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/restaurantItemImage"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="#757575"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:riv_corner_radius="@dimen/_10dp"
+        android:src="@drawable/ic_launcher_background"/>
 
-    <TextView
-        android:id="@+id/restaurantItemName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+    <RelativeLayout
+        android:layout_alignBottom="@id/restaurantItemImage"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/name_bottom_view">
+
+        <TextView
+            android:layout_marginHorizontal="@dimen/_10dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/restaurantItemName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12sp"
+            tools:text="Name" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_marginLeft="8dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        app:layout_constraintStart_toEndOf="@+id/restaurantItemImage"
-        app:layout_constraintTop_toTopOf="@+id/restaurantItemImage"
-        tools:text="Foo's Bar" />
-
-    <TextView
-        android:id="@+id/restaurantItemNumRatings"
+        android:layout_marginTop="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        android:textColor="@color/black"
-        tools:text="(10)" />
+        android:background="@drawable/name_top_view">
 
-    <TextView
-        android:id="@+id/restaurantItemCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textColor="@color/app_color2"
-        tools:text="Italian" />
+        <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/liveType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            tools:text="Name" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/restaurantItemCityDivider"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        app:layout_constraintStart_toEndOf="@+id/restaurantItemCategory"
-        app:layout_constraintTop_toTopOf="@+id/restaurantItemCategory" />
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/restaurantItemCity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toEndOf="@+id/restaurantItemCityDivider"
-        app:layout_constraintTop_toTopOf="@+id/restaurantItemCategory"
-        tools:text="San Francisco" />
 
-    <TextView
-        android:id="@+id/restaurantItemPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/restaurantItemName"
-        tools:text="$$$" />
 
-</LinearLayout>
+</RelativeLayout>

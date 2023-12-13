@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.search.activity.SearchUserActivity">
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/top_color"
+        android:padding="@dimen/_10dp">
+
+<!--        <ImageView-->
+<!--            android:id="@+id/left_icon"-->
+<!--            android:layout_width="24dp"-->
+<!--            android:layout_height="24dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:src="@drawable/trophy" />-->
+
+        <EditText
+            android:layout_marginHorizontal="@dimen/_10dp"
+            android:padding="5dp"
+            android:id="@+id/search_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/search"
+            android:background="@drawable/edit_text_round_bg"
+            android:drawableTint="@color/gray"
+            android:layout_weight="1"
+            android:maxLength="7"
+            android:inputType="text"
+            android:hint="Search ID" />
+
+<!--        <ImageView-->
+<!--            android:id="@+id/right_icon"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:src="@drawable/ic_notifications_black_24dp"-->
+<!--            app:tint="@color/white" />-->
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_login_user" />
+
+
+</LinearLayout>

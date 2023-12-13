@@ -1,18 +1,24 @@
 package com.stream.donalive.ui.home.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager.widget.ViewPager;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -20,8 +26,18 @@ import com.google.firebase.firestore.Query;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.FragmentActiveUserBinding;
 import com.stream.donalive.databinding.FragmentMainBinding;
+import com.stream.donalive.streaming.activity.LiveAudioRoomActivity;
+import com.stream.donalive.streaming.activity.LiveStreamingActivity;
+import com.stream.donalive.streaming.internal.ZEGOCallInvitationManager;
+import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager;
 import com.stream.donalive.ui.home.ui.home.adapter.ActiveUserAdapter;
+import com.stream.donalive.ui.home.ui.home.adapter.ImageSliderAdapter;
 import com.stream.donalive.ui.home.ui.home.adapter.RestaurantAdapter;
+import com.stream.donalive.ui.home.ui.home.models.LiveUser;
+import com.stream.donalive.ui.utill.Constant;
+
+import java.util.List;
+import java.util.Objects;
 
 
 public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.OnActiveUserSelectedListener {
@@ -30,6 +46,14 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
     private FirebaseFirestore mFirestore;
     private Query mQuery;
     private ActiveUserAdapter mAdapter;
+    private String[] images = {"https://restream.io/blog/content/images/size/w2000/2023/06/how-to-stream-live-video-on-your-website.JPG","https://kingscourtbrampton.org/wp-content/uploads/2022/08/istockphoto-1306922705-612x612-1.jpg","https://wave.video/blog/wp-content/uploads/2021/10/Instagram-Live-Streaming-for-Business-How-to-Get-Started-1.jpg"}; // Replace with your image resource IDs
+    private ImageSliderAdapter imageSliderAdapter;
+//    private LiveUserAdapter liveUserAdapter;
+    private List<LiveUser> itemList;
+    //    private NestedScrollView scrollView;
+    private boolean isLoading = false;
+    private int currentPage = 1; // Keeps track of the current page
+    private int totalPages = 10; // Replace this with the total number of pages
 
 
     @Override
@@ -49,11 +73,30 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
         // Firestore
         mFirestore = FirebaseFirestore.getInstance();
 
-        // Get ${LIMIT} restaurants
-        mQuery = mFirestore.collection("restaurants")
-                .orderBy("avgRating", Query.Direction.ASCENDING)
-                .whereEqualTo("avgRating",1)
+        mQuery = mFirestore.collection(Constant.LIVE_DETAILS)
+                .orderBy("startTime", Query.Direction.DESCENDING)
+                .whereEqualTo("liveStatus","offline")
                 .limit(LIMIT);
+
+        imageSliderAdapter = new ImageSliderAdapter(getActivity(), images);
+        binding.viewPager.setAdapter(imageSliderAdapter);
+
+        addDotsIndicator(0);
+
+        binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                addDotsIndicator(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
 
 
         // RecyclerView
@@ -72,24 +115,47 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
 
             @Override
             protected void onError(FirebaseFirestoreException e) {
+                Log.e("FirebaseFirestoreException", "onError: "+e );
                 // Show a snackbar on errors
-                Snackbar.make(binding.getRoot(),
-                        "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
+//                Snackbar.make(binding.getRoot(),
+//                        "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
             }
 
 
         };
-        binding.recyclerRestaurants.setLayoutManager(new LinearLayoutManager(requireContext()));
+//        binding.recyclerRestaurants.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.recyclerRestaurants.setAdapter(mAdapter);
 
+        // if LiveStreaming,init after user login,may receive pk request.
+        ZEGOLiveStreamingManager.getInstance().init();
+        // if Call invitation,init after user login,may receive call request.
+        ZEGOCallInvitationManager.getInstance().init();
+
+    }
+
+    private void addDotsIndicator(int position) {
+        ImageView[] dots = new ImageView[images.length];
+        binding.dotsLayout.removeAllViews();
+
+        for (int i = 0; i < dots.length; i++) {
+            dots[i] = new ImageView(getActivity());
+            dots[i].setImageDrawable(getResources().getDrawable(
+                    i == position ? R.drawable.dot_selected : R.drawable.dot_unselected
+            ));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+
+            params.setMargins(8, 0, 8, 0);
+            binding.dotsLayout.addView(dots[i], params);
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-
-
 
         // Start listening for Firestore updates
         if (mAdapter != null) {
@@ -117,7 +183,29 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
 
     @Override
     public void onActiveUserSelected(DocumentSnapshot user) {
-        Log.i("test12345", "onActiveUserSelected: "+user);
+        Log.i("test12345", "onActiveUserSelected: "+user.get("userId"));
+        String liveType= (String) user.get("liveType");
+        String liveID= (String) user.get("liveID");
+        String userId= (String) user.get("userId");
+        String username= (String) user.get("username");
+        long uid= (long) user.get("uid");
+        if (TextUtils.isEmpty(liveID)) {
+            return;
+        }
+        Intent intent;
+        if (Objects.equals(liveType, "0")){
+            intent = new Intent(getActivity().getApplication(), LiveStreamingActivity.class);
+        }else {
+            intent = new Intent(getActivity().getApplication(), LiveAudioRoomActivity.class);
+
+        }
+        intent.putExtra("host", false);
+        intent.putExtra("liveID", liveID);
+        intent.putExtra("userId", userId);
+        intent.putExtra("username", username);
+        intent.putExtra("uid", uid);
+        startActivity(intent);
+
 
     }
 }

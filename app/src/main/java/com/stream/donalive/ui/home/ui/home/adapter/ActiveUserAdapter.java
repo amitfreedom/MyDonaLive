@@ -13,8 +13,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.stream.donalive.databinding.ItemActiveUserBinding;
 import com.stream.donalive.databinding.ItemRestaurantBinding;
+import com.stream.donalive.global.AppConstants;
+import com.stream.donalive.ui.home.ui.home.models.LiveUser;
 import com.stream.donalive.ui.home.ui.home.models.Restaurant;
+import com.stream.donalive.ui.utill.Constant;
 import com.stream.donalive.ui.utill.RestaurantUtil;
+
+import java.util.Objects;
 
 public class ActiveUserAdapter extends FirestoreAdapter<ActiveUserAdapter.ViewHolder>{
 
@@ -60,19 +65,27 @@ public class ActiveUserAdapter extends FirestoreAdapter<ActiveUserAdapter.ViewHo
         public void bind(final DocumentSnapshot snapshot,
                          final ActiveUserAdapter.OnActiveUserSelectedListener listener) {
 
-            Restaurant restaurant = snapshot.toObject(Restaurant.class);
-            Resources resources = itemView.getResources();
+            LiveUser restaurant = snapshot.toObject(LiveUser.class);
+
+            if (Objects.equals(restaurant.getLiveType(), "0")){
+                binding.liveType.setText("Video Live");
+            }
+
+            if (Objects.equals(restaurant.getLiveType(), "1")){
+                binding.liveType.setText("Audio Party");
+            }
 
             // Load image
             Glide.with(binding.restaurantItemImage.getContext())
-                    .load(restaurant.getPhoto())
+                    .load(Constant.USER_PLACEHOLDER_PATH)
                     .into(binding.restaurantItemImage);
 
-            binding.restaurantItemName.setText(restaurant.getName());
+            binding.restaurantItemName.setText(restaurant.getUsername());
+
 //            binding.restaurantItemRating.setRating((float) restaurant.getAvgRating());
-            binding.restaurantItemCity.setText(restaurant.getCity());
-            binding.restaurantItemCategory.setText(restaurant.getCategory());
-            binding.restaurantItemPrice.setText(RestaurantUtil.getPriceString(restaurant));
+//            binding.restaurantItemCity.setText(restaurant.getCity());
+//            binding.restaurantItemCategory.setText(restaurant.getCategory());
+//            binding.restaurantItemPrice.setText(RestaurantUtil.getPriceString(restaurant));
 
             // Click listener
             itemView.setOnClickListener(new View.OnClickListener() {

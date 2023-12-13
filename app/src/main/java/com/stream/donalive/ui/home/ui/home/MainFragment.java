@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,7 @@ private FragmentMainBinding mBinding;
             @Override
             protected void onError(FirebaseFirestoreException e) {
                 // Show a snackbar on errors
+                Log.e("error", "Error: check logs for info."+e );
                 Snackbar.make(mBinding.getRoot(),
                         "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
             }

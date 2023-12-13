@@ -77,12 +77,10 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.i("checkmethod", "onDestroyView: ");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.i("checkmethod", "onDetach: ");
     }
 }

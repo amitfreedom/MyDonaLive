@@ -1,28 +1,33 @@
 package com.stream.donalive.ui.home.ui.home.models;
 
 public class LiveUser {
-    private String live;
     private String userId;
-    private String roomId;
-    private String userName;
-
+    private long uid;
+    private String username;
+    private String photo;
+    private String tag;
+    private boolean host;
+    private String liveID;
+    private String liveType;
+    private String liveStatus;
+    private long startTime;
+    private long endTime;
 
     public LiveUser() {
     }
 
-    public LiveUser(String live, String userId, String roomId, String userName) {
-        this.live = live;
+    public LiveUser(String userId, long uid, String username, String photo, String tag, boolean host, String liveID, String liveType, String liveStatus, long startTime, long endTime) {
         this.userId = userId;
-        this.roomId = roomId;
-        this.userName = userName;
-    }
-
-    public String getLive() {
-        return live;
-    }
-
-    public void setLive(String live) {
-        this.live = live;
+        this.uid = uid;
+        this.username = username;
+        this.photo = photo;
+        this.tag = tag;
+        this.host = host;
+        this.liveID = liveID;
+        this.liveType = liveType;
+        this.liveStatus = liveStatus;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public String getUserId() {
@@ -33,19 +38,83 @@ public class LiveUser {
         this.userId = userId;
     }
 
-    public String getRoomId() {
-        return roomId;
+    public long getUid() {
+        return uid;
     }
 
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
+    public void setUid(long uid) {
+        this.uid = uid;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public boolean isHost() {
+        return host;
+    }
+
+    public void setHost(boolean host) {
+        this.host = host;
+    }
+
+    public String getLiveID() {
+        return liveID;
+    }
+
+    public void setLiveID(String liveID) {
+        this.liveID = liveID;
+    }
+
+    public String getLiveType() {
+        return liveType;
+    }
+
+    public void setLiveType(String liveType) {
+        this.liveType = liveType;
+    }
+
+    public String getLiveStatus() {
+        return liveStatus;
+    }
+
+    public void setLiveStatus(String liveStatus) {
+        this.liveStatus = liveStatus;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
     }
 }

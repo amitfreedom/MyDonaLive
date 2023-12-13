@@ -3,9 +3,18 @@ package com.stream.donalive.streaming.activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.stream.donalive.databinding.ActivityLiveAudioRoomBinding;
+import com.stream.donalive.global.AppConstants;
+import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.donalive.streaming.internal.business.RoomRequestExtendedData;
 import com.stream.donalive.streaming.internal.business.RoomRequestType;
@@ -16,6 +25,9 @@ import com.stream.donalive.streaming.internal.sdk.express.IExpressEngineEventHan
 import com.stream.donalive.streaming.internal.sdk.zim.IZIMEventHandler;
 import com.stream.donalive.streaming.internal.utils.ToastUtil;
 import com.stream.donalive.streaming.internal.utils.Utils;
+import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
+import com.stream.donalive.ui.utill.Constant;
+
 import im.zego.zegoexpress.constants.ZegoScenario;
 import im.zego.zegoexpress.constants.ZegoStreamResourceMode;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
@@ -24,12 +36,23 @@ import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.callback.ZIMRoomAttributesOperatedCallback;
 import im.zego.zim.entity.ZIMError;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONObject;
 
 public class LiveAudioRoomActivity extends AppCompatActivity {
 
     private ActivityLiveAudioRoomBinding binding;
+    private String roomID;
+    private String userId;
+    private String username;
+    private long uid;
     private LiveAudioRoomLayoutConfig seatLayoutConfig;
+    private FirebaseFirestore firestore;
+    private FirebaseAuth mAuth;
+    private CollectionReference usersRef;
+    private UserDetailsModel userDetails;
 
     String TAG = "LiveAudioRoomActivity";
 
@@ -39,8 +62,17 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         binding = ActivityLiveAudioRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        boolean isHost = getIntent().getBooleanExtra("host", false);
-        String roomID = getIntent().getStringExtra("liveID");
+        mAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+        usersRef = firestore.collection(Constant.LOGIN_DETAILS);
+
+
+        boolean isHost = getIntent().getBooleanExtra("host", true);
+        userId = getIntent().getStringExtra("userId");
+        roomID = getIntent().getStringExtra("liveID");
+        username = getIntent().getStringExtra("username");
+        uid = getIntent().getLongExtra("uid",0);
+//        String roomID = getIntent().getStringExtra("liveID");
         if (TextUtils.isEmpty(roomID)) {
             finish();
             return;
@@ -80,7 +112,11 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     Log.e(TAG, "onRoomLoginResult: error: " + errorCode);
                     finish();
                 } else {
+
                     if (isHost) {
+                        // save live data
+                        saveLiveData(userId,uid,username,true,roomID,"1");
+
                         ZEGOLiveAudioRoomManager.getInstance().setHostAndLockSeat();
                         ZEGOLiveAudioRoomManager.getInstance().takeSeat(0, new ZIMRoomAttributesOperatedCallback() {
                             @Override
@@ -96,6 +132,36 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         });
     }
 
+    private void saveLiveData(String userId,long uid,String userName,boolean isHost,String liveID,String liveType) {
+
+        long timestamp = System.currentTimeMillis();
+        Map<String, Object> liveDetails = new HashMap<>();
+        liveDetails.put("userId", userId);
+        liveDetails.put("uid", uid);
+        liveDetails.put("username", userName);
+        liveDetails.put("photo", "https://restream.io/blog/content/images/size/w2000/2023/06/how-to-stream-live-video-on-your-website.JPG");
+        liveDetails.put("tag", "");
+        liveDetails.put("host", isHost);
+        liveDetails.put("liveID", liveID);
+        liveDetails.put("liveType", liveType);
+        liveDetails.put("liveStatus", "online");
+        liveDetails.put("startTime", timestamp);
+        liveDetails.put("endTime", timestamp);
+
+        // Add the login details to Firestore
+        firestore.collection(Constant.LIVE_DETAILS)
+                .add(liveDetails)
+                .addOnSuccessListener(documentReference -> {
+                    Log.i("documentReference", "documentReference: created ");
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error adding details"+e,Toast.LENGTH_SHORT).show();
+                    // Handle failure
+                    Log.e("MainActivity", "Error adding  details", e);
+                });
+
+
+    }
     private void initListenerAfterLoginRoom() {
         ZEGOSDKManager.getInstance().zimService.addEventHandler(new IZIMEventHandler() {
             @Override
@@ -131,6 +197,41 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         super.onPause();
         if (isFinishing()) {
             ZEGOLiveAudioRoomManager.getInstance().leave();
+            updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         }
+    }
+
+    private void updateLiveStatus(String userId) {
+        // Reference to the Firestore collection
+        CollectionReference liveDetailsRef = firestore.collection(Constant.LIVE_DETAILS);
+
+        // Create a query to find the document with the given userId
+        Query query = liveDetailsRef.whereEqualTo("userId", userId);
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    // Get the document ID for the matched document
+                    String documentId = document.getId();
+
+                    long timestamp = System.currentTimeMillis();
+                    Map<String, Object> updateDetails = new HashMap<>();
+                    updateDetails.put("liveStatus", "offline");
+                    updateDetails.put("endTime", timestamp);
+
+                    // Update the liveType field from 0 to 1
+                    liveDetailsRef.document(documentId)
+                            .update(updateDetails)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.i("UpdateLiveType", "liveType updated successfully for user with ID: " + userId);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("UpdateLiveType", "Error updating liveType for user with ID: " + userId, e);
+                            });
+                }
+            } else {
+                Log.e("UpdateLiveType", "Error getting documents: ", task.getException());
+            }
+        });
     }
 }
