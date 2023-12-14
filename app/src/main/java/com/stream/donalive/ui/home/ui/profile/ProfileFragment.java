@@ -28,6 +28,8 @@ import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.ui.auth.activity.LoginActivity;
 import com.stream.donalive.ui.home.HomeActivity;
+import com.stream.donalive.ui.home.ui.profile.activity.EditProfileActivity;
+import com.stream.donalive.ui.home.ui.profile.activity.UpdateUserDetailsActivity;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.startup.activity.OnboardingActivity;
 import com.stream.donalive.ui.utill.Constant;
@@ -74,6 +76,13 @@ public class ProfileFragment extends Fragment {
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(mainIntent);
                 getActivity().finish();
+            }
+        });
+        binding.btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getActivity(), UpdateUserDetailsActivity.class);
+                startActivity(mainIntent);
             }
         });
     }

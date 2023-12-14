@@ -13,6 +13,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 import com.stream.donalive.databinding.ItemLoginUserBinding;
+import com.stream.donalive.global.AppConstants;
+import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.ui.home.ui.home.adapter.FirestoreAdapter;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.utill.Constant;
@@ -64,18 +66,20 @@ public class SearchUserAdapter extends FirestoreAdapter<SearchUserAdapter.ViewHo
                          final SearchUserAdapter.OnUserSelectedListener listener) {
 
             UserDetailsModel userDetailsModel = snapshot.toObject(UserDetailsModel.class);
-//
-            if (Objects.equals(userDetailsModel.getImage(), "")){
-                Glide.with(binding.ivProfileImage.getContext())
-                        .load(Constant.USER_PLACEHOLDER_PATH)
-                        .into(binding.ivProfileImage);
-            }else {
-                Glide.with(binding.ivProfileImage.getContext())
-                        .load(userDetailsModel.getImage())
-                        .into(binding.ivProfileImage);
-            }
-            binding.txtUserName.setText(userDetailsModel.getUsername());
-            binding.txtUserUid.setText("ID : "+userDetailsModel.getUid());
+
+
+               if (Objects.equals(userDetailsModel.getImage(), "")){
+                   Glide.with(binding.ivProfileImage.getContext())
+                           .load(Constant.USER_PLACEHOLDER_PATH)
+                           .into(binding.ivProfileImage);
+               }else {
+                   Glide.with(binding.ivProfileImage.getContext())
+                           .load(userDetailsModel.getImage())
+                           .into(binding.ivProfileImage);
+               }
+               binding.txtUserName.setText(userDetailsModel.getUsername());
+               binding.txtUserUid.setText("ID : "+userDetailsModel.getUid());
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

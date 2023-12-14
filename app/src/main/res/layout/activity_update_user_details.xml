@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.home.ui.profile.activity.UpdateUserDetailsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/top_color">
+
+            <ImageButton
+                android:id="@+id/backPress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/iv_back"
+                android:padding="5dp"
+                android:background="@android:color/transparent"
+                android:layout_centerVertical="true"
+                app:tint="@color/white" />
+
+
+            <TextView
+                style="@style/NormalTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/update_profile"
+                android:textSize="@dimen/_14sp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray_666"
+            android:orientation="vertical">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_marginTop="30dp"
+                android:id="@+id/profileImage"
+                android:layout_width="@dimen/_100dp"
+                android:layout_height="@dimen/_100dp"
+                android:src="@drawable/beauty_filter_gray_monet"
+                app:civ_border_color="@color/top_color"
+                app:civ_border_width="1dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/buttonCamera"
+                android:layout_width="@dimen/_100dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_15dp"
+                app:cardBackgroundColor="@color/app_color3"
+                app:cardCornerRadius="5dp"
+                >
+
+                <TextView
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="@string/change" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nick Name" />
+
+            <EditText
+                android:id="@+id/txtUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edit_text_bg1"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:hint=""
+                android:minHeight="45dp"
+                android:textSize="@dimen/_14sp"
+                android:padding="10dp"
+                android:drawableRight="@drawable/baseline_arrow_circle_right_24"
+                android:drawableTint="@color/gray"
+                android:textColor="@color/black"
+                android:textColorHint="@color/light_gray"
+                android:autofillHints="" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

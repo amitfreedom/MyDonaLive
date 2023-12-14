@@ -43,4 +43,8 @@
     <color name="gray_555">#555555</color>
     <color name="gray_444">#444444</color>
     <color name="gray_333">#333333</color>
+
+    <color name="pink_top">#fb4f90</color>
+    <color name="light_brown">#ff8554</color>
+    <color name="center_color1">#ff525c</color>
 </resources>

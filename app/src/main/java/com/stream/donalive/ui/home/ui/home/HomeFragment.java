@@ -34,7 +34,7 @@ public class HomeFragment extends Fragment {
 
             binding.tabLayout.setupWithViewPager(binding.viewPager);
 
-            binding.rightIcon.setOnClickListener(new View.OnClickListener() {
+            binding.searchView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent;

@@ -3,6 +3,7 @@ package com.stream.donalive.ui.search.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,6 +19,9 @@ import com.google.firebase.firestore.Query;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityHomeBinding;
 import com.stream.donalive.databinding.ActivitySearchUserBinding;
+import com.stream.donalive.global.AppConstants;
+import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.ui.follow.activity.UserInfoActivity;
 import com.stream.donalive.ui.home.ui.home.adapter.ActiveUserAdapter;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.search.adapter.SearchUserAdapter;
@@ -51,6 +55,7 @@ public class SearchUserActivity extends AppCompatActivity implements SearchUserA
 
         mQuery = firestore.collection("login_details")
                 .orderBy("uid")
+                .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
                 .startAt(searchLetter)
                 .endAt(searchLetter + "\uf8ff")
                 .limit(LIMIT);
@@ -155,6 +160,12 @@ public class SearchUserActivity extends AppCompatActivity implements SearchUserA
 
     @Override
     public void onUserSelected(DocumentSnapshot user) {
-
+        String userId = user.getString("userId");
+        if (userId.isEmpty()){
+            return;
+        }
+        Intent intent = new Intent(SearchUserActivity.this, UserInfoActivity.class);
+        intent.putExtra("userId", userId);
+        startActivity(intent);
     }
 }
