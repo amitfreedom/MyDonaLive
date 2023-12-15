@@ -311,5 +311,6 @@
     <string name="download_failure">Download failure</string>
     <string name="update_profile">Update Profile</string>
     <string name="change">Change</string>
+    <string name="user_info">User Info</string>
 
 </resources>

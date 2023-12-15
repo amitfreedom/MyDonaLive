@@ -47,6 +47,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private String roomID;
     private String userId;
     private String username;
+    private String country;
     private long uid;
     private LiveAudioRoomLayoutConfig seatLayoutConfig;
     private FirebaseFirestore firestore;
@@ -71,6 +72,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         userId = getIntent().getStringExtra("userId");
         roomID = getIntent().getStringExtra("liveID");
         username = getIntent().getStringExtra("username");
+        country = getIntent().getStringExtra("country_name");
         uid = getIntent().getLongExtra("uid",0);
 //        String roomID = getIntent().getStringExtra("liveID");
         if (TextUtils.isEmpty(roomID)) {
@@ -115,7 +117,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
                     if (isHost) {
                         // save live data
-                        saveLiveData(userId,uid,username,true,roomID,"1");
+                        saveLiveData(userId,uid,username,true,roomID,"1",country);
 
                         ZEGOLiveAudioRoomManager.getInstance().setHostAndLockSeat();
                         ZEGOLiveAudioRoomManager.getInstance().takeSeat(0, new ZIMRoomAttributesOperatedCallback() {
@@ -132,7 +134,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         });
     }
 
-    private void saveLiveData(String userId,long uid,String userName,boolean isHost,String liveID,String liveType) {
+    private void saveLiveData(String userId, long uid, String userName, boolean isHost, String liveID, String liveType, String country) {
 
         long timestamp = System.currentTimeMillis();
         Map<String, Object> liveDetails = new HashMap<>();
@@ -147,6 +149,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         liveDetails.put("liveStatus", "online");
         liveDetails.put("startTime", timestamp);
         liveDetails.put("endTime", timestamp);
+        liveDetails.put("country", country);
 
         // Add the login details to Firestore
         firestore.collection(Constant.LIVE_DETAILS)
@@ -197,7 +200,11 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         super.onPause();
         if (isFinishing()) {
             ZEGOLiveAudioRoomManager.getInstance().leave();
-            updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+            boolean isHost = getIntent().getBooleanExtra("host", true);
+            if (isHost){
+                updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
+            }
         }
     }
 

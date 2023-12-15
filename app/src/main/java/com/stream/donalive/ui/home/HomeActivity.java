@@ -81,9 +81,6 @@ public class HomeActivity extends AppCompatActivity {
                         userDetails = document.toObject(UserDetailsModel.class);
                         updateUI(userDetails);
                     }
-
-                    // Now userDetailsList contains UserDetails objects from Firestore
-                    // Use the list as needed (e.g., display in UI, perform operations)
                 });
 
 //
@@ -92,7 +89,7 @@ public class HomeActivity extends AppCompatActivity {
     private void updateUI(UserDetailsModel userDetails) {
         signInZEGOSDK(userDetails.getUserId(), String.valueOf(userDetails.getUid()), (errorCode, message) -> {
             if (errorCode == 0) {
-                Toast.makeText(this, ""+message, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, ""+message, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -112,8 +109,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
-
-        Toast.makeText(this, "call onStart", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -135,7 +130,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        saveData();
+//        saveData();
         super.onDestroy();
         Log.i("checkmethod", "onDestroy:======== ");
 

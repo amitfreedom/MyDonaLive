@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("userId", userDetails.getUserId());
                         intent.putExtra("username", userDetails.getUsername());
                         intent.putExtra("uid", userDetails.getUid());
+                        intent.putExtra("country_name", userDetails.getCountry_name());
                         startActivity(intent);
                     }
                 }
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("userId", userDetails.getUserId());
                         intent.putExtra("username", userDetails.getUsername());
                         intent.putExtra("uid", userDetails.getUid());
+                        intent.putExtra("country_name", userDetails.getCountry_name());
                         startActivity(intent);
                     }
                 }

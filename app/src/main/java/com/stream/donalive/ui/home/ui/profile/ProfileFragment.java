@@ -128,8 +128,8 @@ public class ProfileFragment extends Fragment {
 
     private void updateUI(UserDetailsModel userDetails) {
         binding.txtUsername.setText(userDetails.getUsername());
-        binding.txtUid.setText(String.valueOf(userDetails.getUid()));
-        binding.txtCountry.setText(userDetails.getCountryName());
+        binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
+        binding.txtCountry.setText(userDetails.getCountry_name());
         // Load image
         if (Objects.equals(userDetails.getImage(), "")){
             Glide.with(getActivity())

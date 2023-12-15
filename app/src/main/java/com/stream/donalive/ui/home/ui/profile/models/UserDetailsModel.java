@@ -7,7 +7,7 @@ public class UserDetailsModel {
     private String email="";
     private String phone="";
     private String countryCode="";
-    private String countryName="";
+    private String country_name="";
     private String loginType="";
     private String image="";
     private String regId="";
@@ -27,14 +27,14 @@ public class UserDetailsModel {
     public UserDetailsModel() {
     }
 
-    public UserDetailsModel(String userId, long uid, String username, String email, String phone, String countryCode, String countryName, String loginType, String image, String regId, String deviceId, String beans, String coins, String level, String diamond, String latitude, String longitude, String friends, String followers, String following, long loginTime) {
+    public UserDetailsModel(String userId, long uid, String username, String email, String phone, String countryCode, String country_name, String loginType, String image, String regId, String deviceId, String beans, String coins, String level, String diamond, String latitude, String longitude, String friends, String followers, String following, long loginTime) {
         this.userId = userId;
         this.uid = uid;
         this.username = username;
         this.email = email;
         this.phone = phone;
         this.countryCode = countryCode;
-        this.countryName = countryName;
+        this.country_name = country_name;
         this.loginType = loginType;
         this.image = image;
         this.regId = regId;
@@ -99,12 +99,12 @@ public class UserDetailsModel {
         this.countryCode = countryCode;
     }
 
-    public String getCountryName() {
-        return countryName;
+    public String getCountry_name() {
+        return country_name;
     }
 
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
+    public void setCountry_name(String country_name) {
+        this.country_name = country_name;
     }
 
     public String getLoginType() {

@@ -161,11 +161,19 @@ public class SearchUserActivity extends AppCompatActivity implements SearchUserA
     @Override
     public void onUserSelected(DocumentSnapshot user) {
         String userId = user.getString("userId");
+        String username = user.getString("username");
+        String image = user.getString("image");
+        String level = user.getString("level");
+        String uid = String.valueOf(user.getLong("uid"));
         if (userId.isEmpty()){
             return;
         }
         Intent intent = new Intent(SearchUserActivity.this, UserInfoActivity.class);
         intent.putExtra("userId", userId);
+        intent.putExtra("username", username);
+        intent.putExtra("image", image);
+        intent.putExtra("uid", uid);
+        intent.putExtra("level", level);
         startActivity(intent);
     }
 }

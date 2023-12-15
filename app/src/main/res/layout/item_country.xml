@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_5dp"
+    android:id="@+id/cardViewRoot"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:padding="@dimen/_10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            app:riv_corner_radius="@dimen/_5dp"
+            android:id="@+id/image_flag"
+            android:layout_width="@dimen/_50dp"
+            android:layout_height="@dimen/_35dp"
+            android:src="@drawable/ic_launcher_background"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:layout_marginLeft="@dimen/_10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/image_flag"
+            android:id="@+id/txt_countryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_14sp"
+            android:text="Name"/>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

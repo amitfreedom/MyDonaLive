@@ -12,11 +12,12 @@ public class LiveUser {
     private String liveStatus;
     private long startTime;
     private long endTime;
+    private String country_name;
 
     public LiveUser() {
     }
 
-    public LiveUser(String userId, long uid, String username, String photo, String tag, boolean host, String liveID, String liveType, String liveStatus, long startTime, long endTime) {
+    public LiveUser(String userId, long uid, String username, String photo, String tag, boolean host, String liveID, String liveType, String liveStatus, long startTime, long endTime, String country_name) {
         this.userId = userId;
         this.uid = uid;
         this.username = username;
@@ -28,6 +29,7 @@ public class LiveUser {
         this.liveStatus = liveStatus;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.country_name = country_name;
     }
 
     public String getUserId() {
@@ -116,5 +118,13 @@ public class LiveUser {
 
     public void setEndTime(long endTime) {
         this.endTime = endTime;
+    }
+
+    public String getCountry_name() {
+        return country_name;
+    }
+
+    public void setCountry_name(String country_name) {
+        this.country_name = country_name;
     }
 }

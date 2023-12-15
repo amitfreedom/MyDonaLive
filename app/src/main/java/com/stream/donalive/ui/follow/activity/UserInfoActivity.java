@@ -1,26 +1,49 @@
 package com.stream.donalive.ui.follow.activity;
 
+import static androidx.fragment.app.FragmentManager.TAG;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityUserInfoBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.ui.follow.TestUser;
+import com.stream.donalive.ui.follow.methods.FollowUnfollowManager;
+import com.stream.donalive.ui.utill.Constant;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class UserInfoActivity extends AppCompatActivity {
+    private static final String TAG = "UserInfoActivity";
 
     private ActivityUserInfoBinding binding;
     private String userId;
+    private String level;
+    private String username;
+    private String image;
+    private String uid;
     private FirebaseFirestore mFirestore;
 
     @Override
@@ -32,78 +55,52 @@ public class UserInfoActivity extends AppCompatActivity {
         mFirestore = FirebaseFirestore.getInstance();
 
         userId = getIntent().getStringExtra("userId");
-        Toast.makeText(this, ""+userId, Toast.LENGTH_SHORT).show();
+        username = getIntent().getStringExtra("username");
+        image = getIntent().getStringExtra("image");
+        level = getIntent().getStringExtra("level");
+        uid = getIntent().getStringExtra("uid");
+
+        updateUI();
+
+        binding.backPress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         binding.btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                followUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
+                Toast.makeText(UserInfoActivity.this, "Coming soon...!", Toast.LENGTH_SHORT).show();
+//                followUser1(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
+//                FollowUnfollowManager.followUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
+
+
+            }
+        });
+        binding.btnChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(UserInfoActivity.this, "Coming soon...!", Toast.LENGTH_SHORT).show();
+//                followUser1(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
+//                FollowUnfollowManager.followUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
+
 
             }
         });
     }
 
-    public void checkIfFriends(String userId1, String userId2) {
-        mFirestore.collection("relationships")
-                .whereEqualTo("followerId", userId1)
-                .whereEqualTo("followedId", userId2)
-                .whereEqualTo("status", "following")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    // If the query result is not empty, users are friends
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        // Users are friends
-                        // You can update UI or perform additional tasks
-                    } else {
-                        // Users are not friends
-                        // You can update UI or perform additional tasks
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    // Handle the error
-                });
+    private void updateUI() {
+        binding.txtUsername.setText(username);
+        binding.txtUid.setText("ID : "+uid);
+        binding.txtLevel.setText("Lv"+level);
+        if (Objects.equals(image, "")){
+            Glide.with(this).load(Constant.USER_PLACEHOLDER_PATH).into(binding.ivProfileImage);
+        }else {
+            Glide.with(this).load(image).into(binding.ivProfileImage);
+        }
     }
-
-
-    public void unfollowUser(String followerId, String followedId) {
-        mFirestore.collection("relationships")
-                .whereEqualTo("followerId", followerId)
-                .whereEqualTo("followedId", followedId)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        documentSnapshot.getReference().delete()
-                                .addOnSuccessListener(aVoid -> {
-                                    // Relationship deleted successfully
-                                    // You can update UI or perform additional tasks
-                                })
-                                .addOnFailureListener(e -> {
-                                    // Handle the error
-                                });
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    // Handle the error
-                });
-    }
-
-    public void followUser(String followerId, String followedId) {
-        Map<String, Object> relationshipData = new HashMap<>();
-        relationshipData.put("followerId", followerId);
-        relationshipData.put("followedId", followedId);
-        relationshipData.put("status", "following");
-
-        mFirestore.collection("relationships")
-                .add(relationshipData)
-                .addOnSuccessListener(documentReference -> {
-                    // Relationship added successfully
-                    // You can update UI or perform additional tasks
-                })
-                .addOnFailureListener(e -> {
-                    // Handle the error
-                });
-    }
-
 
     @Override
     protected void onDestroy() {

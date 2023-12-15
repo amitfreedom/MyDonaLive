@@ -71,6 +71,7 @@ public class LiveStreamingActivity extends AppCompatActivity {
     private String liveID;
     private String userId;
     private String username;
+    private String country;
     private long uid;
     //    private AlertDialog inviteCoHostDialog;
     private AlertDialog zimReconnectDialog;
@@ -97,6 +98,7 @@ public class LiveStreamingActivity extends AppCompatActivity {
         userId = getIntent().getStringExtra("userId");
         liveID = getIntent().getStringExtra("liveID");
         username = getIntent().getStringExtra("username");
+        country = getIntent().getStringExtra("country_name");
         uid = getIntent().getLongExtra("uid",0);
 
         binding.liveAudioroomTopbar.setRoomID(liveID);
@@ -172,7 +174,7 @@ public class LiveStreamingActivity extends AppCompatActivity {
         binding.liveAudioroomTopbar.setRoomID(userDetails.getUserId());
     }
 
-    private void saveLiveData(String userId,long uid,String userName,boolean isHost,String liveID,String liveType) {
+    private void saveLiveData(String userId,long uid,String userName,boolean isHost,String liveID,String liveType,String country) {
 
         long timestamp = System.currentTimeMillis();
         Map<String, Object> liveDetails = new HashMap<>();
@@ -187,6 +189,7 @@ public class LiveStreamingActivity extends AppCompatActivity {
         liveDetails.put("liveStatus", "online");
         liveDetails.put("startTime", timestamp);
         liveDetails.put("endTime", timestamp);
+        liveDetails.put("country", country);
 
         // Add the login details to Firestore
         firestore.collection(Constant.LIVE_DETAILS)
@@ -213,8 +216,11 @@ public class LiveStreamingActivity extends AppCompatActivity {
                 } else {
                     onJoinRoomSuccess();
 
+                    boolean isHost = getIntent().getBooleanExtra("host", true);
                     // save live data
-                    saveLiveData(userId,uid,username,true,userId,"0");
+                    if (isHost){
+                        saveLiveData(userId,uid,username,true,userId,"0",country);
+                    }
 
                 }
             }
@@ -250,7 +256,10 @@ public class LiveStreamingActivity extends AppCompatActivity {
         super.onPause();
         if (isFinishing()) {
             ZEGOLiveStreamingManager.getInstance().leave();
-            updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+            boolean isHost = getIntent().getBooleanExtra("host", true);
+            if (isHost){
+                updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+            }
         }
     }
 

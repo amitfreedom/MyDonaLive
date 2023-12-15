@@ -22,4 +22,8 @@
     <dimen name="margin_2">16dp</dimen>
     <dimen name="margin_1">8dp</dimen>
     <dimen name="standard_field_width">160dp</dimen>
+    <dimen name="_18sp">18sp</dimen>
+    <dimen name="_5dp">5dp</dimen>
+    <dimen name="_50dp">50dp</dimen>
+    <dimen name="_35dp">35dp</dimen>
 </resources>

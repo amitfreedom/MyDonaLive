@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -43,8 +44,8 @@ import java.util.Objects;
 
 
 public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.OnActiveUserSelectedListener {
-    private static final int LIMIT = 50;
     private FragmentActiveUserBinding binding;
+    private static final int LIMIT = 50;
     private FirebaseFirestore mFirestore;
     private Query mQuery;
     private ActiveUserAdapter mAdapter;
@@ -63,6 +64,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentActiveUserBinding.inflate(inflater, container, false);
+
         return binding.getRoot();
     }
 
@@ -206,6 +208,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
         intent.putExtra("userId", userId);
         intent.putExtra("username", username);
         intent.putExtra("uid", uid);
+        intent.putExtra("country_name", "");
         startActivity(intent);
 
 

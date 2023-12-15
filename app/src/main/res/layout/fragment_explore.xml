@@ -1,16 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".ui.home.ui.explore.ExploreFragment">
 
-    <Button
-        android:id="@+id/watch_live_streaming"
-        android:layout_width="275dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:text="Watch LiveStreaming" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/top_color">
 
-</FrameLayout>
+        <ImageButton
+            android:id="@+id/search_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/search"
+            android:padding="@dimen/_10dp"
+            android:background="@android:color/transparent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            app:tint="@color/white" />
+
+
+        <TextView
+            style="@style/NormalTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/_10dp"
+            android:text="@string/explore"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:padding="@dimen/_10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+           <LinearLayout
+               android:layout_centerVertical="true"
+               android:gravity="center_vertical"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal">
+
+               <com.makeramen.roundedimageview.RoundedImageView
+                   app:riv_corner_radius="2dp"
+                   android:id="@+id/iv_flag"
+                   android:layout_width="@dimen/_40dp"
+                   android:layout_height="30dp"
+                   android:src="@drawable/icons8_globe"
+                   android:scaleType="fitCenter"/>
+
+               <TextView
+                   android:layout_marginLeft="5dp"
+                   android:id="@+id/txt_countryTitle"
+                   android:layout_centerVertical="true"
+                   android:layout_alignParentLeft="true"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Global"
+                   style="@style/HeaderTextStyle"
+                   android:textColor="@color/black"
+                   android:textSize="20sp"
+                   android:drawablePadding="5dp"
+                   android:gravity="center_vertical"/>
+
+           </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/ic_filter"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/filter_list"
+                android:background="@null"
+                android:layout_alignParentRight="true"
+                android:padding="8dp"/>
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerRestaurants"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                android:nestedScrollingEnabled="false"
+                app:spanCount="2"
+                tools:listitem="@layout/item_active_user" />
+            <LinearLayout
+                android:layout_marginTop="@dimen/_20dp"
+                android:layout_gravity="center"
+                android:id="@+id/viewEmpty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:ignore="UseCompoundDrawables"
+                tools:visibility="gone">
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No online user yet"
+                    android:textColor="@color/gray" />
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="@string/update_profile"
-                android:textSize="@dimen/_14sp" />
+                android:textSize="20sp" />
 
         </RelativeLayout>
 
