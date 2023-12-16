@@ -64,7 +64,7 @@ public class HomeActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         usersRef = db.collection(Constant.LOGIN_DETAILS);
 
-        initZEGOSDK();
+//        initZEGOSDK();
     }
 
     private void fetchUserDetails(String userId) {
@@ -87,7 +87,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void updateUI(UserDetailsModel userDetails) {
-        signInZEGOSDK(userDetails.getUserId(), String.valueOf(userDetails.getUid()), (errorCode, message) -> {
+        signInZEGOSDK(String.valueOf(userDetails.getUid()), userDetails.getUsername(), (errorCode, message) -> {
             if (errorCode == 0) {
 //                Toast.makeText(this, ""+message, Toast.LENGTH_SHORT).show();
             }

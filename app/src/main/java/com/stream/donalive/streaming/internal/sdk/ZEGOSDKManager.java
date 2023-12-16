@@ -172,7 +172,7 @@ public class ZEGOSDKManager {
                 if (errorInfo.code == ZIMErrorCode.SUCCESS) {
                     expressService.setRoomScenario(scenario);
 
-                    Log.i("checkmethod", "onRoomEntered: "+roomInfo.baseInfo.roomID);
+                    Log.i("checkmethod", "onRoomEntered: "+roomInfo.baseInfo.roomName);
                     expressService.loginRoom(roomID, new IZegoRoomLoginCallback() {
                         @Override
                         public void onRoomLoginResult(int errorCode, JSONObject extendedData) {

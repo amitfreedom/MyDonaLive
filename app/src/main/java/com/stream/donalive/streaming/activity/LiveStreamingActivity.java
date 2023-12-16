@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.permissionx.guolindev.PermissionX;
@@ -28,6 +29,7 @@ import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityLiveStreamingBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.streaming.activity.adapter.ViewUserAdapter;
 import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager;
 import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager.LiveStreamingListener;
 import com.stream.donalive.streaming.internal.business.RoomRequestExtendedData;
@@ -41,6 +43,7 @@ import com.stream.donalive.streaming.internal.sdk.express.ExpressService;
 import com.stream.donalive.streaming.internal.sdk.express.IExpressEngineEventHandler;
 import com.stream.donalive.streaming.internal.sdk.zim.IZIMEventHandler;
 import com.stream.donalive.streaming.internal.utils.ToastUtil;
+import com.stream.donalive.ui.home.ui.explore.adapter.ExploreAdapter;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.utill.Constant;
 
@@ -65,13 +68,15 @@ import java.util.Map;
 import java.util.Objects;
 import org.json.JSONObject;
 
-public class LiveStreamingActivity extends AppCompatActivity {
-
+public class LiveStreamingActivity extends AppCompatActivity implements ViewUserAdapter.OnActiveUserSelectedListener {
+    private static final int LIMIT = 50;
     private ActivityLiveStreamingBinding binding;
     private String liveID;
     private String userId;
     private String username;
     private String country;
+    private String image;
+    private String level;
     private long uid;
     //    private AlertDialog inviteCoHostDialog;
     private AlertDialog zimReconnectDialog;
@@ -82,6 +87,8 @@ public class LiveStreamingActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private CollectionReference usersRef;
     private UserDetailsModel userDetails;
+    private ViewUserAdapter mAdapter;
+    private Query mQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +106,11 @@ public class LiveStreamingActivity extends AppCompatActivity {
         liveID = getIntent().getStringExtra("liveID");
         username = getIntent().getStringExtra("username");
         country = getIntent().getStringExtra("country_name");
+        image = getIntent().getStringExtra("image");
+        level = getIntent().getStringExtra("level");
         uid = getIntent().getLongExtra("uid",0);
 
-        binding.liveAudioroomTopbar.setRoomID(liveID);
+        fetchUserDetails(userId);
 
         ZEGOLiveStreamingManager.getInstance().addRoomListeners();
 
@@ -111,7 +120,7 @@ public class LiveStreamingActivity extends AppCompatActivity {
             loginRoom();
         });
 
-//        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
 
         binding.previewBeauty.setOnClickListener(v -> {
             if (beautyDialog == null) {
@@ -138,13 +147,47 @@ public class LiveStreamingActivity extends AppCompatActivity {
 
             ZEGOSDKUser currentUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
             ZEGOLiveStreamingManager.getInstance().setHostUser(currentUser);
-        } else {
+
+//            Toast.makeText(this, "name :"+currentUser.userName, Toast.LENGTH_SHORT).show();
+        }
+        else {
             // join right now
             ZEGOSDKManager.getInstance().expressService.openCamera(false);
             ZEGOSDKManager.getInstance().expressService.openMicrophone(false);
             binding.previewStart.setVisibility(View.GONE);
             loginRoom();
         }
+
+        mQuery = firestore.collection(Constant.LIVE_DETAILS)
+//                .orderBy("uid", Query.Direction.DESCENDING)
+                .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
+                .limit(LIMIT);
+
+        setViewersAdapter();
+    }
+
+    private void setViewersAdapter() {
+        mAdapter = new ViewUserAdapter(mQuery, this) {
+            @Override
+            protected void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+                    binding.rvViewers.setVisibility(View.GONE);
+
+                } else {
+                    binding.rvViewers.setVisibility(View.VISIBLE);
+
+                }
+            }
+
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                Log.e("FirebaseFirestoreException", "onError: "+e );
+            }
+
+
+        };
+        binding.rvViewers.setAdapter(mAdapter);
     }
 
     private void fetchUserDetails(String userId) {
@@ -170,8 +213,10 @@ public class LiveStreamingActivity extends AppCompatActivity {
     }
 
     private void updateUI(UserDetailsModel userDetails) {
-        Log.i("test2334", "updateUI: "+userDetails.getUserId());
-        binding.liveAudioroomTopbar.setRoomID(userDetails.getUserId());
+        binding.txtUsername.setText(userDetails.getUsername());
+        binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
+        binding.txtLevel.setText("Lv"+userDetails.getLevel());
+        binding.txtCoin.setText(userDetails.getCoins());
     }
 
     private void saveLiveData(String userId,long uid,String userName,boolean isHost,String liveID,String liveType,String country) {
@@ -219,7 +264,7 @@ public class LiveStreamingActivity extends AppCompatActivity {
                     boolean isHost = getIntent().getBooleanExtra("host", true);
                     // save live data
                     if (isHost){
-                        saveLiveData(userId,uid,username,true,userId,"0",country);
+                        saveLiveData(userId,uid,username,true,liveID,"0",country);
                     }
 
                 }
@@ -252,6 +297,24 @@ public class LiveStreamingActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (mAdapter != null) {
+            mAdapter.startListening();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAdapter != null) {
+            mAdapter.stopListening();
+        }
+    }
+
+
+
+    @Override
     protected void onPause() {
         super.onPause();
         if (isFinishing()) {
@@ -261,6 +324,15 @@ public class LiveStreamingActivity extends AppCompatActivity {
                 updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mAdapter != null) {
+            mAdapter.stopListening();
+        }
+        binding=null;
     }
 
     private void updateLiveStatus(String userId) {
@@ -309,7 +381,6 @@ public class LiveStreamingActivity extends AppCompatActivity {
             public void onReceiveStreamAdd(List<ZEGOSDKUser> userList) {
                 List<ZEGOSDKUser> coHostUserList = new ArrayList<>();
                 for (ZEGOSDKUser zegosdkUser : userList) {
-                    Log.i("checkmethod", "onReceiveStreamAdd: "+zegosdkUser.userName);
                     if (ZEGOLiveStreamingManager.getInstance().isHost(zegosdkUser.userID)) {
                         binding.mainHostVideo.setUserID(zegosdkUser.userID);
                         binding.mainHostVideoIcon.setLetter(zegosdkUser.userName);
@@ -353,10 +424,12 @@ public class LiveStreamingActivity extends AppCompatActivity {
                                                JSONObject extendedData) {
                 super.onPublisherStateUpdate(streamID, state, errorCode, extendedData);
                 ZEGOSDKUser currentUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
+                Toast.makeText(LiveStreamingActivity.this, ""+currentUser.userName, Toast.LENGTH_SHORT).show();
                 if (state == ZegoPublisherState.PUBLISHING) {
                     if (ZEGOLiveStreamingManager.getInstance().isCoHost(currentUser.userID)) {
                         binding.liveCohostView.addUser(currentUser);
                     } else if (ZEGOLiveStreamingManager.getInstance().isCurrentUserHost()) {
+
                         binding.mainHostVideo.setUserID(currentUser.userID);
                         binding.mainHostVideoIcon.setLetter(currentUser.userName);
                         binding.mainHostVideo.setStreamID(streamID);
@@ -905,5 +978,10 @@ public class LiveStreamingActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onActiveUserSelected(DocumentSnapshot user) {
+
     }
 }

@@ -67,15 +67,15 @@
                 app:cardCornerRadius="@dimen/_100dp">
 
                 <TextView
-                    android:paddingHorizontal="@dimen/_10dp"
-                    android:paddingVertical="2dp"
-                    android:background="@color/green"
                     android:id="@+id/txt_level"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
+                    android:layout_height="match_parent"
+                    android:background="@color/green"
+                    android:paddingHorizontal="@dimen/_10dp"
+                    android:paddingVertical="2dp"
                     android:text="lv1"
-                    android:textSize="@dimen/_12sp"/>
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12sp" />
 
             </com.google.android.material.card.MaterialCardView>
 

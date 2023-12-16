@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -59,6 +60,7 @@ public class LetterIconView extends FrameLayout {
     }
 
     public void setLetter(String letter) {
+        Log.i("checklatter", "setLetter: "+letter);
         if (!TextUtils.isEmpty(letter)) {
             textView.setText(letter.substring(0, 1));
             circleBackground.setBackgroundColor(circleBackgroundColor);

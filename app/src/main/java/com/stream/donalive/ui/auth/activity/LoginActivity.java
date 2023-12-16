@@ -362,7 +362,7 @@ public class LoginActivity extends AppCompatActivity {
         Map<String, Object> loginDetails = new HashMap<>();
         loginDetails.put("userId", user.getUid());
         loginDetails.put("uid", nextUserId);
-        loginDetails.put("username", user.getDisplayName());
+        loginDetails.put("username", user.getDisplayName()!=null?user.getDisplayName():String.valueOf(nextUserId));
         loginDetails.put("email", user.getEmail());
         loginDetails.put("phone", "");
         loginDetails.put("country_code", "");

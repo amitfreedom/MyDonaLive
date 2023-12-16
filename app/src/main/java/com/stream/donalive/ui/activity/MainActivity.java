@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -79,11 +80,13 @@ public class MainActivity extends AppCompatActivity {
                     if (allGranted) {
                         Intent intent = new Intent(MainActivity.this, LiveStreamingActivity.class);
                         intent.putExtra("host", true);
-                        intent.putExtra("liveID", userDetails.getUserId());
+                        intent.putExtra("liveID", getSaltString(userDetails.getUserId()));
                         intent.putExtra("userId", userDetails.getUserId());
                         intent.putExtra("username", userDetails.getUsername());
                         intent.putExtra("uid", userDetails.getUid());
                         intent.putExtra("country_name", userDetails.getCountry_name());
+                        intent.putExtra("image", userDetails.getImage());
+                        intent.putExtra("level", userDetails.getLevel());
                         startActivity(intent);
                     }
                 }
@@ -116,11 +119,13 @@ public class MainActivity extends AppCompatActivity {
                     if (allGranted) {
                         Intent intent = new Intent(MainActivity.this, LiveAudioRoomActivity.class);
                         intent.putExtra("host", true);
-                        intent.putExtra("liveID", userDetails.getUserId());
+                        intent.putExtra("liveID", getSaltString(userDetails.getUserId()));
                         intent.putExtra("userId", userDetails.getUserId());
                         intent.putExtra("username", userDetails.getUsername());
                         intent.putExtra("uid", userDetails.getUid());
                         intent.putExtra("country_name", userDetails.getCountry_name());
+                        intent.putExtra("image", userDetails.getImage());
+                        intent.putExtra("level", userDetails.getLevel());
                         startActivity(intent);
                     }
                 }
@@ -218,6 +223,21 @@ public class MainActivity extends AppCompatActivity {
 
 //        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
+    }
+
+
+    protected String getSaltString(String SALTCHARS) {
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 20) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+
+        Log.i("saltStr", "getSaltString: "+saltStr);
+        return saltStr;
 
     }
 

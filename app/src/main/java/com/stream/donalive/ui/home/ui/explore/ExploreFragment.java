@@ -78,7 +78,7 @@ public class ExploreFragment extends Fragment implements ExploreAdapter.OnActive
         if (Objects.equals(countryNme, "Global")){
             mQuery = mFirestore.collection(Constant.LIVE_DETAILS)
                     .orderBy("startTime", Query.Direction.DESCENDING)
-                    .whereNotEqualTo("country",countryNme)
+//                    .whereNotEqualTo("country","")
                     .limit(LIMIT);
 //
 //            mAdapter.setQuery(mQuery);

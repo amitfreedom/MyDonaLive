@@ -79,7 +79,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
 
         mQuery = mFirestore.collection(Constant.LIVE_DETAILS)
                 .orderBy("startTime", Query.Direction.DESCENDING)
-                .whereEqualTo("liveStatus","offline")
+                .whereEqualTo("liveStatus","online")
                 .limit(LIMIT);
 
         imageSliderAdapter = new ImageSliderAdapter(getActivity(), images);
