@@ -62,9 +62,15 @@ public class MainActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         usersRef = firestore.collection(Constant.LOGIN_DETAILS);
 
-        ZEGOSDKUser localUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
-        binding.liveUserinfoUserid.setText(localUser.userID);
-        binding.liveUserinfoUsername.setText(localUser.userName);
+        try {
+            ZEGOSDKUser localUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
+            if (localUser!=null){
+                binding.liveUserinfoUserid.setText(localUser.userID);
+                binding.liveUserinfoUsername.setText(localUser.userName);
+            }
+        }catch (Exception e){
+
+        }
 
         binding.startLiveStreaming.setOnClickListener(v -> {
 //            String liveID = binding.liveIdStreaming.getEditText().getText().toString();

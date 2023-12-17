@@ -42,7 +42,7 @@ public class ApplicationClass extends Application {
     private void initZEGOSDK() {
 
         ZEGOSDKManager.getInstance().initSDK(instance, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.appSign);
-        ZEGOSDKManager.getInstance().enableZEGOEffects(true);
+//        ZEGOSDKManager.getInstance().enableZEGOEffects(true);
     }
 
     public static ApplicationClass getInstance() {
@@ -70,9 +70,6 @@ public class ApplicationClass extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-
-        Log.i("1234560", "onTerminate() method called. Application is being terminated.");
-
     }
 
     @Override

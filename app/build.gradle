@@ -71,7 +71,7 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.bumptech.glide:glide:4.16.0'
 
-    implementation 'im.zego:zim:2.8.4'
+    implementation 'im.zego:zim:2.10.0'
     implementation 'im.zego:express-video:3.10.0'
     api 'com.guolindev.permissionx:permissionx:1.7.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
@@ -79,6 +79,9 @@ dependencies {
     api 'com.github.bumptech.glide:glide:4.14.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
     implementation "com.google.code.gson:gson:2.9.1"
+
+
+    implementation "com.airbnb.android:lottie:5.1.1"
 
 //    implementation 'com.github.manjhi:util_repo:0.1.2'
 //    implementation 'com.androidadvance:topsnackbar:1.1.1'

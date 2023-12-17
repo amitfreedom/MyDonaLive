@@ -7,11 +7,48 @@
     android:background="@drawable/gradient_bg"
     tools:context=".ui.startup.activity.OnboardingActivity">
     <androidx.appcompat.widget.AppCompatImageView
+        android:visibility="gone"
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/_100dp"
         app:srcCompat="@drawable/logo1" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/welcome"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome\nTo"
+        android:gravity="center"
+        android:fontFamily="@font/libre_baskerville_bold"
+        android:textFontWeight="700"
+        android:textColor="@color/white"
+        android:textSize="35sp"/>
+
+    <TextView
+        android:id="@+id/logo"
+        android:layout_below="@id/welcome"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PrettyLive"
+        android:fontFamily="@font/libre_baskerville_bold"
+        android:textFontWeight="700"
+        android:textColor="@color/white"
+        android:textSize="35sp"/>
+
+<!--    <com.airbnb.lottie.LottieAnimationView-->
+<!--        android:layout_below="@id/logo"-->
+<!--        android:id="@+id/animationView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:lottie_rawRes="@raw/entry_message1"-->
+<!--        app:lottie_autoPlay="true"-->
+<!--        app:lottie_loop="true"/>-->
 
 <!--    <RelativeLayout-->
 <!--        android:id="@+id/main_logo"-->
@@ -36,6 +73,7 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/btn_email"
             android:layout_width="match_parent"
             android:layout_height="45dp"
@@ -71,7 +109,7 @@
             android:layout_height="45dp"
             android:background="@drawable/circular_button_google"
             android:layout_marginHorizontal="@dimen/_40dp"
-            android:layout_marginVertical="@dimen/_15dp"
+            android:layout_marginVertical="@dimen/_10dp"
             >
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -99,7 +137,7 @@
             android:layout_below="@id/btn_google"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:background="@drawable/bachground_bg_phone"
+            android:background="@drawable/circular_button_email"
             android:layout_marginHorizontal="@dimen/_40dp"
             android:layout_marginVertical="@dimen/_15dp"
             >
@@ -125,6 +163,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/btn_facebook"
             android:layout_below="@id/btn_phone"
             android:layout_width="match_parent"

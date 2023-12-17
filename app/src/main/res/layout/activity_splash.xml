@@ -7,7 +7,37 @@
     android:background="@drawable/gradient_bg"
     tools:context=".ui.startup.activity.SplashActivity">
 
+    <TextView
+        android:id="@+id/marqueeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your marquee text goes here"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/_50dp"
+        android:id="@+id/marqueeTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This is a long text for marquee animation. "
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:padding="16dp"/>
+
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/main_logo"
         android:layout_width="180dp"
         android:layout_height="180dp"
@@ -27,9 +57,11 @@
         android:id="@+id/txt_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dona Live"
-        android:textSize="30sp"
-        android:textStyle="bold"
+        android:text="PrettyLive"
+        android:fontFamily="@font/libre_baskerville_bold"
+        android:textFontWeight="700"
+        android:textColor="@color/white"
+        android:textSize="35sp"
         android:layout_below="@id/main_logo"
         android:layout_centerInParent="true"/>
 

@@ -3,13 +3,17 @@
     android:shape="rectangle">
     <gradient
         android:angle="150"
-        android:startColor="@color/top_color"
-        android:centerColor="@color/center_color"
-        android:endColor="@color/bottom_color"/>
+        android:startColor="@color/pink_top"
+        android:endColor="@color/light_brown"/>
+
+<!--    <color name="pink_top">#fb4f90</color>-->
+<!--    <color name="light_brown">#ff8554</color>-->
+<!--    <color name="center_color1">#ff525c</color>-->
 
 <!--    <gradient-->
 <!--        android:angle="150"-->
-<!--        android:startColor="#e11d48"-->
-<!--        android:endColor="#0e7490"/>-->
+<!--        android:startColor="@color/top_color"-->
+<!--        android:centerColor="@color/center_color"-->
+<!--        android:endColor="@color/bottom_color"/>-->
 
 </shape>

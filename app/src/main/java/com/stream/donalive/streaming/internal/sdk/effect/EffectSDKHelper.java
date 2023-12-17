@@ -58,6 +58,7 @@ import java.util.Set;
 
 import im.zego.effects.ZegoEffects;
 
+
 public class EffectSDKHelper {
 
     private static String portraitSegmentationImagePath = "BackgroundImages/image1.jpg";

@@ -21,6 +21,8 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
@@ -56,6 +58,7 @@ import java.util.Map;
 
 public class OnboardingActivity extends AppCompatActivity {
     private ActivityOnboardingBinding binding;
+    Animation bottomAnimation,middleAnimation;
     private SignInClient signInClient;
     private FirebaseFirestore firestore;
     private FirebaseAuth mAuth;
@@ -78,6 +81,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+        bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_animantion);
         // Configure Google Sign In
         signInClient = Identity.getSignInClient(OnboardingActivity.this);
         progressDialog= new ProgressDialog(this);
@@ -92,6 +96,7 @@ public class OnboardingActivity extends AppCompatActivity {
             }
         });
 
+        binding.btnGoogle.setAnimation(bottomAnimation);
         binding.btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -332,7 +337,7 @@ public class OnboardingActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         Log.i("currentUser123", "onCreate: "+currentUser);
         if (currentUser == null) {
-            oneTapSignIn();
+//            oneTapSignIn();
         }
     }
 

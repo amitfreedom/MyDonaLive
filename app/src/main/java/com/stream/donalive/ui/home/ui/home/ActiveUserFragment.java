@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -57,13 +59,15 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
     private boolean isLoading = false;
     private int currentPage = 1; // Keeps track of the current page
     private int totalPages = 10; // Replace this with the total number of pages
-
+    Animation topAnimantion,bottomAnimation,middleAnimation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentActiveUserBinding.inflate(inflater, container, false);
+        bottomAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.top_animantion);
+        binding.recyclerRestaurants.setAnimation(bottomAnimation);
 
         return binding.getRoot();
     }
@@ -79,7 +83,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
 
         mQuery = mFirestore.collection(Constant.LIVE_DETAILS)
                 .orderBy("startTime", Query.Direction.DESCENDING)
-                .whereEqualTo("liveStatus","online")
+                .whereEqualTo("liveStatus","offline")
                 .limit(LIMIT);
 
         imageSliderAdapter = new ImageSliderAdapter(getActivity(), images);
