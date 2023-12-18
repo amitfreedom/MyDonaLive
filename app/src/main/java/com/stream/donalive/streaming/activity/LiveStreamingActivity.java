@@ -15,7 +15,9 @@ import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -66,6 +68,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.checkerframework.common.returnsreceiver.qual.This;
 import org.json.JSONObject;
 
 public class LiveStreamingActivity extends AppCompatActivity implements ViewUserAdapter.OnActiveUserSelectedListener {
@@ -117,7 +121,16 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         listenSDKEvent();
 
         binding.previewStart.setOnClickListener(v -> {
+//            binding.topView.setVisibility(View.VISIBLE);
             loginRoom();
+        });
+
+        binding.btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                exitDialog();
+            }
         });
 
 
@@ -154,16 +167,42 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
             // join right now
             ZEGOSDKManager.getInstance().expressService.openCamera(false);
             ZEGOSDKManager.getInstance().expressService.openMicrophone(false);
+//            binding.topView.setVisibility(View.VISIBLE);
             binding.previewStart.setVisibility(View.GONE);
             loginRoom();
         }
 
-        mQuery = firestore.collection(Constant.LIVE_DETAILS)
-//                .orderBy("uid", Query.Direction.DESCENDING)
-                .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
-                .limit(LIMIT);
+//        mQuery = firestore.collection(Constant.LIVE_DETAILS)
+////                .orderBy("uid", Query.Direction.DESCENDING)
+//                .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
+//                .limit(LIMIT);
+//
+//        setViewersAdapter();
+    }
 
-        setViewersAdapter();
+    private void exitDialog() {
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Exit")
+                .setMessage("Are you sure you want to leave ?")
+                .setPositiveButton("Leave", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ZEGOLiveStreamingManager.getInstance().leave();
+                        boolean isHost = getIntent().getBooleanExtra("host", true);
+                        if (isHost){
+                            updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+                        }
+                        onBackPressed();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
     }
 
     private void setViewersAdapter() {
@@ -213,20 +252,25 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
     }
 
     private void updateUI(UserDetailsModel userDetails) {
+        if(userDetails.getImage()!="") {
+            Glide.with(this).load(userDetails.getImage()).into(binding.ivUserImage);
+        }else {
+            Glide.with(this).load(Constant.USER_PLACEHOLDER_PATH).into(binding.ivUserImage);
+        }
         binding.txtUsername.setText(userDetails.getUsername());
         binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
         binding.txtLevel.setText("Lv"+userDetails.getLevel());
         binding.txtCoin.setText(userDetails.getCoins());
     }
 
-    private void saveLiveData(String userId,long uid,String userName,boolean isHost,String liveID,String liveType,String country) {
+    private void saveLiveData(String userId,long uid,String userName,boolean isHost,String liveID,String liveType,String country,String image) {
 
         long timestamp = System.currentTimeMillis();
         Map<String, Object> liveDetails = new HashMap<>();
         liveDetails.put("userId", userId);
         liveDetails.put("uid", uid);
         liveDetails.put("username", userName);
-        liveDetails.put("photo", "https://restream.io/blog/content/images/size/w2000/2023/06/how-to-stream-live-video-on-your-website.JPG");
+        liveDetails.put("photo", image!=""?image:Constant.USER_PLACEHOLDER_PATH);
         liveDetails.put("tag", "");
         liveDetails.put("host", isHost);
         liveDetails.put("liveID", liveID);
@@ -264,7 +308,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
                     boolean isHost = getIntent().getBooleanExtra("host", true);
                     // save live data
                     if (isHost){
-                        saveLiveData(userId,uid,username,true,liveID,"0",country);
+                        saveLiveData(userId,uid,username,true,liveID,"0",country,image);
                     }
 
                 }
@@ -277,6 +321,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
     }
 
     private void onJoinRoomSuccess() {
+        binding.topView.setVisibility(View.VISIBLE);
         binding.previewStart.setVisibility(View.GONE);
         binding.previewBeauty.setVisibility(View.GONE);
         binding.liveBottomMenuBar.setVisibility(View.VISIBLE);
@@ -300,7 +345,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
     public void onStart() {
         super.onStart();
         if (mAdapter != null) {
-            mAdapter.startListening();
+//            mAdapter.startListening();
         }
     }
 
@@ -308,7 +353,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
     public void onStop() {
         super.onStop();
         if (mAdapter != null) {
-            mAdapter.stopListening();
+//            mAdapter.stopListening();
         }
     }
 
@@ -325,6 +370,8 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
             }
         }
     }
+
+
 
     @Override
     protected void onDestroy() {
@@ -424,7 +471,6 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
                                                JSONObject extendedData) {
                 super.onPublisherStateUpdate(streamID, state, errorCode, extendedData);
                 ZEGOSDKUser currentUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
-                Toast.makeText(LiveStreamingActivity.this, ""+currentUser.userName, Toast.LENGTH_SHORT).show();
                 if (state == ZegoPublisherState.PUBLISHING) {
                     if (ZEGOLiveStreamingManager.getInstance().isCoHost(currentUser.userID)) {
                         binding.liveCohostView.addUser(currentUser);

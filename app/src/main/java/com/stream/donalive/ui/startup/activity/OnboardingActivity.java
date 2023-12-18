@@ -50,6 +50,8 @@ import com.stream.donalive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.donalive.streaming.internal.sdk.basic.ZEGOSDKCallBack;
 import com.stream.donalive.ui.auth.activity.LoginActivity;
 //import com.stream.donalive.ui.auth.activity.PhoneActivity;
+import com.stream.donalive.ui.auth.activity.OtpVerificationActivity;
+import com.stream.donalive.ui.auth.activity.PhoneActivity;
 import com.stream.donalive.ui.common.GenerateUserId;
 import com.stream.donalive.ui.home.HomeActivity;
 
@@ -107,7 +109,7 @@ public class OnboardingActivity extends AppCompatActivity {
         binding.btnPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(new Intent(OnboardingActivity.this, PhoneActivity.class));
+                startActivity(new Intent(OnboardingActivity.this, OtpVerificationActivity.class));
 
             }
         });

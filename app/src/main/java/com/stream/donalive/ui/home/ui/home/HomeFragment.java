@@ -15,6 +15,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.stream.donalive.databinding.FragmentHomeBinding;
 import com.stream.donalive.streaming.activity.LiveAudioRoomActivity;
 import com.stream.donalive.streaming.activity.LiveStreamingActivity;
+import com.stream.donalive.ui.activity.MainActivity;
 import com.stream.donalive.ui.home.ui.home.adapter.MyPagerAdapter;
 import com.stream.donalive.ui.search.activity.SearchUserActivity;
 
@@ -41,6 +42,15 @@ public class HomeFragment extends Fragment {
 
                     intent = new Intent(getActivity().getApplication(), SearchUserActivity.class);
                     startActivity(intent);
+                }
+            });
+            binding.rightIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Intent intent;
+//
+//                    intent = new Intent(getActivity().getApplication(), MainActivity.class);
+//                    startActivity(intent);
                 }
             });
 

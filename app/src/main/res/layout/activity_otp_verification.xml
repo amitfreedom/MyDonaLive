@@ -8,8 +8,107 @@
     tools:context=".ui.auth.activity.OtpVerificationActivity">
 
     <LinearLayout
+        android:id="@+id/phoneView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="30dp">
+
+        <TextView
+            style="@style/HeaderTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:text="@string/txt_login_header"
+            android:textSize="30sp" />
+
+        <TextView
+            style="@style/NormalTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/txt_enter_phone"
+            android:textColor="@color/light_gray"
+            android:textSize="16sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_20dp"
+            android:layout_marginTop="72dp"
+            android:background="@drawable/edit_text_bg">
+
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/ccp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:ccp_autoDetectCountry="true"
+                app:ccp_autoFormatNumber="true"
+                app:ccp_contentColor="@color/light_gray"
+                app:ccp_showFlag="false"
+                app:ccp_textGravity="CENTER" />
+
+
+            <EditText
+                android:id="@+id/fieldPhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/ccp"
+                android:background="@android:color/transparent"
+                android:fontFamily="@font/sf_pro_display_semibold"
+                android:hint="@string/txt_phone_hint"
+                android:inputType="phone"
+                android:padding="10dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/light_gray" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txt_error"
+            style="@style/NormalTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="@dimen/_20dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:text="error"
+            android:textColor="@color/red_color" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonStartVerification"
+            style="@style/MyButtonStyle_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_50dp"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:text="Continue"
+            android:textAllCaps="true"
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:id="@+id/status"
+            style="@style/ThemeOverlay.MyTextDetail"
+            android:text="@string/signed_out"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/detail"
+            style="@style/ThemeOverlay.MyTextDetail"
+            android:visibility="gone"
+            tools:text="Firebase User ID: 123456789abc" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/otpView"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="30dp">
 
@@ -50,10 +149,6 @@
             android:textColor="@color/white"
             android:padding="10dp"
             android:textColorHint="@color/light_gray" />
-
-
-
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_verify"
             style="@style/MyButtonStyle_1"

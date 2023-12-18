@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                android:nestedScrollingEnabled="false"
+                android:nestedScrollingEnabled="true"
                 app:spanCount="2"
                 tools:listitem="@layout/item_active_user" />
             <LinearLayout
@@ -100,7 +100,24 @@
 
 
 
-
     </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/extended_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:contentDescription="sdfjkhjkdhsfsdf"
+        android:text="Go Live"
+        android:textSize="@dimen/_18sp"
+        android:fontFamily="@font/libre_baskerville_bold"
+        android:textFontWeight="700"
+        android:textColor="@color/white"
+        app:iconTint="@color/white"
+        app:iconSize="@dimen/_26dp"
+        android:backgroundTint="@color/pink_top"
+        app:icon="@drawable/baseline_videocam_24"/>
+
+</RelativeLayout>

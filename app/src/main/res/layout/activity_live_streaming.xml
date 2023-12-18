@@ -241,7 +241,8 @@ tools:context=".streaming.activity.LiveStreamingActivity">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -352,7 +353,7 @@ tools:context=".streaming.activity.LiveStreamingActivity">
                             android:id="@+id/txt_user_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="10"
+                            android:text="0"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_10sp" />
 
@@ -371,6 +372,7 @@ tools:context=".streaming.activity.LiveStreamingActivity">
                 </com.google.android.material.card.MaterialCardView>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:visibility="gone"
                     android:layout_marginHorizontal="@dimen/_5dp"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/card_user_count"

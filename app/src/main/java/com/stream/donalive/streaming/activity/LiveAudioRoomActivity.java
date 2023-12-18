@@ -1,14 +1,19 @@
 package com.stream.donalive.streaming.activity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -16,6 +21,7 @@ import com.stream.donalive.databinding.ActivityLiveAudioRoomBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager;
+import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager;
 import com.stream.donalive.streaming.internal.business.RoomRequestExtendedData;
 import com.stream.donalive.streaming.internal.business.RoomRequestType;
 import com.stream.donalive.streaming.internal.business.audioroom.LiveAudioRoomLayoutConfig;
@@ -48,12 +54,14 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private String userId;
     private String username;
     private String country;
+    private String image;
     private long uid;
     private LiveAudioRoomLayoutConfig seatLayoutConfig;
     private FirebaseFirestore firestore;
     private FirebaseAuth mAuth;
     private CollectionReference usersRef;
     private UserDetailsModel userDetails;
+    private String level;
 
     String TAG = "LiveAudioRoomActivity";
 
@@ -73,14 +81,24 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         roomID = getIntent().getStringExtra("liveID");
         username = getIntent().getStringExtra("username");
         country = getIntent().getStringExtra("country_name");
+        image = getIntent().getStringExtra("image");
+        level = getIntent().getStringExtra("level");
         uid = getIntent().getLongExtra("uid",0);
-//        String roomID = getIntent().getStringExtra("liveID");
         if (TextUtils.isEmpty(roomID)) {
             finish();
             return;
         }
 
-//        getSupportActionBar().setTitle("Live Audio Room");
+
+        fetchUserDetails(userId);
+        binding.btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                exitDialog();
+            }
+        });
+
 
         binding.liveAudioroomTopbar.setRoomID(roomID);
         // two rows, four columns
@@ -107,6 +125,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             }
         });
         ZegoScenario chatRoom = ZegoScenario.HIGH_QUALITY_CHATROOM;
+        binding.topView.setVisibility(View.VISIBLE);
         ZEGOSDKManager.getInstance().loginRoom(roomID, chatRoom, new ZEGOSDKCallBack() {
             @Override
             public void onResult(int errorCode, String message) {
@@ -115,9 +134,11 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     finish();
                 } else {
 
+
+
                     if (isHost) {
                         // save live data
-                        saveLiveData(userId,uid,username,true,roomID,"1",country);
+                        saveLiveData(userId,uid,username,true,roomID,"1",country,image);
 
                         ZEGOLiveAudioRoomManager.getInstance().setHostAndLockSeat();
                         ZEGOLiveAudioRoomManager.getInstance().takeSeat(0, new ZIMRoomAttributesOperatedCallback() {
@@ -134,14 +155,74 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         });
     }
 
-    private void saveLiveData(String userId, long uid, String userName, boolean isHost, String liveID, String liveType, String country) {
+    private void exitDialog() {
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Exit")
+                .setMessage("Are you sure you want to leave ?")
+                .setPositiveButton("Leave", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ZEGOLiveAudioRoomManager.getInstance().leave();
+                        boolean isHost = getIntent().getBooleanExtra("host", true);
+                        if (isHost){
+                            updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
+                        }
+                        onBackPressed();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+    }
+
+    private void fetchUserDetails(String userId) {
+        Log.i("test2334", "fetchUserDetails: "+userId);
+
+        usersRef.whereEqualTo("userId", userId)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle error
+                        Log.e("test2334", "Listen failed: " + error.getMessage());
+                        return;
+                    }
+
+                    for (DocumentSnapshot document : value) {
+                        userDetails = document.toObject(UserDetailsModel.class);
+                        updateUI(userDetails);
+                        Log.e("test2334", "Listen UserDetailsModel: ");
+//
+                    }
+                });
+
+
+    }
+
+    private void updateUI(UserDetailsModel userDetails) {
+        if(userDetails.getImage()!="") {
+            Glide.with(this).load(userDetails.getImage()).into(binding.ivUserImage);
+        }else {
+            Glide.with(this).load(Constant.USER_PLACEHOLDER_PATH).into(binding.ivUserImage);
+        }
+        binding.txtUsername.setText(userDetails.getUsername());
+        binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
+        binding.txtLevel.setText("Lv"+userDetails.getLevel());
+        binding.txtCoin.setText(userDetails.getCoins());
+    }
+
+    private void saveLiveData(String userId, long uid, String userName, boolean isHost, String liveID, String liveType, String country,String image) {
 
         long timestamp = System.currentTimeMillis();
         Map<String, Object> liveDetails = new HashMap<>();
         liveDetails.put("userId", userId);
         liveDetails.put("uid", uid);
         liveDetails.put("username", userName);
-        liveDetails.put("photo", "https://restream.io/blog/content/images/size/w2000/2023/06/how-to-stream-live-video-on-your-website.JPG");
+        liveDetails.put("photo", image!=""?image:Constant.USER_PLACEHOLDER_PATH);
         liveDetails.put("tag", "");
         liveDetails.put("host", isHost);
         liveDetails.put("liveID", liveID);

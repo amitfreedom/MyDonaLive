@@ -72,10 +72,12 @@
             android:id="@+id/txt_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/sf_pro_display_regular"
             android:text="error"
-            android:textColor="@color/white"
+            android:layout_gravity="left"
+            android:textColor="@color/red_color"
+            android:layout_marginLeft="@dimen/_20dp"
             style="@style/NormalTextStyle"/>
 
         <androidx.appcompat.widget.AppCompatButton
@@ -86,6 +88,7 @@
             android:layout_marginTop="30dp"
             android:fontFamily="@font/sf_pro_display_bold"
             android:text="Continue"
+            android:layout_marginHorizontal="@dimen/_50dp"
             android:textAllCaps="true"
             android:textSize="16sp" />
 
@@ -135,17 +138,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/fieldVerificationCode1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_weight="1.0"
-            android:hint="@string/hint_verification_code"
-            android:inputType="number"/>
+<!--        <EditText-->
+<!--            android:id="@+id/fieldVerificationCode1"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="4dp"-->
+<!--            android:layout_marginLeft="4dp"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:layout_marginRight="16dp"-->
+<!--            android:layout_weight="1.0"-->
+<!--            android:hint="@string/hint_verification_code"-->
+<!--            android:inputType="number"/>-->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonStartVerification1"

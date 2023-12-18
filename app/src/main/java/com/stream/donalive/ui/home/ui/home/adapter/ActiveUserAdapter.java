@@ -75,10 +75,18 @@ public class ActiveUserAdapter extends FirestoreAdapter<ActiveUserAdapter.ViewHo
                 binding.liveType.setText("Audio Party");
             }
 
-            // Load image
-            Glide.with(binding.restaurantItemImage.getContext())
-                    .load(Constant.USER_PLACEHOLDER_PATH)
-                    .into(binding.restaurantItemImage);
+            if (Objects.equals(restaurant.getPhoto(), "")){
+                // Load image
+                Glide.with(binding.restaurantItemImage.getContext())
+                        .load(Constant.USER_PLACEHOLDER_PATH)
+                        .into(binding.restaurantItemImage);
+            }else {
+                // Load image
+                Glide.with(binding.restaurantItemImage.getContext())
+                        .load(restaurant.getPhoto())
+                        .into(binding.restaurantItemImage);
+            }
+
 
             binding.restaurantItemName.setText(restaurant.getUsername());
 

@@ -35,6 +35,7 @@ import com.stream.donalive.streaming.activity.LiveAudioRoomActivity;
 import com.stream.donalive.streaming.activity.LiveStreamingActivity;
 import com.stream.donalive.streaming.internal.ZEGOCallInvitationManager;
 import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager;
+import com.stream.donalive.ui.activity.MainActivity;
 import com.stream.donalive.ui.home.ui.home.adapter.ActiveUserAdapter;
 import com.stream.donalive.ui.home.ui.home.adapter.ImageSliderAdapter;
 import com.stream.donalive.ui.home.ui.home.adapter.RestaurantAdapter;
@@ -139,6 +140,14 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
         // if Call invitation,init after user login,may receive call request.
         ZEGOCallInvitationManager.getInstance().init();
 
+        binding.extendedFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity().getApplication(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void addDotsIndicator(int position) {
@@ -203,17 +212,25 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
         Intent intent;
         if (Objects.equals(liveType, "0")){
             intent = new Intent(getActivity().getApplication(), LiveStreamingActivity.class);
+            intent.putExtra("host", false);
+            intent.putExtra("liveID", liveID);
+            intent.putExtra("userId", userId);
+            intent.putExtra("username", username);
+            intent.putExtra("uid", uid);
+            intent.putExtra("country_name", "");
+            startActivity(intent);
         }else {
             intent = new Intent(getActivity().getApplication(), LiveAudioRoomActivity.class);
+            intent.putExtra("host", false);
+            intent.putExtra("liveID", liveID);
+            intent.putExtra("userId", userId);
+            intent.putExtra("username", username);
+            intent.putExtra("uid", uid);
+            intent.putExtra("country_name", "");
+            startActivity(intent);
 
         }
-        intent.putExtra("host", false);
-        intent.putExtra("liveID", liveID);
-        intent.putExtra("userId", userId);
-        intent.putExtra("username", username);
-        intent.putExtra("uid", uid);
-        intent.putExtra("country_name", "");
-        startActivity(intent);
+
 
 
     }

@@ -1,13 +1,17 @@
 package com.stream.donalive.streaming.components.audioroom;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
+import com.stream.donalive.R;
 import com.stream.donalive.streaming.components.RoomRequestListDialog;
+import com.stream.donalive.streaming.components.message.barrage.BottomInputDialog;
 import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager.LiveAudioRoomListener;
 import com.stream.donalive.streaming.internal.business.RoomRequestType;
@@ -55,6 +59,17 @@ public class BottomMenuBar extends LinearLayout {
         setOrientation(LinearLayout.HORIZONTAL);
         setLayoutParams(new LayoutParams(-1, -2));
         setGravity(Gravity.END);
+
+//        ImageView messageButton = new ImageView(getContext());
+//        messageButton.setImageResource(R.drawable.audioroom_icon_im);
+//        messageButton.setScaleType(ImageView.ScaleType.FIT_XY);
+//        addView(messageButton, generateChildImageLayoutParams());
+//        messageButton.setOnClickListener(v -> {
+//            if (getContext() instanceof Activity) {
+//                BottomInputDialog bottomInputDialog = new BottomInputDialog(getContext());
+//                bottomInputDialog.show();
+//            }
+//        });
 
         childLinearLayout = new LinearLayout(getContext());
         childLinearLayout.setOrientation(LinearLayout.HORIZONTAL);

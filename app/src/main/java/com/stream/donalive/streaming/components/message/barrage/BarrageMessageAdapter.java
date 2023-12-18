@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.stream.donalive.R;
+import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager;
 import com.stream.donalive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.donalive.streaming.internal.sdk.basic.ZEGOSDKUser;
@@ -53,6 +54,12 @@ public class BarrageMessageAdapter extends RecyclerView.Adapter<ViewHolder> {
             builder.append(hostTag);
             builder.append(" ");
         }
+
+//        else if (ZEGOLiveAudioRoomManager.getInstance().getHostUser(ZEGOSDKUser.userID)) {
+//            builder.append(hostTag);
+//            builder.append(" ");
+//        }
+
         builder.append(ZEGOSDKUser.userName);
         builder.append(" ");
         builder.append(message.message);

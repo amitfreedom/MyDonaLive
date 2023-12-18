@@ -97,8 +97,8 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(RegisterActivity.this, "I have logged in successfully",
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(RegisterActivity.this, "I have logged in successfully",
+//                            Toast.LENGTH_SHORT).show();
                     FirebaseUser user = mAuth.getCurrentUser();
                     checkUserExistenceInFirestore(user);
                 } else {
