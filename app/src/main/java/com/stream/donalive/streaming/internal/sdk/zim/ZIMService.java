@@ -79,6 +79,14 @@ public class ZIMService {
 
         initEventHandler = new ZIMEventHandler() {
 
+
+            @Override
+            public void onRoomMemberJoined(ZIM zim, ArrayList<ZIMUserInfo> memberList, String roomID) {
+                super.onRoomMemberJoined(zim, memberList, roomID);
+
+            }
+
+
             @Override
             public void onConnectionStateChanged(ZIM zim, ZIMConnectionState state, ZIMConnectionEvent event,
                 JSONObject extendedData) {
@@ -385,6 +393,8 @@ public class ZIMService {
             }
         });
     }
+
+
 
     public void logoutRoom(ZIMRoomLeftCallback callback) {
         if (zimProxy.getZIM() == null || currentRoom == null) {

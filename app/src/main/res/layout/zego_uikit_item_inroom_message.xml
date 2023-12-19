@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:background="@drawable/bg_gray_round_rect"
+        android:background="@drawable/bg_gray_round_rect1"
         android:gravity="center_vertical"
         android:lineSpacingMultiplier="1.2"
         android:maxWidth="230dp"

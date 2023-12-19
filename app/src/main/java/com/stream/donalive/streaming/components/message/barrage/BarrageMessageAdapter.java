@@ -55,18 +55,13 @@ public class BarrageMessageAdapter extends RecyclerView.Adapter<ViewHolder> {
             builder.append(" ");
         }
 
-//        else if (ZEGOLiveAudioRoomManager.getInstance().getHostUser(ZEGOSDKUser.userID)) {
-//            builder.append(hostTag);
-//            builder.append(" ");
-//        }
-
         builder.append(ZEGOSDKUser.userName);
         builder.append(" ");
         builder.append(message.message);
         String source = builder.toString();
         SpannableString string = new SpannableString(source);
         RoundBackgroundColorSpan backgroundColorSpan = new RoundBackgroundColorSpan(context,
-            ContextCompat.getColor(context, R.color.purple_dark),
+            ContextCompat.getColor(context, R.color.pink_top),
             ContextCompat.getColor(context, android.R.color.white));
         if (ZEGOLiveStreamingManager.getInstance().isHost(ZEGOSDKUser.userID)) {
             AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(Utils.sp2px(10, displayMetrics));
@@ -76,7 +71,7 @@ public class BarrageMessageAdapter extends RecyclerView.Adapter<ViewHolder> {
                 Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(
-            ContextCompat.getColor(context, R.color.teal));
+            ContextCompat.getColor(context, R.color.light_brown));
         int indexOfUser = source.indexOf(ZEGOSDKUser.userName);
         string.setSpan(foregroundColorSpan, indexOfUser, indexOfUser + ZEGOSDKUser.userName.length(),
             Spannable.SPAN_INCLUSIVE_EXCLUSIVE);

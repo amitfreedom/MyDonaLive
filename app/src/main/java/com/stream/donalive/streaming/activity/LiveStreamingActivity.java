@@ -5,8 +5,13 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -59,6 +64,7 @@ import im.zego.zim.callback.ZIMLoggedInCallback;
 import im.zego.zim.callback.ZIMRoomEnteredCallback;
 import im.zego.zim.entity.ZIMError;
 import im.zego.zim.entity.ZIMRoomFullInfo;
+import im.zego.zim.entity.ZIMUserInfo;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
@@ -93,6 +99,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
     private UserDetailsModel userDetails;
     private ViewUserAdapter mAdapter;
     private Query mQuery;
+    Animation topAnimantion,bottomAnimation,rightToLeft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +110,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         usersRef = firestore.collection(Constant.LOGIN_DETAILS);
+        bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.right_to_left);
 
 
         boolean isHost = getIntent().getBooleanExtra("host", true);
@@ -325,6 +333,9 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         binding.previewStart.setVisibility(View.GONE);
         binding.previewBeauty.setVisibility(View.GONE);
         binding.liveBottomMenuBar.setVisibility(View.VISIBLE);
+        binding.welcomeText.setVisibility(View.VISIBLE);
+
+        startMarqueeAnimation1();
 
         boolean isHost = getIntent().getBooleanExtra("host", true);
         if (isHost) {
@@ -339,6 +350,13 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         binding.audienceMixSelfIcon.setCircleBackgroundRadius(width / 2);
         binding.audienceMixOtherIcon.setCircleBackgroundRadius(width / 2);
         binding.mainHostVideoIcon.setCircleBackgroundRadius(width);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+//                binding.welcomeText.setVisibility(View.GONE);
+            }
+        },8000);
     }
 
     @Override
@@ -417,8 +435,51 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
     }
 
 
+    private void startMarqueeAnimation1() {
+        // Calculate the duration of the animation based on the length of the text
+        int textLength = binding.welcomeText.getText().length();
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        long duration = (textLength * 1000) / screenWidth * 300; // Adjust the factor as needed
+
+        // Create a translate animation
+        TranslateAnimation animation = new TranslateAnimation(
+                screenWidth,          // fromXDelta
+                -screenWidth,         // toXDelta
+                0,                    // fromYDelta
+                0                     // toYDelta
+        );
+
+        animation.setInterpolator(new LinearInterpolator());
+        animation.setDuration(duration);
+        animation.setRepeatCount(1);
+        animation.setFillAfter(true);
+
+        // Set animation listener if needed
+        animation.setAnimationListener(new TranslateAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart(android.view.animation.Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(android.view.animation.Animation animation) {
+                // Handle animation end if needed
+            }
+
+            @Override
+            public void onAnimationRepeat(android.view.animation.Animation animation) {
+
+                // Handle animation repeat if needed
+            }
+        });
+
+        // Start the animation
+        binding.welcomeText.startAnimation(animation);
+    }
+
     public void listenSDKEvent() {
         ZEGOSDKManager.getInstance().expressService.addEventHandler(new IExpressEngineEventHandler() {
+
+
             @Override
             public void onCameraOpen(String userID, boolean open) {
                 onRoomUserCameraOpen(userID, open);
@@ -511,6 +572,47 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
             }
 
             @Override
+            public void onUserEnter(List<ZEGOSDKUser> userList) {
+                boolean isHost = getIntent().getBooleanExtra("host", true);
+
+                if (!isHost) {
+                    for (ZEGOSDKUser zegosdkUser : userList) {
+                        Log.i("EnteredUser", "onUserEnter: " + zegosdkUser.userID);
+                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegosdkUser.userName + " joined", (errorCode, messageID) -> {
+
+                        });
+                    }
+                }
+
+//                if (!ZEGOLiveStreamingManager.getInstance().isCurrentUserHost()) {
+                    for (ZEGOSDKUser zegosdkUser : userList) {
+                        Log.i("EnteredUser", "onUserEnter: "+zegosdkUser.userID);
+                        if(isHost){
+                            binding.txtEnterUser.setText(zegosdkUser.userName+" joined");
+                            binding.entryText.setVisibility(View.VISIBLE);
+                            binding.entryText.setAnimation(bottomAnimation);
+                        }
+                    }
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        binding.entryText.setVisibility(View.GONE);
+                    }
+                },2000);
+
+//                    PKInfo pkInfo = ZEGOLiveStreamingManager.getInstance().getPKInfo();
+//                    if (pkInfo != null) {
+//                        for (ZEGOSDKUser zegosdkUser : userList) {
+//                            if (zegosdkUser.userID.equals(pkInfo.hostUserID)) {
+//                                ZEGOLiveStreamingManager.getInstance().stopPKBattle();
+//                            }
+//                        }
+//                    }
+//                }
+            }
+
+            @Override
             public void onRoomStateChanged(String roomID, ZegoRoomStateChangedReason reason, int errorCode,
                                            JSONObject extendedData) {
                 if (reason == ZegoRoomStateChangedReason.RECONNECT_FAILED) {
@@ -566,6 +668,8 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
             }
         });
         ZEGOSDKManager.getInstance().zimService.addEventHandler(new IZIMEventHandler() {
+
+
 
             @Override
             public void onOutgoingRoomRequestAccepted(String requestID, String extendedData) {
@@ -631,6 +735,10 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
                     zimReconnectDialog.show();
                 }
             }
+
+
+
+
         });
 
         //        ZEGOSDKManager.getInstance().zimService.addIncomingRoomRequestListener(new IncomingRoomRequestListener() {

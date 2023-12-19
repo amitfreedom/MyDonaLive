@@ -54,6 +54,7 @@ public class SplashActivity extends AppCompatActivity {
 
         topAnimantion = AnimationUtils.loadAnimation(this, R.anim.top_animantion);
         bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_animantion);
+        bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_animantion);
         relativeLayout.setAnimation(topAnimantion);
         txt_logo.setAnimation(bottomAnimation);
         new Handler().postDelayed(new Runnable() {
