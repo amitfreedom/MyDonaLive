@@ -30,5 +30,10 @@
         android:name="com.stream.donalive.ui.home.ui.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/sortVideoFragment"
+        android:name="com.stream.donalive.ui.home.ui.reels.SortVideoFragment"
+        android:label="fragment_sort_video"
+        tools:layout="@layout/fragment_sort_video" />
 
 </navigation>
