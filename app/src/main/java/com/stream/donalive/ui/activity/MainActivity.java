@@ -62,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         usersRef = firestore.collection(Constant.LOGIN_DETAILS);
 
+
+        Log.i("2123123", "onStart: "+ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
         try {
             ZEGOSDKUser localUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
             if (localUser!=null){

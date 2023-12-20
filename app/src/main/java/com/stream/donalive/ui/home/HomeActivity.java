@@ -108,6 +108,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
     }
 

@@ -12,6 +12,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.stream.donalive.databinding.ItemActiveUserBinding;
 import com.stream.donalive.databinding.ItemActiveViewersBinding;
+import com.stream.donalive.streaming.activity.model.RoomUsers;
 import com.stream.donalive.ui.home.ui.home.adapter.FirestoreAdapter;
 import com.stream.donalive.ui.home.ui.home.models.LiveUser;
 import com.stream.donalive.ui.utill.Constant;
@@ -62,14 +63,14 @@ public class ViewUserAdapter extends FirestoreAdapter<ViewUserAdapter.ViewHolder
         public void bind(final DocumentSnapshot snapshot,
                          final ViewUserAdapter.OnActiveUserSelectedListener listener) {
 
-            LiveUser restaurant = snapshot.toObject(LiveUser.class);
+            RoomUsers restaurant = snapshot.toObject(RoomUsers.class);
 
 //            if (Objects.equals(restaurant.getLiveType(), "0")){
 //                binding.liveType.setText("Video Live");
 //            }
 //
 //            if (Objects.equals(restaurant.getLiveType(), "1")){
-//                binding.liveType.setText("Audio Party");
+                binding.name.setText(restaurant.getUsername());
 //            }
 
             // Load image

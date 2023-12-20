@@ -22,6 +22,8 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -37,6 +39,7 @@ import com.stream.donalive.databinding.ActivityLiveStreamingBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.streaming.activity.adapter.ViewUserAdapter;
+import com.stream.donalive.streaming.activity.model.RoomUsers;
 import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager;
 import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager.LiveStreamingListener;
 import com.stream.donalive.streaming.internal.business.RoomRequestExtendedData;
@@ -50,8 +53,8 @@ import com.stream.donalive.streaming.internal.sdk.express.ExpressService;
 import com.stream.donalive.streaming.internal.sdk.express.IExpressEngineEventHandler;
 import com.stream.donalive.streaming.internal.sdk.zim.IZIMEventHandler;
 import com.stream.donalive.streaming.internal.utils.ToastUtil;
-import com.stream.donalive.ui.home.ui.explore.adapter.ExploreAdapter;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
+import com.stream.donalive.ui.home.ui.profile.models.UserModel;
 import com.stream.donalive.ui.utill.Constant;
 
 import im.zego.zegoexpress.callback.IZegoMixerStartCallback;
@@ -64,7 +67,6 @@ import im.zego.zim.callback.ZIMLoggedInCallback;
 import im.zego.zim.callback.ZIMRoomEnteredCallback;
 import im.zego.zim.entity.ZIMError;
 import im.zego.zim.entity.ZIMRoomFullInfo;
-import im.zego.zim.entity.ZIMUserInfo;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
@@ -75,7 +77,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.checkerframework.common.returnsreceiver.qual.This;
 import org.json.JSONObject;
 
 public class LiveStreamingActivity extends AppCompatActivity implements ViewUserAdapter.OnActiveUserSelectedListener {
@@ -83,6 +84,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
     private ActivityLiveStreamingBinding binding;
     private String liveID;
     private String userId;
+    private String audienceId;
     private String username;
     private String country;
     private String image;
@@ -97,6 +99,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
     private FirebaseAuth mAuth;
     private CollectionReference usersRef;
     private UserDetailsModel userDetails;
+    private UserModel userModel;
     private ViewUserAdapter mAdapter;
     private Query mQuery;
     Animation topAnimantion,bottomAnimation,rightToLeft;
@@ -120,9 +123,18 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         country = getIntent().getStringExtra("country_name");
         image = getIntent().getStringExtra("image");
         level = getIntent().getStringExtra("level");
+        audienceId = getIntent().getStringExtra("audienceId");
         uid = getIntent().getLongExtra("uid",0);
 
-        fetchUserDetails(userId);
+        Log.i("liveID", "onCreate: ===="+liveID);
+
+        if (!isHost){
+            fetchOtherUserDetails(userId);
+            currentUserDetails(audienceId);
+        }else {
+
+        }
+
 
         ZEGOLiveStreamingManager.getInstance().addRoomListeners();
 
@@ -180,12 +192,12 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
             loginRoom();
         }
 
-//        mQuery = firestore.collection(Constant.LIVE_DETAILS)
-////                .orderBy("uid", Query.Direction.DESCENDING)
+        mQuery = firestore.collection("room_users").document(liveID).collection("viewers")
+//                .orderBy("uid", Query.Direction.DESCENDING)
 //                .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
-//                .limit(LIMIT);
-//
-//        setViewersAdapter();
+                .limit(LIMIT);
+
+        setViewersAdapter();
     }
 
     private void exitDialog() {
@@ -237,7 +249,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         binding.rvViewers.setAdapter(mAdapter);
     }
 
-    private void fetchUserDetails(String userId) {
+    private void fetchOtherUserDetails(String userId) {
         Log.i("test2334", "fetchUserDetails: "+userId);
 
         usersRef.whereEqualTo("userId", userId)
@@ -251,7 +263,33 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
                     for (DocumentSnapshot document : value) {
                         userDetails = document.toObject(UserDetailsModel.class);
                         updateUI(userDetails);
-                        Log.e("test2334", "Listen UserDetailsModel: ");
+                        Log.i("test2334", "other user name "+userDetails.getUsername());
+                        Log.i("test2334", "other user uid: "+userDetails.getUid());
+                        Log.i("test2334", "other user userId: "+userDetails.getUsername());
+//
+                    }
+                });
+
+
+    }
+    private void currentUserDetails(String userId) {
+//        Log.i("test2334", "fetchUserDetails: "+userId);
+//        Log.i("test2334", "streamId: "+liveID);
+
+        usersRef.whereEqualTo("userId", userId)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle error
+                        Log.e("test2334", "Listen failed: " + error.getMessage());
+                        return;
+                    }
+
+                    for (DocumentSnapshot document : value) {
+                        userModel = document.toObject(UserModel.class);
+//                        saveRoomUsers(userModel);
+                        Log.i("test2334", "current user name "+userModel.getUsername());
+                        Log.i("test2334", "current user uid: "+userModel.getUid());
+                        Log.i("test2334", "current user userId: "+userModel.getUsername());
 //
                     }
                 });
@@ -363,7 +401,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
     public void onStart() {
         super.onStart();
         if (mAdapter != null) {
-//            mAdapter.startListening();
+            mAdapter.startListening();
         }
     }
 
@@ -371,7 +409,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
     public void onStop() {
         super.onStop();
         if (mAdapter != null) {
-//            mAdapter.stopListening();
+            mAdapter.stopListening();
         }
     }
 
@@ -559,6 +597,14 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
 
             @Override
             public void onUserLeft(List<ZEGOSDKUser> userList) {
+
+                Log.i("EnteredUser", "onUserLeft:uid =======" + userList.get(0).userID);
+                if (ZEGOLiveStreamingManager.getInstance().isCurrentUserHost()) {
+                    for (ZEGOSDKUser zegosdkUser : userList) {
+                        deleteUserFromViewersCollection(liveID,zegosdkUser.userID);
+                    }
+                }
+
                 if (!ZEGOLiveStreamingManager.getInstance().isCurrentUserHost()) {
                     PKInfo pkInfo = ZEGOLiveStreamingManager.getInstance().getPKInfo();
                     if (pkInfo != null) {
@@ -573,12 +619,15 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
 
             @Override
             public void onUserEnter(List<ZEGOSDKUser> userList) {
-                boolean isHost = getIntent().getBooleanExtra("host", true);
 
-                if (!isHost) {
+                if (!ZEGOLiveStreamingManager.getInstance().isCurrentUserHost()) {
+                    Log.i("EnteredUser", "liveId:---------- " + liveID);
+                    Log.i("EnteredUser", "userId: ----------------" + userModel.getUserId());
+                    Log.i("EnteredUser", "uid: ----------------" + userModel.getUid());
+                    saveRoomUsers(userModel);
                     for (ZEGOSDKUser zegosdkUser : userList) {
-                        Log.i("EnteredUser", "onUserEnter: " + zegosdkUser.userID);
-                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegosdkUser.userName + " joined", (errorCode, messageID) -> {
+
+                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegosdkUser.userName + " joined the room", (errorCode, messageID) -> {
 
                         });
                     }
@@ -586,8 +635,8 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
 
 //                if (!ZEGOLiveStreamingManager.getInstance().isCurrentUserHost()) {
                     for (ZEGOSDKUser zegosdkUser : userList) {
-                        Log.i("EnteredUser", "onUserEnter: "+zegosdkUser.userID);
-                        if(isHost){
+//                        Log.i("EnteredUser", "onUserEnter: "+zegosdkUser.userID);
+                        if(ZEGOLiveStreamingManager.getInstance().isCurrentUserHost()){
                             binding.txtEnterUser.setText(zegosdkUser.userName+" joined");
                             binding.entryText.setVisibility(View.VISIBLE);
                             binding.entryText.setAnimation(bottomAnimation);
@@ -929,6 +978,106 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
             public void onPKMicrophoneOpen(String userID, boolean open) {
             }
         });
+    }
+
+    private void deleteUserFromViewersCollection(String streamId, String uid) {
+
+
+        usersRef.whereEqualTo("uid", Long.parseLong(uid))
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle error
+                        Log.e("test2334", "Listen failed: " + error.getMessage());
+                        return;
+                    }
+                    String userid="";
+                    for (DocumentSnapshot document : value) {
+
+                        userid=document.getString("userId");
+                        Log.i("deleteUserFromViewersCollection", "deleteUserFromViewersCollection: "+userid);
+//
+                    }
+                    firestore.collection("room_users")
+                            .document(streamId)
+                            .collection("viewers")
+                            .document(userid)
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.i("delete_user", "User deleted from viewers collection successfully");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.i("delete_user", "Failed to delete user from viewers collection: " + e.getMessage());
+                                }
+                            });
+                });
+
+
+
+    }
+
+    private void saveRoomUsers(UserModel userDetails) {
+
+        long timestamp = System.currentTimeMillis();
+        RoomUsers roomUsers = new RoomUsers();
+        roomUsers.setLiveId(liveID);
+        roomUsers.setUserId(userDetails.getUserId());
+        roomUsers.setUid(String.valueOf(userDetails.getUid()));
+        roomUsers.setUsername(userDetails.getUsername());
+        roomUsers.setCountry_name(userDetails.getCountry_name());
+        roomUsers.setImage(userDetails.getImage());
+        roomUsers.setLevel(userDetails.getLevel());
+        roomUsers.setFriends(userDetails.getFriends());
+        roomUsers.setFollowers(userDetails.getFollowers());
+        roomUsers.setFollowing(userDetails.getFollowing());
+        roomUsers.setCoins(userDetails.getCoins());
+        roomUsers.setTime(timestamp);
+
+        firestore.collection("room_users").document(liveID).collection("viewers").document(userDetails.getUserId()).set(roomUsers).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+                Log.i("room_users", "onSuccess: done");
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.i("room_users", "Exception: err"+e);
+            }
+        });
+
+//        firestore.collection("room_users").document(streamId).set(roomUsers).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//
+//                Log.i("room_users", "onSuccess: done");
+//
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.i("room_users", "Exception: err"+e);
+//            }
+//        });
+
+        // Add the login details to Firestore
+//        firestore.collection("room_users")
+//                .add(roomUsers)
+//                .addOnSuccessListener(documentReference -> {
+//                    // Login details added successfully
+//                    Toast.makeText(LiveStreamingActivity.this, "saved",
+//                            Toast.LENGTH_SHORT).show();
+//                })
+//                .addOnFailureListener(e -> {
+//                    Toast.makeText(LiveStreamingActivity.this, "Error : "+e,Toast.LENGTH_SHORT).show();
+//                    // Handle failure
+//                    Log.e("LiveStreamingActivity", "Error adding login details", e);
+//                });
     }
 
     private void onRoomUserCameraOpen(String userID, boolean open) {

@@ -15,6 +15,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,6 +49,7 @@ public class SplashActivity extends AppCompatActivity {
 //        startMarqueeAnimation(marqueeText);
 
          marqueeTextView = findViewById(R.id.marqueeTextView);
+
 
         // Call the method to start the marquee animation
 //        startMarqueeAnimation1();

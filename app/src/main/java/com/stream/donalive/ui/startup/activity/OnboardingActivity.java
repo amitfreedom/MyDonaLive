@@ -227,7 +227,7 @@ public class OnboardingActivity extends AppCompatActivity {
             spannableString.setSpan(new UnderlineSpan(), startUnderline, endUnderline, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             // You can also change the color of the underlined text if needed
-            spannableString.setSpan(new ForegroundColorSpan(Color.GREEN), startUnderline, endUnderline, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new ForegroundColorSpan(Color.BLUE), startUnderline, endUnderline, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         binding.txtTerms.setText(spannableString);
     }

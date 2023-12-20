@@ -215,6 +215,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
             intent.putExtra("host", false);
             intent.putExtra("liveID", liveID);
             intent.putExtra("userId", userId);
+            intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
             intent.putExtra("username", username);
             intent.putExtra("uid", uid);
             intent.putExtra("country_name", "");
@@ -225,6 +226,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
             intent.putExtra("liveID", liveID);
             intent.putExtra("userId", userId);
             intent.putExtra("username", username);
+            intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
             intent.putExtra("uid", uid);
             intent.putExtra("country_name", "");
             startActivity(intent);
