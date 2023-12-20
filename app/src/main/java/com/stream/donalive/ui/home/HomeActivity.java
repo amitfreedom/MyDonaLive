@@ -64,6 +64,8 @@ public class HomeActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         usersRef = db.collection(Constant.LOGIN_DETAILS);
 
+        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
 //        initZEGOSDK();
     }
 
@@ -109,7 +111,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
     }
 
     @Override

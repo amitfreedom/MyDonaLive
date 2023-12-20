@@ -42,7 +42,7 @@ public class ApplicationClass extends Application {
     private void initZEGOSDK() {
 
         ZEGOSDKManager.getInstance().initSDK(instance, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.appSign);
-//        ZEGOSDKManager.getInstance().enableZEGOEffects(true);
+        ZEGOSDKManager.getInstance().enableZEGOEffects(true);
     }
 
     public static ApplicationClass getInstance() {

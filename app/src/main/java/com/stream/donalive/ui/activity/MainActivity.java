@@ -76,11 +76,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         binding.startLiveStreaming.setOnClickListener(v -> {
-//            String liveID = binding.liveIdStreaming.getEditText().getText().toString();
-//            if (TextUtils.isEmpty(liveID)) {
-//                binding.liveIdStreaming.setError("please input liveID");
-//                return;
-//            }
+            String liveID = getSaltString(userDetails.getUserId());
+            if (TextUtils.isEmpty(liveID)) {
+                return;
+            }
             List<String> permissions = Arrays.asList(permission.CAMERA, permission.RECORD_AUDIO);
             requestPermissionIfNeeded(permissions, new RequestCallback() {
                 @Override
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     if (allGranted) {
                         Intent intent = new Intent(MainActivity.this, LiveStreamingActivity.class);
                         intent.putExtra("host", true);
-                        intent.putExtra("liveID", getSaltString(userDetails.getUserId()));
+                        intent.putExtra("liveID", liveID);
                         intent.putExtra("userId", userDetails.getUserId());
                         intent.putExtra("username", userDetails.getUsername());
                         intent.putExtra("uid", userDetails.getUid());

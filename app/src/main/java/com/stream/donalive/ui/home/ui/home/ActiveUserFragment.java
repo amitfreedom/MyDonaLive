@@ -35,11 +35,14 @@ import com.stream.donalive.streaming.activity.LiveAudioRoomActivity;
 import com.stream.donalive.streaming.activity.LiveStreamingActivity;
 import com.stream.donalive.streaming.internal.ZEGOCallInvitationManager;
 import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager;
+import com.stream.donalive.streaming.internal.sdk.ZEGOSDKManager;
+import com.stream.donalive.streaming.internal.sdk.basic.ZEGOSDKCallBack;
 import com.stream.donalive.ui.activity.MainActivity;
 import com.stream.donalive.ui.home.ui.home.adapter.ActiveUserAdapter;
 import com.stream.donalive.ui.home.ui.home.adapter.ImageSliderAdapter;
 import com.stream.donalive.ui.home.ui.home.adapter.RestaurantAdapter;
 import com.stream.donalive.ui.home.ui.home.models.LiveUser;
+import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.utill.Constant;
 
 import java.util.List;
@@ -61,6 +64,9 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
     private int currentPage = 1; // Keeps track of the current page
     private int totalPages = 10; // Replace this with the total number of pages
     Animation topAnimantion,bottomAnimation,middleAnimation;
+    private FirebaseFirestore db;
+    private CollectionReference usersRef;
+    private UserDetailsModel userDetails;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,6 +84,11 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
         super.onViewCreated(view, savedInstanceState);
         // Enable Firestore logging
         FirebaseFirestore.setLoggingEnabled(true);
+        db = FirebaseFirestore.getInstance();
+        usersRef = db.collection(Constant.LOGIN_DETAILS);
+
+//        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
 
         // Firestore
         mFirestore = FirebaseFirestore.getInstance();
@@ -148,6 +159,32 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
             }
         });
 
+    }
+
+    private void fetchUserDetails(String userId) {
+
+        usersRef.whereEqualTo("userId", userId)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle error
+                        Log.e("FirestoreListener", "Listen failed: " + error.getMessage());
+                        return;
+                    }
+
+                    for (DocumentSnapshot document : value) {
+                        userDetails = document.toObject(UserDetailsModel.class);
+                        signInZEGOSDK(String.valueOf(userDetails.getUid()), userDetails.getUsername(), (errorCode, message) -> {
+                            if (errorCode == 0) {
+                            }
+                        });
+                    }
+                });
+
+//
+    }
+
+    private void signInZEGOSDK(String userID, String userName, ZEGOSDKCallBack callback) {
+        ZEGOSDKManager.getInstance().connectUser(userID, userName, callback);
     }
 
     private void addDotsIndicator(int position) {

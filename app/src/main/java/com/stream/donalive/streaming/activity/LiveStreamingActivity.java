@@ -128,8 +128,8 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
 
         Log.i("liveID", "onCreate: ===="+liveID);
 
+        fetchOtherUserDetails(userId);
         if (!isHost){
-            fetchOtherUserDetails(userId);
             currentUserDetails(audienceId);
         }else {
 
@@ -187,7 +187,6 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
             // join right now
             ZEGOSDKManager.getInstance().expressService.openCamera(false);
             ZEGOSDKManager.getInstance().expressService.openMicrophone(false);
-//            binding.topView.setVisibility(View.VISIBLE);
             binding.previewStart.setVisibility(View.GONE);
             loginRoom();
         }
@@ -297,7 +296,8 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
 
     }
 
-    private void updateUI(UserDetailsModel userDetails) {
+    private void updateUI(UserDetailsModel userDetails)
+    {
         if(userDetails.getImage()!="") {
             Glide.with(this).load(userDetails.getImage()).into(binding.ivUserImage);
         }else {
