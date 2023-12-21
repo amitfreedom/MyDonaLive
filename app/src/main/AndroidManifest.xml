@@ -34,6 +34,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.home.ui.profile.activity.LiveHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.ui.profile.activity.HostRegistrationFormActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.follow.activity.UserInfoActivity"
             android:exported="false" />
         <activity

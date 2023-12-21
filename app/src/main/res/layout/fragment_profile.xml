@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:background="@color/top_color"
+            android:background="@color/pink_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="25dp">
