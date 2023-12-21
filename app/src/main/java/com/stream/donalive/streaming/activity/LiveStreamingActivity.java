@@ -127,9 +127,8 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         uid = getIntent().getLongExtra("uid",0);
 
         Log.i("liveID", "onCreate: ===="+liveID);
-
+        fetchOtherUserDetails(userId);
         if (!isHost){
-            fetchOtherUserDetails(userId);
             currentUserDetails(audienceId);
         }else {
 
