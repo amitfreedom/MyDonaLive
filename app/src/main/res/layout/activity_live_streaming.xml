@@ -478,6 +478,7 @@ tools:context=".streaming.activity.LiveStreamingActivity">
             android:padding="16dp"/>
 
         <FrameLayout
+            android:visibility="invisible"
             android:id="@+id/giftButtonContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

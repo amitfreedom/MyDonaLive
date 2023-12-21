@@ -110,6 +110,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
     private ViewUserAdapter mAdapter;
     private Query mQuery;
     Animation topAnimantion,bottomAnimation,rightToLeft;
+    View giftButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +149,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
 
         binding.previewStart.setOnClickListener(v -> {
             loginRoom();
+
         });
         binding.cardUserCount.setOnClickListener(v -> {
             showBottomSheetDialog();
@@ -208,20 +210,34 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
 
         // add a gift button to liveAudioRoom audience
         GiftHelper giftHelper = new GiftHelper(findViewById(R.id.layout), String.valueOf(uid), username);
-        View giftButton = giftHelper.getGiftButton(this, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.serverSecret, liveID);
+        giftButton = giftHelper.getGiftButton(this, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.serverSecret, liveID);
 
         // Get reference to the giftButtonContainer
-//        FrameLayout giftButtonContainer = findViewById(R.id.giftButtonContainer);
-//        giftButtonContainer.addView(giftButton);
+        FrameLayout giftButtonContainer = findViewById(R.id.giftButtonContainer);
+        giftButtonContainer.addView(giftButton);
 
         // Simulate a click on the giftButton
-        giftButton.post(new Runnable() {
-            @Override
-            public void run() {
-                giftButton.performClick();
-            }
-        });
+//        giftButton.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                giftButton.performClick();
+//            }
+//        });
 
+    }
+
+    private long pressedTime;
+    @Override
+    public void onBackPressed() {
+
+        if (pressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+//            finish();
+        } else {
+//            Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT).show();
+            exitDialog();
+        }
+        pressedTime = System.currentTimeMillis();
     }
 
     private void exitDialog() {
@@ -229,6 +245,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         new MaterialAlertDialogBuilder(this)
                 .setTitle("Exit")
                 .setMessage("Are you sure you want to leave ?")
+                .setCancelable(false)
                 .setPositiveButton("Leave", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -407,6 +424,13 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         binding.welcomeText.setVisibility(View.VISIBLE);
 
         startMarqueeAnimation1();
+        giftButton.post(new Runnable() {
+            @Override
+            public void run() {
+                giftButton.performClick();
+            }
+        });
+
 
         boolean isHost = getIntent().getBooleanExtra("host", true);
         if (isHost) {
@@ -422,12 +446,12 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         binding.audienceMixOtherIcon.setCircleBackgroundRadius(width / 2);
         binding.mainHostVideoIcon.setCircleBackgroundRadius(width);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                binding.welcomeText.setVisibility(View.GONE);
-            }
-        },8000);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+////                binding.welcomeText.setVisibility(View.GONE);
+//            }
+//        },8000);
     }
 
     @Override

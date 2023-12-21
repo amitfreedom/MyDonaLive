@@ -66,6 +66,7 @@
         </RelativeLayout>
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/txt_error"
             style="@style/NormalTextStyle"
             android:layout_width="wrap_content"

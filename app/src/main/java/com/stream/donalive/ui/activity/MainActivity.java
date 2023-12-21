@@ -62,9 +62,6 @@ public class MainActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         usersRef = firestore.collection(Constant.LOGIN_DETAILS);
 
-
-        Log.i("2123123", "onStart: "+ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
-
         try {
             ZEGOSDKUser localUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
             if (localUser!=null){
@@ -76,11 +73,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         binding.startLiveStreaming.setOnClickListener(v -> {
-//            String liveID = binding.liveIdStreaming.getEditText().getText().toString();
-//            if (TextUtils.isEmpty(liveID)) {
-//                binding.liveIdStreaming.setError("please input liveID");
-//                return;
-//            }
             List<String> permissions = Arrays.asList(permission.CAMERA, permission.RECORD_AUDIO);
             requestPermissionIfNeeded(permissions, new RequestCallback() {
                 @Override
@@ -226,15 +218,26 @@ public class MainActivity extends AppCompatActivity {
         // if LiveStreaming,init after user login,may receive pk request.
         ZEGOLiveStreamingManager.getInstance().init();
         // if Call invitation,init after user login,may receive call request.
-        ZEGOCallInvitationManager.getInstance().init();
-        Intent intent = new Intent(this, CallBackgroundService.class);
-        startService(intent);
+//        ZEGOCallInvitationManager.getInstance().init();
+//        Intent intent = new Intent(this, CallBackgroundService.class);
+//        startService(intent);
 
 //        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
     }
 
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        Log.i("logtest", "onStart: ");
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        Log.i("logtest", "onResume: ");
+//    }
 
     protected String getSaltString(String SALTCHARS) {
         StringBuilder salt = new StringBuilder();
@@ -276,10 +279,10 @@ public class MainActivity extends AppCompatActivity {
             ZEGOLiveStreamingManager.getInstance().removeUserData();
             ZEGOLiveStreamingManager.getInstance().removeUserListeners();
             // if Call invitation,init after user login,may receive call request.
-            ZEGOCallInvitationManager.getInstance().removeUserData();
-            ZEGOCallInvitationManager.getInstance().removeUserListeners();
-            Intent intent = new Intent(this, CallBackgroundService.class);
-            stopService(intent);
+//            ZEGOCallInvitationManager.getInstance().removeUserData();
+//            ZEGOCallInvitationManager.getInstance().removeUserListeners();
+//            Intent intent = new Intent(this, CallBackgroundService.class);
+//            stopService(intent);
         }
     }
 
@@ -346,4 +349,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 }

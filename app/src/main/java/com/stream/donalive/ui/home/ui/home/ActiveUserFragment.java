@@ -1,10 +1,13 @@
 package com.stream.donalive.ui.home.ui.home;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
@@ -26,6 +29,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.permissionx.guolindev.PermissionX;
+import com.permissionx.guolindev.callback.RequestCallback;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.FragmentActiveUserBinding;
 import com.stream.donalive.databinding.FragmentMainBinding;
@@ -42,6 +47,8 @@ import com.stream.donalive.ui.home.ui.home.adapter.RestaurantAdapter;
 import com.stream.donalive.ui.home.ui.home.models.LiveUser;
 import com.stream.donalive.ui.utill.Constant;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -209,31 +216,101 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
         if (TextUtils.isEmpty(liveID)) {
             return;
         }
-        Intent intent;
-        if (Objects.equals(liveType, "0")){
-            intent = new Intent(getActivity().getApplication(), LiveStreamingActivity.class);
-            intent.putExtra("host", false);
-            intent.putExtra("liveID", liveID);
-            intent.putExtra("userId", userId);
-            intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
-            intent.putExtra("username", username);
-            intent.putExtra("uid", uid);
-            intent.putExtra("country_name", "");
-            startActivity(intent);
-        }else {
-            intent = new Intent(getActivity().getApplication(), LiveAudioRoomActivity.class);
-            intent.putExtra("host", false);
-            intent.putExtra("liveID", liveID);
-            intent.putExtra("userId", userId);
-            intent.putExtra("username", username);
-            intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
-            intent.putExtra("uid", uid);
-            intent.putExtra("country_name", "");
-            startActivity(intent);
+        List<String> permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
+        requestPermissionIfNeeded(permissions, new RequestCallback() {
+            @Override
+            public void onResult(boolean allGranted, @NonNull List<String> grantedList,
+                                 @NonNull List<String> deniedList) {
+                if (allGranted) {
+                   Intent intent;
+                    if (Objects.equals(liveType, "0")){
+                        intent = new Intent(getActivity().getApplication(), LiveStreamingActivity.class);
+                        intent.putExtra("host", false);
+                        intent.putExtra("liveID", liveID);
+                        intent.putExtra("userId", userId);
+                        intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+                        intent.putExtra("username", username);
+                        intent.putExtra("uid", uid);
+                        intent.putExtra("country_name", "");
+                        startActivity(intent);
+                    }else {
+                        intent = new Intent(getActivity().getApplication(), LiveAudioRoomActivity.class);
+                        intent.putExtra("host", false);
+                        intent.putExtra("liveID", liveID);
+                        intent.putExtra("userId", userId);
+                        intent.putExtra("username", username);
+                        intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+                        intent.putExtra("uid", uid);
+                        intent.putExtra("country_name", "");
+                        startActivity(intent);
 
+                    }
+                }
+            }
+        });
+    }
+
+    private void requestPermissionIfNeeded(List<String> permissions, RequestCallback requestCallback) {
+        boolean allGranted = true;
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(getActivity(), permission) != PackageManager.PERMISSION_GRANTED) {
+                allGranted = false;
+            }
+        }
+        if (allGranted) {
+            requestCallback.onResult(true, permissions, new ArrayList<>());
+            return;
         }
 
-
-
+        PermissionX.init(this).permissions(permissions).onExplainRequestReason((scope, deniedList) -> {
+            String message = "";
+            if (permissions.size() == 1) {
+                if (deniedList.contains(Manifest.permission.CAMERA)) {
+                    message = this.getString(R.string.permission_explain_camera);
+                } else if (deniedList.contains(Manifest.permission.RECORD_AUDIO)) {
+                    message = this.getString(R.string.permission_explain_mic);
+                }
+            } else {
+                if (deniedList.size() == 1) {
+                    if (deniedList.contains(Manifest.permission.CAMERA)) {
+                        message = this.getString(R.string.permission_explain_camera);
+                    } else if (deniedList.contains(Manifest.permission.RECORD_AUDIO)) {
+                        message = this.getString(R.string.permission_explain_mic);
+                    }
+                } else {
+                    message = this.getString(R.string.permission_explain_camera_mic);
+                }
+            }
+            scope.showRequestReasonDialog(deniedList, message, getString(R.string.ok));
+        }).onForwardToSettings((scope, deniedList) -> {
+            String message = "";
+            if (permissions.size() == 1) {
+                if (deniedList.contains(Manifest.permission.CAMERA)) {
+                    message = this.getString(R.string.settings_camera);
+                } else if (deniedList.contains(Manifest.permission.RECORD_AUDIO)) {
+                    message = this.getString(R.string.settings_mic);
+                }
+            } else {
+                if (deniedList.size() == 1) {
+                    if (deniedList.contains(Manifest.permission.CAMERA)) {
+                        message = this.getString(R.string.settings_camera);
+                    } else if (deniedList.contains(Manifest.permission.RECORD_AUDIO)) {
+                        message = this.getString(R.string.settings_mic);
+                    }
+                } else {
+                    message = this.getString(R.string.settings_camera_mic);
+                }
+            }
+            scope.showForwardToSettingsDialog(deniedList, message, getString(R.string.settings),
+                    getString(R.string.cancel));
+        }).request(new RequestCallback() {
+            @Override
+            public void onResult(boolean allGranted, @NonNull List<String> grantedList,
+                                 @NonNull List<String> deniedList) {
+                if (requestCallback != null) {
+                    requestCallback.onResult(allGranted, grantedList, deniedList);
+                }
+            }
+        });
     }
 }

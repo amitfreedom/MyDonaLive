@@ -70,6 +70,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private CollectionReference usersRef;
     private UserDetailsModel userDetails;
     private String level;
+    View giftButton;
 
     String TAG = "LiveAudioRoomActivity";
 
@@ -165,11 +166,11 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         });
         // add a gift button to liveAudioRoom audience
         GiftHelper giftHelper = new GiftHelper(findViewById(R.id.layout), String.valueOf(uid), username);
-        View giftButton = giftHelper.getGiftButton(this, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.serverSecret, roomID);
+        giftButton = giftHelper.getGiftButton(this, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.serverSecret, roomID);
 
         // Get reference to the giftButtonContainer
-//        FrameLayout giftButtonContainer = findViewById(R.id.giftButtonContainer);
-//        giftButtonContainer.addView(giftButton);
+        FrameLayout giftButtonContainer = findViewById(R.id.giftButtonContainer);
+        giftButtonContainer.addView(giftButton);
 
         giftButton.post(new Runnable() {
             @Override
@@ -181,11 +182,26 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
     }
 
+    private long pressedTime;
+    @Override
+    public void onBackPressed() {
+
+        if (pressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+//            finish();
+        } else {
+//            Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT).show();
+            exitDialog();
+        }
+        pressedTime = System.currentTimeMillis();
+    }
+
     private void exitDialog() {
 
         new MaterialAlertDialogBuilder(this)
                 .setTitle("Exit")
                 .setMessage("Are you sure you want to leave ?")
+                .setCancelable(false)
                 .setPositiveButton("Leave", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
