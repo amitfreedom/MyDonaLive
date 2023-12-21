@@ -67,8 +67,8 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentActiveUserBinding.inflate(inflater, container, false);
-        bottomAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.top_animantion);
-        binding.recyclerRestaurants.setAnimation(bottomAnimation);
+//        bottomAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.top_animantion);
+//        binding.recyclerRestaurants.setAnimation(bottomAnimation);
 
         return binding.getRoot();
     }

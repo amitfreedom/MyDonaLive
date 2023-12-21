@@ -56,7 +56,11 @@
         <activity
             android:name=".streaming.activity.LiveAudioRoomActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".streaming.activity.LiveStreamingActivity"
             android:exported="false"
@@ -118,6 +122,10 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/dialogActivityTheme" />
+
+        <meta-data
+            android:name="android.app.lib_name"
+            android:value="" />
     </application>
 
 </manifest>

@@ -98,7 +98,7 @@ public class OnboardingActivity extends AppCompatActivity {
             }
         });
 
-        binding.btnGoogle.setAnimation(bottomAnimation);
+//        binding.btnGoogle.setAnimation(bottomAnimation);
         binding.btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -339,7 +339,7 @@ public class OnboardingActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         Log.i("currentUser123", "onCreate: "+currentUser);
         if (currentUser == null) {
-//            oneTapSignIn();
+            oneTapSignIn();
         }
     }
 

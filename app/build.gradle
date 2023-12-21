@@ -82,9 +82,9 @@ dependencies {
 
 
     implementation "com.airbnb.android:lottie:5.1.1"
-
-//    implementation 'com.github.manjhi:util_repo:0.1.2'
-//    implementation 'com.androidadvance:topsnackbar:1.1.1'
+    implementation 'com.github.yyued:SVGAPlayer-Android:2.6.1'
+    implementation "io.github.tencent:vap:2.0.28"
+    implementation 'com.github.ZEGOCLOUD:zego_uikit_prebuilt_live_audio_room_android:+'
 
 
 

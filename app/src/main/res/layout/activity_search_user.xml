@@ -33,7 +33,7 @@
             android:drawableTint="@color/gray"
             android:layout_weight="1"
             android:maxLength="7"
-            android:inputType="text"
+            android:inputType="number"
             android:hint="Search ID" />
 
 <!--        <ImageView-->

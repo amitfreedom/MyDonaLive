@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,9 +19,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityLiveAudioRoomBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.streaming.ZEGOSDKKeyCenter;
+import com.stream.donalive.streaming.gift.GiftHelper;
 import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager;
 import com.stream.donalive.streaming.internal.business.RoomRequestExtendedData;
@@ -33,6 +38,8 @@ import com.stream.donalive.streaming.internal.utils.ToastUtil;
 import com.stream.donalive.streaming.internal.utils.Utils;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.utill.Constant;
+import com.zegocloud.uikit.prebuilt.liveaudioroom.ZegoUIKitPrebuiltLiveAudioRoomConfig;
+import com.zegocloud.uikit.prebuilt.liveaudioroom.ZegoUIKitPrebuiltLiveAudioRoomFragment;
 
 import im.zego.zegoexpress.constants.ZegoScenario;
 import im.zego.zegoexpress.constants.ZegoStreamResourceMode;
@@ -46,6 +53,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 public class LiveAudioRoomActivity extends AppCompatActivity {
 
@@ -98,6 +106,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 exitDialog();
             }
         });
+
+
 
 
         binding.liveAudioroomTopbar.setRoomID(roomID);
@@ -153,6 +163,22 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 }
             }
         });
+        // add a gift button to liveAudioRoom audience
+        GiftHelper giftHelper = new GiftHelper(findViewById(R.id.layout), String.valueOf(uid), username);
+        View giftButton = giftHelper.getGiftButton(this, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.serverSecret, roomID);
+
+        // Get reference to the giftButtonContainer
+//        FrameLayout giftButtonContainer = findViewById(R.id.giftButtonContainer);
+//        giftButtonContainer.addView(giftButton);
+
+        giftButton.post(new Runnable() {
+            @Override
+            public void run() {
+                giftButton.performClick();
+            }
+        });
+
+
     }
 
     private void exitDialog() {

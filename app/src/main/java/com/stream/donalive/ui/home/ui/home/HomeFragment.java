@@ -1,12 +1,15 @@
 package com.stream.donalive.ui.home.ui.home;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,6 +18,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.stream.donalive.databinding.FragmentHomeBinding;
 import com.stream.donalive.global.AppConstants;
@@ -61,6 +65,7 @@ public class HomeFragment extends Fragment {
             });
 
 
+
         return root;
     }
 
@@ -88,8 +93,8 @@ public class HomeFragment extends Fragment {
         MyPagerAdapter adapter = new MyPagerAdapter(getChildFragmentManager());
 //        adapter.addFragment(new MainFragment(), "Fresher");
         adapter.addFragment(new ActiveUserFragment(), "Popular");
-//        adapter.addFragment(new PopulerFragment(), "Live");
-//        adapter.addFragment(new PopulerFragment(), "Audio live");
+        adapter.addFragment(new ActiveUserFragment(), "Live");
+        adapter.addFragment(new ActiveUserFragment(), "Audio live");
 //        adapter.addFragment(new PopulerFragment(), "Pk battle");
         // Add more fragments as needed
         viewPager.setAdapter(adapter);

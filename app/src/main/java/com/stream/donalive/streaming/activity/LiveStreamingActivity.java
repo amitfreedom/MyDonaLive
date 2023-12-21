@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,11 +20,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -38,8 +41,10 @@ import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityLiveStreamingBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.streaming.ZEGOSDKKeyCenter;
 import com.stream.donalive.streaming.activity.adapter.ViewUserAdapter;
 import com.stream.donalive.streaming.activity.model.RoomUsers;
+import com.stream.donalive.streaming.gift.GiftHelper;
 import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager;
 import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager.LiveStreamingListener;
 import com.stream.donalive.streaming.internal.business.RoomRequestExtendedData;
@@ -53,6 +58,8 @@ import com.stream.donalive.streaming.internal.sdk.express.ExpressService;
 import com.stream.donalive.streaming.internal.sdk.express.IExpressEngineEventHandler;
 import com.stream.donalive.streaming.internal.sdk.zim.IZIMEventHandler;
 import com.stream.donalive.streaming.internal.utils.ToastUtil;
+import com.stream.donalive.ui.home.ui.explore.adapter.CountryAdapter;
+import com.stream.donalive.ui.home.ui.explore.models.CountryModel;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.home.ui.profile.models.UserModel;
 import com.stream.donalive.ui.utill.Constant;
@@ -140,8 +147,10 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         listenSDKEvent();
 
         binding.previewStart.setOnClickListener(v -> {
-//            binding.topView.setVisibility(View.VISIBLE);
             loginRoom();
+        });
+        binding.cardUserCount.setOnClickListener(v -> {
+            showBottomSheetDialog();
         });
 
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
@@ -186,7 +195,6 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
             // join right now
             ZEGOSDKManager.getInstance().expressService.openCamera(false);
             ZEGOSDKManager.getInstance().expressService.openMicrophone(false);
-//            binding.topView.setVisibility(View.VISIBLE);
             binding.previewStart.setVisibility(View.GONE);
             loginRoom();
         }
@@ -197,6 +205,23 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
                 .limit(LIMIT);
 
         setViewersAdapter();
+
+        // add a gift button to liveAudioRoom audience
+        GiftHelper giftHelper = new GiftHelper(findViewById(R.id.layout), String.valueOf(uid), username);
+        View giftButton = giftHelper.getGiftButton(this, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.serverSecret, liveID);
+
+        // Get reference to the giftButtonContainer
+//        FrameLayout giftButtonContainer = findViewById(R.id.giftButtonContainer);
+//        giftButtonContainer.addView(giftButton);
+
+        // Simulate a click on the giftButton
+        giftButton.post(new Runnable() {
+            @Override
+            public void run() {
+                giftButton.performClick();
+            }
+        });
+
     }
 
     private void exitDialog() {
@@ -338,6 +363,15 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
                 });
 
 
+    }
+
+    private void showBottomSheetDialog() {
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_viewers);
+
+//        RecyclerView recyclerView = bottomSheetDialog.findViewById(R.id.recycler_country);
+
+        bottomSheetDialog.show();
     }
 
     private void loginRoom() {
