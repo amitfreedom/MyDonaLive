@@ -254,7 +254,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
                         if (isHost){
                             updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
                         }
-                        onBackPressed();
+                        finish();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

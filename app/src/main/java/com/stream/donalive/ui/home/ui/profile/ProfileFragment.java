@@ -29,6 +29,8 @@ import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.ui.auth.activity.LoginActivity;
 import com.stream.donalive.ui.home.HomeActivity;
 import com.stream.donalive.ui.home.ui.profile.activity.EditProfileActivity;
+import com.stream.donalive.ui.home.ui.profile.activity.HostRegistrationFormActivity;
+import com.stream.donalive.ui.home.ui.profile.activity.LiveHistoryActivity;
 import com.stream.donalive.ui.home.ui.profile.activity.UpdateUserDetailsActivity;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.startup.activity.OnboardingActivity;
@@ -82,6 +84,20 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent mainIntent = new Intent(getActivity(), UpdateUserDetailsActivity.class);
+                startActivity(mainIntent);
+            }
+        });
+        binding.btnHostRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getActivity(), HostRegistrationFormActivity.class);
+                startActivity(mainIntent);
+            }
+        });
+        binding.btnLiveHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getActivity(), LiveHistoryActivity.class);
                 startActivity(mainIntent);
             }
         });
