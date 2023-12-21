@@ -8,7 +8,7 @@
     tools:context=".ui.home.ui.profile.activity.LiveHistoryActivity">
 
     <RelativeLayout
-        android:background="@color/pink_top"
+        android:background="@color/start_color"
         android:id="@+id/topbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize">
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:padding="@dimen/_10dp"
+            android:padding="@dimen/space10"
             android:src="@drawable/iv_back"
             app:tint="@color/white" />
 
@@ -29,12 +29,12 @@
             android:layout_centerInParent="true"
             android:text="Live History"
             style="@style/HeaderTextStyle"
-            android:textSize="@dimen/_16sp"
+            android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_1dp"
+            android:layout_height="@dimen/dp_1"
             android:layout_alignParentBottom="true"
             android:background="@color/very_light" />
 
@@ -69,7 +69,7 @@
                     android:layout_height="match_parent"
                     android:layout_toLeftOf="@id/view"
                     android:orientation="vertical"
-                    android:padding="@dimen/_10dp">
+                    android:padding="@dimen/dp_10">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -82,16 +82,16 @@
                             android:layout_height="wrap_content"
                             android:text="0"
                             android:textColor="@color/app_color2"
-                            android:textSize="@dimen/_20sp"
+                            android:textSize="@dimen/sp_20"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_5sp"
+                            android:layout_marginLeft="@dimen/dp_5"
                             android:text="Day"
                             android:textColor="@color/app_color2"
-                            android:textSize="@dimen/_12sp" />
+                            android:textSize="@dimen/sp_12" />
 
 
                     </LinearLayout>
@@ -101,8 +101,8 @@
                         android:id="@+id/tv_totalMin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_5dp"
-                        android:layout_marginBottom="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/dp_5"
+                        android:layout_marginBottom="@dimen/dp_5"
                         android:text="Total: 0 minutes" />
 
 
@@ -129,21 +129,21 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:padding="@dimen/_5dp"
+                        android:padding="@dimen/dp_5"
                         android:layout_gravity="right"
                         android:id="@+id/tv_monthdate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawableRight="@drawable/ic_baseline_calendar_today_24"
-                        android:drawablePadding="@dimen/_5dp" />
+                        android:drawablePadding="@dimen/dp_5" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_1dp"
+                        android:layout_height="@dimen/dp_1"
                         android:background="#EAE8E8"/>
 
                     <RelativeLayout
-                        android:padding="@dimen/_5dp"
+                        android:padding="@dimen/dp_5"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -154,21 +154,21 @@
                             android:layout_height="wrap_content"
                             android:text="Monthly Income:"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_12sp"
+                            android:textSize="@dimen/sp_11"
                             android:id="@+id/tv_label"
                             android:textStyle="bold" />
 
 
                         <TextView
                             android:layout_below="@id/tv_label"
-                            android:layout_marginLeft="@dimen/_5dp"
+                            android:layout_marginLeft="@dimen/dp_5"
                             android:id="@+id/tv_totalCoins"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawableRight="@drawable/ic_diamond1"
-                            android:drawablePadding="@dimen/_3dp"
+                            android:drawablePadding="@dimen/dp_3"
                             android:gravity="center_vertical"
-                            android:textSize="@dimen/_15sp"
+                            android:textSize="@dimen/sp_15"
                             android:layout_alignParentRight="true"
                             android:text="0"
                             android:textColor="@color/black"
@@ -182,17 +182,17 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_10dp"
+                android:layout_height="@dimen/dp_10"
                 android:background="#EAE8E8" />
 
             <TextView
 
                 android:background="@drawable/grey_stroke_square"
                 android:layout_width="match_parent"
-                android:layout_marginLeft="@dimen/_10dp"
-                android:layout_marginRight="@dimen/_10dp"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/_10dp"
+                android:padding="@dimen/dp_10"
                 android:gravity="center"
                 android:layout_gravity="center"
                 android:text="Live History"
@@ -202,9 +202,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_10dp"
-                android:layout_marginRight="@dimen/_10dp"
-                android:layout_marginBottom="@dimen/_10dp"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:background="@drawable/grey_stroke_square"
                 android:orientation="vertical">
 
@@ -226,7 +226,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:padding="@dimen/_10dp"
+                            android:padding="@dimen/dp_10"
                             android:text="Start"
                             android:textColor="@color/black"
                             android:textSize="@dimen/sp_10"
@@ -249,7 +249,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:padding="@dimen/_10dp"
+                            android:padding="@dimen/dp_10"
                             android:text="End"
                             android:textColor="@color/black"
                             android:textSize="@dimen/sp_10"
@@ -272,7 +272,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:padding="@dimen/_10dp"
+                            android:padding="@dimen/dp_10"
                             android:text="Duration"
                             android:textColor="@color/black"
                             android:textSize="@dimen/sp_10"
@@ -295,7 +295,7 @@
                     <!--                            android:layout_width="wrap_content"-->
                     <!--                            android:layout_height="wrap_content"-->
                     <!--                            android:layout_centerInParent="true"-->
-                    <!--                            android:padding="@dimen/_10dp"-->
+                    <!--                            android:padding="@dimen/dp_10"-->
                     <!--                            android:text="Type"-->
                     <!--                            android:textColor="@color/black"-->
                     <!--                            android:textSize="@dimen/sp_10"-->
@@ -319,7 +319,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:padding="@dimen/_10dp"
+                            android:padding="@dimen/dp_10"
                             android:text="Diamonds"
                             android:textColor="@color/black"
                             android:textSize="@dimen/sp_10"
