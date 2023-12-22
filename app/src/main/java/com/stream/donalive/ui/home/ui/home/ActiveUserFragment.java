@@ -22,6 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
@@ -46,6 +47,7 @@ import com.stream.donalive.ui.home.ui.home.adapter.ImageSliderAdapter;
 import com.stream.donalive.ui.home.ui.home.adapter.RestaurantAdapter;
 import com.stream.donalive.ui.home.ui.home.models.LiveUser;
 import com.stream.donalive.ui.utill.Constant;
+import com.stream.donalive.ui.utill.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,6 +70,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
     private int currentPage = 1; // Keeps track of the current page
     private int totalPages = 10; // Replace this with the total number of pages
     Animation topAnimantion,bottomAnimation,middleAnimation;
+    boolean speed;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -113,6 +116,8 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
             public void onPageScrollStateChanged(int state) {
             }
         });
+
+        speed = NetworkUtils.checkNetworkType(getActivity());
 
 
         // RecyclerView
@@ -207,6 +212,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
 
     @Override
     public void onActiveUserSelected(DocumentSnapshot user) {
+        speed = NetworkUtils.checkNetworkType(getActivity());
         Log.i("test12345", "onActiveUserSelected: "+user.get("userId"));
         String liveType= (String) user.get("liveType");
         String liveID= (String) user.get("liveID");
@@ -214,6 +220,11 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
         String username= (String) user.get("username");
         long uid= (long) user.get("uid");
         if (TextUtils.isEmpty(liveID)) {
+            return;
+        }
+
+        if (!speed){
+            Toast.makeText(getActivity(), "Your network Speed is poor", Toast.LENGTH_SHORT).show();
             return;
         }
         List<String> permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);

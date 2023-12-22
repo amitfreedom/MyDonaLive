@@ -1,5 +1,7 @@
 package com.stream.donalive.ui.activity;
 
+import static com.stream.donalive.ui.utill.NetworkUtils.checkNetworkType;
+
 import android.Manifest.permission;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -34,7 +36,15 @@ import com.stream.donalive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.donalive.streaming.internal.sdk.basic.ZEGOSDKUser;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.utill.Constant;
+import com.stream.donalive.ui.utill.NetworkUtils;
 
+import im.zego.zegoexpress.ZegoExpressEngine;
+import im.zego.zegoexpress.callback.IZegoEventHandler;
+import im.zego.zegoexpress.callback.IZegoNetworkProbeResultCallback;
+import im.zego.zegoexpress.constants.ZegoNetworkSpeedTestType;
+import im.zego.zegoexpress.entity.ZegoNetworkProbeResult;
+import im.zego.zegoexpress.entity.ZegoNetworkSpeedTestConfig;
+import im.zego.zegoexpress.entity.ZegoNetworkSpeedTestQuality;
 import im.zego.zim.callback.ZIMCallInvitationSentCallback;
 import im.zego.zim.entity.ZIMCallInvitationSentInfo;
 import im.zego.zim.entity.ZIMError;
@@ -71,27 +81,31 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception e){
 
         }
-
+        boolean speed = NetworkUtils.checkNetworkType(this);
         binding.startLiveStreaming.setOnClickListener(v -> {
-            List<String> permissions = Arrays.asList(permission.CAMERA, permission.RECORD_AUDIO);
-            requestPermissionIfNeeded(permissions, new RequestCallback() {
-                @Override
-                public void onResult(boolean allGranted, @NonNull List<String> grantedList,
-                                     @NonNull List<String> deniedList) {
-                    if (allGranted) {
-                        Intent intent = new Intent(MainActivity.this, LiveStreamingActivity.class);
-                        intent.putExtra("host", true);
-                        intent.putExtra("liveID", getSaltString(userDetails.getUserId()));
-                        intent.putExtra("userId", userDetails.getUserId());
-                        intent.putExtra("username", userDetails.getUsername());
-                        intent.putExtra("uid", userDetails.getUid());
-                        intent.putExtra("country_name", userDetails.getCountry_name());
-                        intent.putExtra("image", userDetails.getImage());
-                        intent.putExtra("level", userDetails.getLevel());
-                        startActivity(intent);
+            if (speed) {
+                List<String> permissions = Arrays.asList(permission.CAMERA, permission.RECORD_AUDIO);
+                requestPermissionIfNeeded(permissions, new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, @NonNull List<String> grantedList,
+                                         @NonNull List<String> deniedList) {
+                        if (allGranted) {
+                            Intent intent = new Intent(MainActivity.this, LiveStreamingActivity.class);
+                            intent.putExtra("host", true);
+                            intent.putExtra("liveID", getSaltString(userDetails.getUserId()));
+                            intent.putExtra("userId", userDetails.getUserId());
+                            intent.putExtra("username", userDetails.getUsername());
+                            intent.putExtra("uid", userDetails.getUid());
+                            intent.putExtra("country_name", userDetails.getCountry_name());
+                            intent.putExtra("image", userDetails.getImage());
+                            intent.putExtra("level", userDetails.getLevel());
+                            startActivity(intent);
+                        }
                     }
-                }
-            });
+                });
+            }else {
+                Toast.makeText(this, "Your network Speed is poor", Toast.LENGTH_SHORT).show();
+            }
         });
 
         binding.watchLiveStreaming.setOnClickListener(v -> {
@@ -224,6 +238,10 @@ public class MainActivity extends AppCompatActivity {
 
 //        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
+
+
+
 
     }
 
