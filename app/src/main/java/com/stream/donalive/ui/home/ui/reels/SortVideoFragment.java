@@ -45,9 +45,9 @@ public class SortVideoFragment extends Fragment {
 //        binding.viewPager.setAdapter(videoPagerAdapter);
 
 
-        videoPagerAdapter = new VideoPagerAdapter(getActivity());
-
-        binding.viewPager.setAdapter(videoPagerAdapter);
+//        videoPagerAdapter = new VideoPagerAdapter(getActivity());
+//
+//        binding.viewPager.setAdapter(videoPagerAdapter);
 
         return root;
     }
