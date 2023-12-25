@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 
+import com.opensource.svgaplayer.SVGASoundManager;
+import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.stream.donalive.R;
 //import com.zegocloud.uikit.ZegoUIKit;
 //import com.zegocloud.uikit.plugin.adapter.plugins.signaling.ZegoSignalingInRoomTextMessage;
@@ -38,6 +40,9 @@ public class GiftHelper {
 //        giftAnimation = new VAPAnimation(animationViewParent);
         this.userID = userID;
         this.userName = userName;
+
+
+
 
 //        try{
 //            // when someone send gift,will receive InRoomCommand or InRoomTextMessage
@@ -79,6 +84,7 @@ public class GiftHelper {
         imageView.setLayoutParams(layoutParams);
         // click will post json to server
         imageView.setOnClickListener(v -> {
+
             final String path = "https://zego-example-server-nextjs.vercel.app/api/send_gift";
             JSONObject jsonObject = new JSONObject();
             try {

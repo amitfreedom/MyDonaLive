@@ -84,7 +84,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Enable Firestore logging
-        FirebaseFirestore.setLoggingEnabled(true);
+//        FirebaseFirestore.setLoggingEnabled(true);
 
         // Firestore
         mFirestore = FirebaseFirestore.getInstance();

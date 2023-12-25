@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.vip.VIPActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/pink_top">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/iv_back"
+            android:padding="5dp"
+            android:background="@android:color/transparent"
+            android:layout_centerVertical="true"
+            app:tint="@color/white" />
+
+
+        <TextView
+            style="@style/NormalTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="VIP"
+            android:textSize="@dimen/text18" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:padding="@dimen/_10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardElevation="@dimen/_5dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:padding="10dp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.opensource.svgaplayer.SVGAImageView
+                    android:id="@+id/svga1"
+                    android:layout_width="match_parent"
+                    app:autoPlay="true"
+                    app:loopCount="100"
+                    android:soundEffectsEnabled="false"
+                    app:source="sports-car.svga"
+                    android:layout_height="@dimen/_150dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ferrari"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_18sp"
+                    android:fontFamily="@font/libre_baskerville_bold"
+                    android:textFontWeight="700"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="175,000"
+                        android:textColor="@color/pink_top"
+                        android:textSize="@dimen/_14sp"
+                        android:fontFamily="@font/libre_baskerville_regular"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" beans/week"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp"
+                        android:fontFamily="@font/libre_baskerville_regular"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardElevation="@dimen/_5dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:padding="10dp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.opensource.svgaplayer.SVGAImageView
+                    android:id="@+id/svga2"
+                    android:layout_width="match_parent"
+                    app:autoPlay="true"
+                    app:loopCount="100"
+                    android:soundEffectsEnabled="false"
+                    app:source="car.svga"
+                    android:layout_height="@dimen/_150dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Entry bell"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_18sp"
+                    android:fontFamily="@font/libre_baskerville_bold"
+                    android:textFontWeight="700"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="160,000"
+                        android:textColor="@color/pink_top"
+                        android:textSize="@dimen/_14sp"
+                        android:fontFamily="@font/libre_baskerville_regular"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" beans/week"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14sp"
+                        android:fontFamily="@font/libre_baskerville_regular"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <Button
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="addList"
+        android:text="Add"/>
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleGroup"
+        android:layout_margin="@dimen/dp_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonPurchasable"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:textAllCaps="false"
+            android:text="Purchasable"
+            android:backgroundTint="@color/pink_top"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSpecial"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:layout_weight="0.5"
+            android:text="Special"/>
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/svga_list_item"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        android:id="@+id/rv_vip_gift"/>
+
+</LinearLayout>

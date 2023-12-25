@@ -341,6 +341,7 @@
             android:background="@color/very_light"/>
 
         <TextView
+            android:id="@+id/btn_vip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Buy vip"

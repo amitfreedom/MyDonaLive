@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:background="@color/pink_top"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                app:riv_corner_radius="@dimen/_5dp"
+                android:id="@+id/iv_gift_image"
+                android:layout_width="@dimen/space140"
+                android:layout_height="@dimen/space140"
+                android:layout_margin="@dimen/space10"
+                android:scaleType="fitCenter"
+                android:src="@drawable/beauty_sticker_cool_girl"/>
+        <TextView
+            android:id="@+id/txt_gift_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="@color/white"
+            android:textFontWeight="700"
+            android:textSize="@dimen/_18sp"
+            android:fontFamily="@font/libre_baskerville_bold"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:paddingVertical="8dp"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/download"
+        android:background="?android:attr/selectableItemBackground"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="@dimen/_10dp">
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/txt_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Account ID : "
+            android:layout_gravity="center_vertical"
+            android:paddingVertical="8dp"/>
+
+        <TextView
+            android:id="@+id/txt_UID"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/txt_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1000002"
+            android:textColor="@color/black"
+            android:textFontWeight="700"
+            android:textSize="@dimen/_18sp"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/libre_baskerville_bold"
+            android:paddingVertical="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:backgroundTint="@color/pink_top"
+            android:textSize="@dimen/_14sp"
+            android:textColor="@color/white"
+            app:rippleColor="@color/gray"
+            android:text="@string/gift_for_friend"/>
+    </RelativeLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:paddingLeft="@dimen/_10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lease period"
+        android:textColor="@color/black"
+        android:textFontWeight="700"
+        android:textSize="@dimen/_18sp"
+        android:layout_gravity="center_vertical"
+        android:fontFamily="@font/sf_pro_display_bold"
+        android:paddingVertical="8dp"/>
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleGroup"
+        android:layout_margin="@dimen/dp_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_one_week"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:text="1 week"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_one_month"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:layout_weight="1"
+            android:text="1 month"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_six_month"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:text="6 months"/>
+
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingVertical="5dp"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_10dp">
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/txt_level_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/price"
+            android:layout_gravity="center_vertical"
+            android:paddingVertical="8dp"/>
+
+        <TextView
+            android:id="@+id/txt_price"
+            android:paddingStart="@dimen/_8dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/txt_level_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="140,000"
+            android:textColor="@color/black"
+            android:textFontWeight="700"
+            android:textSize="@dimen/text14"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/libre_baskerville_bold"
+            android:paddingVertical="8dp"
+            tools:ignore="RtlSymmetry" />
+
+        <TextView
+            android:layout_toEndOf="@id/txt_price"
+            android:layout_marginStart="@dimen/space5"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="beans"
+            android:layout_gravity="center_vertical"
+            android:paddingVertical="8dp"/>
+
+    </RelativeLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_topup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:backgroundTint="@color/pink_top"
+        android:textSize="@dimen/_14sp"
+        android:textColor="@color/white"
+        app:rippleColor="@color/gray"
+        android:layout_marginHorizontal="@dimen/_10dp"
+        android:layout_marginBottom="@dimen/_15dp"
+        android:text="Insufficient balance. Top-up now!"/>
+
+
+
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        android:id="@+id/shareLinearLayout"-->
+    <!--        android:background="?android:attr/selectableItemBackground"-->
+    <!--        android:padding="8dp">-->
+
+    <!--        <ImageView-->
+    <!--            android:layout_width="24dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:src="@drawable/ic_baseline_share_24"-->
+    <!--            android:layout_margin="8dp"/>-->
+
+    <!--        <TextView-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="Share"-->
+    <!--            android:layout_gravity="center_vertical"-->
+    <!--            android:padding="8dp"/>-->
+
+    <!--    </LinearLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        android:id="@+id/uploadLinearLaySout"-->
+    <!--        android:background="?android:attr/selectableItemBackground"-->
+    <!--        android:padding="8dp">-->
+
+    <!--        <ImageView-->
+    <!--            android:layout_width="24dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:src="@drawable/ic_baseline_add_to_drive_24"-->
+    <!--            android:layout_margin="8dp"/>-->
+
+    <!--        <TextView-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="Upload To Google Drive"-->
+    <!--            android:layout_gravity="center_vertical"-->
+    <!--            android:padding="8dp"/>-->
+
+    <!--    </LinearLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        android:id="@+id/copyLinearLayout"-->
+    <!--        android:background="?android:attr/selectableItemBackground"-->
+    <!--        android:padding="8dp">-->
+
+    <!--        <ImageView-->
+    <!--            android:layout_width="24dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:src="@drawable/ic_baseline_file_copy_24"-->
+    <!--            android:layout_margin="8dp"/>-->
+
+    <!--        <TextView-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="Copy Link"-->
+    <!--            android:layout_gravity="center_vertical"-->
+    <!--            android:padding="8dp"/>-->
+    <!--    </LinearLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        android:id="@+id/delete"-->
+    <!--        android:background="?android:attr/selectableItemBackground"-->
+    <!--        android:padding="8dp">-->
+
+    <!--        <ImageView-->
+    <!--            android:layout_width="24dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:src="@drawable/ic_baseline_delete_24"-->
+    <!--            android:layout_margin="8dp"/>-->
+
+    <!--        <TextView-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="Delete File Selection"-->
+    <!--            android:layout_gravity="center_vertical"-->
+    <!--            android:padding="8dp"/>-->
+    <!--    </LinearLayout>-->
+</LinearLayout>

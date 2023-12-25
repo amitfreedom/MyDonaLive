@@ -60,16 +60,16 @@ public class BottomMenuBar extends LinearLayout {
         setLayoutParams(new LayoutParams(-1, -2));
         setGravity(Gravity.END);
 
-//        ImageView messageButton = new ImageView(getContext());
-//        messageButton.setImageResource(R.drawable.audioroom_icon_im);
-//        messageButton.setScaleType(ImageView.ScaleType.FIT_XY);
-//        addView(messageButton, generateChildImageLayoutParams());
-//        messageButton.setOnClickListener(v -> {
-//            if (getContext() instanceof Activity) {
-//                BottomInputDialog bottomInputDialog = new BottomInputDialog(getContext());
-//                bottomInputDialog.show();
-//            }
-//        });
+        ImageView messageButton = new ImageView(getContext());
+        messageButton.setImageResource(R.drawable.audioroom_icon_im);
+        messageButton.setScaleType(ImageView.ScaleType.FIT_XY);
+        addView(messageButton, generateChildImageLayoutParams());
+        messageButton.setOnClickListener(v -> {
+            if (getContext() instanceof Activity) {
+                BottomInputDialog bottomInputDialog = new BottomInputDialog(getContext());
+                bottomInputDialog.show();
+            }
+        });
 
         childLinearLayout = new LinearLayout(getContext());
         childLinearLayout.setOrientation(LinearLayout.HORIZONTAL);

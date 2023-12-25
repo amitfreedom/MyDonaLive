@@ -19,6 +19,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.opensource.svgaplayer.SVGASoundManager;
+import com.opensource.svgaplayer.utils.log.SVGALogger;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityLiveAudioRoomBinding;
 import com.stream.donalive.global.AppConstants;
@@ -81,6 +83,9 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         usersRef = firestore.collection(Constant.LOGIN_DETAILS);
+
+        SVGALogger.INSTANCE.setLogEnabled(true);
+        SVGASoundManager.INSTANCE.init();
 
 
         boolean isHost = getIntent().getBooleanExtra("host", true);

@@ -18,7 +18,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/top_color">
+            android:background="@color/pink_top">
 
             <ImageButton
                 android:layout_width="wrap_content"

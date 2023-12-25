@@ -35,6 +35,7 @@ import com.stream.donalive.ui.home.ui.profile.activity.UpdateUserDetailsActivity
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.startup.activity.OnboardingActivity;
 import com.stream.donalive.ui.utill.Constant;
+import com.stream.donalive.ui.vip.VIPActivity;
 
 import java.util.Objects;
 
@@ -98,6 +99,13 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent mainIntent = new Intent(getActivity(), LiveHistoryActivity.class);
+                startActivity(mainIntent);
+            }
+        });
+        binding.btnVip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getActivity(), VIPActivity.class);
                 startActivity(mainIntent);
             }
         });
