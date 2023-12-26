@@ -10,91 +10,57 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FollowUnfollowManager {
 
-    public static void followUser(String userId, String targetUserId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        // Add targetUserId to the current user's following list
-        DocumentReference userRef = db.collection("users").document(userId);
-        userRef.update("following." + targetUserId, true)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.i("addOnSuccessListener123", "onSuccess: ");
-                        // Successfully added targetUserId to the following list
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.i("addOnSuccessListener123", "Exception: "+e);
-                        // Handle failure to add targetUserId to the following list
-                    }
-                });
-
-        // Add userId to the target user's followers list
-        DocumentReference targetUserRef = db.collection("users").document(targetUserId);
-        targetUserRef.update("followers." + userId, true)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.i("addOnSuccessListener123", "onSuccess: ");
-                        // Successfully added userId to the target user's followers list
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.i("addOnSuccessListener123", "Exception: "+e);
-                        // Handle failure to add userId to the target user's followers list
-                    }
-                });
-
-
-
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("targetUserId", targetUserId);
-//        // Add targetUserId to the current user's following list
-//        CollectionReference followingRef = db.collection("following").document(userId).set("ids",FieldValue.arrayUnion("213"));
-//        followingRef.add(map).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//            @Override
-//            public void onSuccess(DocumentReference documentReference) {
-//
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//
-//            }
-//        })
-;
-        // Add userId to the target user's followers list
-//        CollectionReference followersRef = db.collection("followers").document(targetUserId).collection("users");
-//        followersRef.document(userId).set(true);
-//        DocumentReference userRef = db.collection("users").document(userId);
-//        DocumentReference targetUserRef = db.collection("users").document(targetUserId);
-//
-//        // Update the current user's following list
-//        userRef.update("following." + targetUserId, true);
-//
-//        // Update the target user's followers list
-//        targetUserRef.update("followers." + userId, true);
+    public interface Select{
+        void onSuccess(String status);
     }
 
-    public void unfollowUser(String userId, String targetUserId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Remove targetUserId from the current user's following list
-        CollectionReference followingRef = db.collection("following").document(userId).collection("users");
-        followingRef.document(targetUserId).delete();
+    Select select;
 
-        // Remove userId from the target user's followers list
-        CollectionReference followersRef = db.collection("followers").document(targetUserId).collection("users");
-        followersRef.document(userId).delete();
+    public FollowUnfollowManager(Select select) {
+        this.select = select;
+    }
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public void followUser(String currentUserId, String targetUserId) {
+        // Update the current user's following list
+        DocumentReference currentUserRef = db.collection("users").document(currentUserId);
+        currentUserRef.set(new HashMap<String, Object>() {{
+            put("following", Arrays.asList(targetUserId));
+        }}, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                select.onSuccess("You have successfully following");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                select.onSuccess("Something went wrong"+e);
+            }
+        });
+
+        // Update the target user's followers list
+        DocumentReference targetUserRef = db.collection("users").document(targetUserId);
+        targetUserRef.set(new HashMap<String, Object>() {{
+            put("followers", Arrays.asList(currentUserId));
+        }}, SetOptions.merge());
+    }
+
+    public void unfollowUser(String currentUserId, String targetUserId) {
+        // Remove the targetUserId from the current user's following list
+        DocumentReference currentUserRef = db.collection("users").document(currentUserId);
+        currentUserRef.update("following", FieldValue.arrayRemove(targetUserId));
+
+        // Remove the currentUserId from the target user's followers list
+        DocumentReference targetUserRef = db.collection("users").document(targetUserId);
+        targetUserRef.update("followers", FieldValue.arrayRemove(currentUserId));
     }
 }
 

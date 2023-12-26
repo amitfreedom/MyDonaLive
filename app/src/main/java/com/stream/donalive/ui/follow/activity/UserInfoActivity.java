@@ -27,6 +27,7 @@ import com.stream.donalive.databinding.ActivityUserInfoBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.ui.follow.TestUser;
+import com.stream.donalive.ui.follow.methods.FirestoreUtils;
 import com.stream.donalive.ui.follow.methods.FollowUnfollowManager;
 import com.stream.donalive.ui.utill.Constant;
 
@@ -72,7 +73,13 @@ public class UserInfoActivity extends AppCompatActivity {
         binding.btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(UserInfoActivity.this, "Coming soon...!", Toast.LENGTH_SHORT).show();
+                new FollowUnfollowManager(new FollowUnfollowManager.Select() {
+                    @Override
+                    public void onSuccess(String status) {
+                        checkFollowFollowingStatus();
+                        Toast.makeText(UserInfoActivity.this, status, Toast.LENGTH_SHORT).show();
+                    }
+                }).followUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
 //                followUser1(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
 //                FollowUnfollowManager.followUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
 
@@ -82,6 +89,14 @@ public class UserInfoActivity extends AppCompatActivity {
         binding.btnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                new FollowUnfollowManager(new FollowUnfollowManager.Select() {
+                    @Override
+                    public void onSuccess(String status) {
+
+                    }
+                }).unfollowUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
+
                 Toast.makeText(UserInfoActivity.this, "Coming soon...!", Toast.LENGTH_SHORT).show();
 //                followUser1(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
 //                FollowUnfollowManager.followUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
@@ -100,6 +115,31 @@ public class UserInfoActivity extends AppCompatActivity {
         }else {
             Glide.with(this).load(image).into(binding.ivProfileImage);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkFollowFollowingStatus();
+    }
+
+    private void checkFollowFollowingStatus() {
+        FirestoreUtils.checkFollowStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId, new FirestoreUtils.FollowStatusCallback() {
+            @Override
+            public void onFollowStatus(boolean isFollowing) {
+                if (isFollowing) {
+                    binding.txtFollow.setText("Following");
+                    // Update UI for following status
+                    // For example, change the text or color of a button
+                } else {
+                    binding.txtFollow.setText("+ Follow");
+
+                    // Update UI for not following status
+                    // For example, change the text or color of a button
+                }
+            }
+        });
+
     }
 
     @Override
