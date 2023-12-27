@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginVertical="@dimen/_5dp"
     android:layout_marginHorizontal="@dimen/_10dp"
+    app:cardElevation="@dimen/space3"
     app:cardCornerRadius="3dp">
 
     <RelativeLayout
@@ -42,6 +43,14 @@
                 android:textColor="@color/gray"
                 android:text="id"/>
         </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_right_arrow_24"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            app:tint="@color/gray" />
 
     </RelativeLayout>
 

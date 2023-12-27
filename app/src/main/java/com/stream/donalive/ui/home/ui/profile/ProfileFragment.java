@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +28,8 @@ import com.stream.donalive.databinding.FragmentProfileBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.ui.auth.activity.LoginActivity;
+import com.stream.donalive.ui.follow.activity.FollowFollowingActivity;
+import com.stream.donalive.ui.follow.methods.FirestoreHelper;
 import com.stream.donalive.ui.home.HomeActivity;
 import com.stream.donalive.ui.home.ui.profile.activity.EditProfileActivity;
 import com.stream.donalive.ui.home.ui.profile.activity.HostRegistrationFormActivity;
@@ -37,6 +40,7 @@ import com.stream.donalive.ui.startup.activity.OnboardingActivity;
 import com.stream.donalive.ui.utill.Constant;
 import com.stream.donalive.ui.vip.VIPActivity;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -65,7 +69,8 @@ public class ProfileFragment extends Fragment {
         usersRef = db.collection(Constant.LOGIN_DETAILS);
 
         init();
-//        fetchUserDetails("sRRvN0AQndXsdvXAfKKJhV3nTin2");
+        fetchFollowingUserList();
+        fetchFollowersUserList();
         fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
     }
@@ -106,6 +111,22 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent mainIntent = new Intent(getActivity(), VIPActivity.class);
+                startActivity(mainIntent);
+            }
+        });
+        binding.btnFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getActivity(), FollowFollowingActivity.class);
+                mainIntent.putExtra("type","following");
+                startActivity(mainIntent);
+            }
+        });
+        binding.btnFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getActivity(), FollowFollowingActivity.class);
+                mainIntent.putExtra("type","follow");
                 startActivity(mainIntent);
             }
         });
@@ -165,6 +186,40 @@ public class ProfileFragment extends Fragment {
                     .into(binding.profileImage);
         }
 
+    }
+
+
+
+    private void fetchFollowingUserList() {
+        new FirestoreHelper().fetchFollowingList(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID), new FirestoreHelper.FetchListCallback<List<String>>() {
+            @Override
+            public void onSuccess(List<String> result) {
+                int followingCount = result.size();
+                binding.txtFollowingCount.setText(String.valueOf(followingCount));
+            }
+
+            @Override
+            public void onError(String error) {
+//                Toast.makeText(getActivity(), ""+error, Toast.LENGTH_SHORT).show();
+                // Handle error: Show an error message or perform necessary actions
+            }
+        });
+    }
+
+    private void fetchFollowersUserList() {
+        new FirestoreHelper().fetchFollowersList(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID), new FirestoreHelper.FetchListCallback<List<String>>() {
+            @Override
+            public void onSuccess(List<String> result) {
+                int followersCount = result.size();
+                binding.txtFollowersCount.setText(String.valueOf(followersCount));
+            }
+
+            @Override
+            public void onError(String error) {
+//                Toast.makeText(getActivity(), ""+error, Toast.LENGTH_SHORT).show();
+                // Handle error: Show an error message or perform necessary actions
+            }
+        });
     }
 
     @Override

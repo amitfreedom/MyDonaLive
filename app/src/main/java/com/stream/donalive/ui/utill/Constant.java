@@ -7,6 +7,7 @@ public class Constant {
 
 //    collection name
     public  static final String LIVE_DETAILS  = "live_details";
+    public  static final String MESSAGE  = "messages";
     public  static final String VIP  = "vip";
     public  static final String LOGIN_DETAILS  = "login_details";
     public  static final String USERID  = "userId";

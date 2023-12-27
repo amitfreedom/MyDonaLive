@@ -5,6 +5,7 @@ import static androidx.fragment.app.FragmentManager.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,12 +27,14 @@ import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityUserInfoBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.ui.chat.activity.ConversationActivity;
 import com.stream.donalive.ui.follow.TestUser;
 import com.stream.donalive.ui.follow.methods.FirestoreUtils;
 import com.stream.donalive.ui.follow.methods.FollowUnfollowManager;
 import com.stream.donalive.ui.utill.Constant;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -46,6 +49,7 @@ public class UserInfoActivity extends AppCompatActivity {
     private String image;
     private String uid;
     private FirebaseFirestore mFirestore;
+    private boolean isFollowingUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,9 @@ public class UserInfoActivity extends AppCompatActivity {
         level = getIntent().getStringExtra("level");
         uid = getIntent().getStringExtra("uid");
 
+//        createDocuments(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
+        checkFollowFollowingStatus();
+
         updateUI();
 
         binding.backPress.setOnClickListener(new View.OnClickListener() {
@@ -73,37 +80,37 @@ public class UserInfoActivity extends AppCompatActivity {
         binding.btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new FollowUnfollowManager(new FollowUnfollowManager.Select() {
-                    @Override
-                    public void onSuccess(String status) {
-                        checkFollowFollowingStatus();
-                        Toast.makeText(UserInfoActivity.this, status, Toast.LENGTH_SHORT).show();
-                    }
-                }).followUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
-//                followUser1(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
-//                FollowUnfollowManager.followUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
-
-
+                if (isFollowingUser){
+                    new FollowUnfollowManager(new FollowUnfollowManager.Select() {
+                        @Override
+                        public void onSuccess(String status) {
+                            checkFollowFollowingStatus();
+                            Toast.makeText(UserInfoActivity.this, status, Toast.LENGTH_SHORT).show();
+                        }
+                    }).unfollowUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
+                }else {
+                    new FollowUnfollowManager(new FollowUnfollowManager.Select() {
+                        @Override
+                        public void onSuccess(String status) {
+                            checkFollowFollowingStatus();
+                            Toast.makeText(UserInfoActivity.this, status, Toast.LENGTH_SHORT).show();
+                        }
+                    }).followUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
+                }
             }
         });
         binding.btnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                new FollowUnfollowManager(new FollowUnfollowManager.Select() {
-                    @Override
-                    public void onSuccess(String status) {
-
-                    }
-                }).unfollowUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
-
-                Toast.makeText(UserInfoActivity.this, "Coming soon...!", Toast.LENGTH_SHORT).show();
-//                followUser1(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
-//                FollowUnfollowManager.followUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
-
-
+                Intent intent = new Intent(UserInfoActivity.this, ConversationActivity.class);
+                intent.putExtra("senderId",ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+                intent.putExtra("receiverId",userId);
+                intent.putExtra("image",image);
+                intent.putExtra("username",username);
+                startActivity(intent);
             }
         });
+
     }
 
     private void updateUI() {
@@ -120,7 +127,7 @@ public class UserInfoActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        checkFollowFollowingStatus();
+
     }
 
     private void checkFollowFollowingStatus() {
@@ -128,14 +135,11 @@ public class UserInfoActivity extends AppCompatActivity {
             @Override
             public void onFollowStatus(boolean isFollowing) {
                 if (isFollowing) {
+                    isFollowingUser= true;
                     binding.txtFollow.setText("Following");
-                    // Update UI for following status
-                    // For example, change the text or color of a button
                 } else {
+                    isFollowingUser= false;
                     binding.txtFollow.setText("+ Follow");
-
-                    // Update UI for not following status
-                    // For example, change the text or color of a button
                 }
             }
         });

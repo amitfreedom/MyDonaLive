@@ -315,5 +315,6 @@
     <string name="select_payment_receival_type">*Select payment Receival Type:</string>
     <string name="gift_for_friend">Gift for friend</string>
     <string name="price">Price:</string>
+    <string name="following">Following</string>
 
 </resources>
