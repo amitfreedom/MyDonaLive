@@ -47,7 +47,10 @@ import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.entity.ZegoPlayerConfig;
 import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.callback.ZIMRoomAttributesOperatedCallback;
+import im.zego.zim.entity.ZIMAppConfig;
 import im.zego.zim.entity.ZIMError;
+import im.zego.zim.entity.ZIMMessage;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -166,6 +169,11 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     initListenerAfterLoginRoom();
                 }
             }
+        });
+
+        ZEGOLiveAudioRoomManager.getInstance().updateUserAvatarUrl(Constant.USER_PLACEHOLDER_PATH,(userAvatarUrl, errorInfo) -> {
+            Toast.makeText(this, ""+userAvatarUrl, Toast.LENGTH_SHORT).show();
+
         });
         // add a gift button to liveAudioRoom audience
         GiftHelper giftHelper = new GiftHelper(findViewById(R.id.layout), String.valueOf(uid), username);
