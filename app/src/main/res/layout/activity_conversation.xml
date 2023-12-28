@@ -62,7 +62,6 @@
         android:id="@+id/rv_message"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_inroom_message"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
     <RelativeLayout

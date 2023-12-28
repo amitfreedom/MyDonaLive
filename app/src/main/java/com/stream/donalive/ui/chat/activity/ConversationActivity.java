@@ -1,13 +1,24 @@
 package com.stream.donalive.ui.chat.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
+import static androidx.fragment.app.FragmentManager.TAG;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -16,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityConversationBinding;
+import com.stream.donalive.ui.chat.adapter.ChatAdapter;
 import com.stream.donalive.ui.chat.adapter.MessageAdapter;
 import com.stream.donalive.ui.chat.model.Message;
 import com.stream.donalive.ui.home.ui.home.adapter.ActiveUserAdapter;
@@ -28,14 +40,21 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ConversationActivity extends AppCompatActivity{
+    private static final String TAG = "ConversationActivity";
     private ActivityConversationBinding binding;
     private static final int LIMIT = 50;
     private Query mQuery;
     String senderId,receiverId,username,image;
-    private MessageAdapter mAdapter;
+//    private MessageAdapter mAdapter;
 
     private FirebaseFirestore mFirestore;
 
+    private DatabaseReference mFirebaseRef;
+    private String mId;
+    private List<Message> mChats;
+    private ChatAdapter mAdapter;
+
+    @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,13 +66,22 @@ public class ConversationActivity extends AppCompatActivity{
         username=getIntent().getStringExtra("username");
         image=getIntent().getStringExtra("image");
 
-        mQuery = mFirestore.collection(Constant.MESSAGE)
-//                .whereEqualTo("senderId", senderId)
-//                .whereEqualTo("receiverId", receiverId)
-                .orderBy("timestamp", Query.Direction.ASCENDING)
-                .limit(LIMIT);
+        mChats = new ArrayList<>();
 
+        /**
+         * Firebase - Inicialize
+         */
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        mFirebaseRef = database.getReference("message");
+        mId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         setUserData(image,username);
+
+
+//        binding.rvMessage.setLayoutManager(new LinearLayoutManager(this));
+        //mRecyclerView.setItemAnimator(new SlideInOutLeftItemAnimator(mRecyclerView));
+        mAdapter = new ChatAdapter(mChats,senderId);
+        binding.rvMessage.setAdapter(mAdapter);
+
         binding.ivSendMessage.setOnClickListener(v -> {
             if (!Objects.requireNonNull(binding.etInput.getText()).toString().trim().equals("")){
                 sendMessage(senderId,receiverId,binding.etInput.getText().toString());
@@ -62,34 +90,52 @@ public class ConversationActivity extends AppCompatActivity{
             }
 
         });
-
-        mAdapter = new MessageAdapter(mQuery, new MessageAdapter.OnMessageUserSelectedListener() {
+        mFirebaseRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onMessageUserSelected(DocumentSnapshot user) {
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot != null && dataSnapshot.getValue() != null) {
+                    try {
 
-            }
-        }) {
-            @Override
-            protected void onDataChanged() {
-                // Show/hide content if the query returns empty.
-                if (getItemCount() == 0) {
-                    binding.rvMessage.setVisibility(View.GONE);
-//                    binding.viewEmpty.setVisibility(View.VISIBLE);
-                } else {
-                    binding.rvMessage.setVisibility(View.VISIBLE);
-//                    binding.viewEmpty.setVisibility(View.GONE);
+                        Message message = dataSnapshot.getValue(Message.class);
+
+                        if (message.getReceiverId().equals(senderId) && message.getSenderId().equals(receiverId) ||
+                                message.getReceiverId().equals(receiverId) && message.getSenderId().equals(senderId)){
+                            mChats.add(message);
+                        }
+//
+
+                        binding.rvMessage.scrollToPosition(mChats.size() - 1);
+                        mAdapter.notifyItemInserted(mChats.size() - 1);
+                    } catch (Exception ex) {
+                        Log.e(TAG, ex.getMessage());
+                    }
+                }
+                for (int i = 0; i < mChats.size(); i++) {
+                    Log.i("klhdfghkjkdfhgdjkfg", "onChildAdded: message ="+mChats.get(i).getMessageText());
+
                 }
             }
 
             @Override
-            protected void onError(FirebaseFirestoreException e) {
-                Log.e("FirebaseFirestoreException", "onError: "+e );
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
             }
 
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-        };
-        binding.rvMessage.setAdapter(mAdapter);
+            }
 
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, databaseError.getMessage());
+            }
+        });
     }
 
     private void setUserData(String image, String username) {
@@ -110,50 +156,15 @@ public class ConversationActivity extends AppCompatActivity{
     }
 
     public void sendMessage(String senderId, String receiverId, String messageText) {
+        long timestamp = System.currentTimeMillis();
         Map<String, Object> message = new HashMap<>();
         message.put("senderId", senderId);
         message.put("receiverId", receiverId);
         message.put("messageText", messageText);
-        message.put("timestamp", FieldValue.serverTimestamp());
+        message.put("deviceId", mId);
+        message.put("timestamp", timestamp);
 
-        mFirestore.collection("messages")
-                .add(message)
-                .addOnSuccessListener(documentReference -> {
-                    binding.etInput.setText("");
-                    // Message sent successfully
-                    // Handle success (if needed)
-                })
-                .addOnFailureListener(e -> {
-                    // Handle any errors
-                    // Log or show an error message
-                });
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Start listening for Firestore updates
-        if (mAdapter != null) {
-            mAdapter.startListening();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAdapter != null) {
-            mAdapter.stopListening();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mAdapter != null) {
-            mAdapter.stopListening();
-        }
-        binding=null;
+        mFirebaseRef.push().setValue(message);
     }
 
 

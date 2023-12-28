@@ -6,7 +6,8 @@ public class Message {
     private String senderId;
     private String receiverId;
     private String messageText;
-    private Date timestamp;
+    private String deviceId;
+    private long timestamp;
 
     // Add constructors, getters, setters as needed
 
@@ -14,10 +15,11 @@ public class Message {
     public Message() {
     }
 
-    public Message(String senderId, String receiverId, String messageText, Date timestamp) {
+    public Message(String senderId, String receiverId, String messageText, String deviceId, long timestamp) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.messageText = messageText;
+        this.deviceId = deviceId;
         this.timestamp = timestamp;
     }
 
@@ -45,11 +47,19 @@ public class Message {
         this.messageText = messageText;
     }
 
-    public Date getTimestamp() {
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 }
