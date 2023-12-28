@@ -35,14 +35,14 @@ public class ApplicationClass extends Application {
         singleton = new Singleton();
 
         initZEGOSDK();
-        ZIMKit.initWith(this, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.appSign);
-        ZIMKit.initNotifications();
-
-        InputConfig inputConfig = new InputConfig();
-        inputConfig.showVoiceButton = true;
-        inputConfig.showEmojiButton = true;
-        inputConfig.showAddButton = true;
-        ZIMKit.setInputConfig(inputConfig);
+//        ZIMKit.initWith(this, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.appSign);
+//        ZIMKit.initNotifications();
+//
+//        InputConfig inputConfig = new InputConfig();
+//        inputConfig.showVoiceButton = true;
+//        inputConfig.showEmojiButton = true;
+//        inputConfig.showAddButton = true;
+//        ZIMKit.setInputConfig(inputConfig);
 
 
     }

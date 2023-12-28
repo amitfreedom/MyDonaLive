@@ -22,7 +22,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.stream.donalive.R;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.streaming.ZEGOSDKKeyCenter;
 import com.stream.donalive.ui.home.HomeActivity;
+import com.zegocloud.zimkit.services.ZIMKit;
+import com.zegocloud.zimkit.services.config.InputConfig;
 
 public class SplashActivity extends AppCompatActivity {
     private static final int SPLASH_SCREEN_TIME_OUT = 2000;
@@ -78,6 +81,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }
         }, SPLASH_SCREEN_TIME_OUT);
+
     }
 
     private void startMarqueeAnimation1() {

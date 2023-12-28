@@ -13,6 +13,10 @@ import android.widget.LinearLayout.LayoutParams;
 import com.opensource.svgaplayer.SVGASoundManager;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.stream.donalive.R;
+import com.zegocloud.uikit.ZegoUIKit;
+import com.zegocloud.uikit.plugin.adapter.plugins.signaling.ZegoSignalingInRoomTextMessage;
+import com.zegocloud.uikit.service.defines.ZegoInRoomCommandListener;
+import com.zegocloud.uikit.service.defines.ZegoUIKitUser;
 //import com.zegocloud.uikit.ZegoUIKit;
 //import com.zegocloud.uikit.plugin.adapter.plugins.signaling.ZegoSignalingInRoomTextMessage;
 //import com.zegocloud.uikit.service.defines.ZegoInRoomCommandListener;
@@ -44,30 +48,30 @@ public class GiftHelper {
 
 
 
-//        try{
-//            // when someone send gift,will receive InRoomCommand or InRoomTextMessage
-//            ZegoUIKit.addInRoomCommandListener(new ZegoInRoomCommandListener() {
-//                @Override
-//                public void onInRoomCommandReceived(ZegoUIKitUser fromUser, String command) {
-//                    if (!fromUser.userID.equals(userID) && command.contains("gift_type")) {
-//                        showAnimation();
-//                    }
-//                }
-//            });
-////
-////        // when someone send gift,will receive InRoomCommand or InRoomTextMessage
-//            ZegoUIKit.getSignalingPlugin().addInRoomTextMessageListener((messages, s) -> {
-//                if (!messages.isEmpty()) {
-//                    ZegoSignalingInRoomTextMessage message = messages.get(0);
-//                    if (!message.senderUserID.equals(userID)) {
-//                        showAnimation();
-//                    }
-//                }
-//            });
+        try{
+            // when someone send gift,will receive InRoomCommand or InRoomTextMessage
+            ZegoUIKit.addInRoomCommandListener(new ZegoInRoomCommandListener() {
+                @Override
+                public void onInRoomCommandReceived(ZegoUIKitUser fromUser, String command) {
+                    if (!fromUser.userID.equals(userID) && command.contains("gift_type")) {
+                        showAnimation();
+                    }
+                }
+            });
 //
-//        }catch (Exception e){
-//
-//        }
+//        // when someone send gift,will receive InRoomCommand or InRoomTextMessage
+            ZegoUIKit.getSignalingPlugin().addInRoomTextMessageListener((messages, s) -> {
+                if (!messages.isEmpty()) {
+                    ZegoSignalingInRoomTextMessage message = messages.get(0);
+                    if (!message.senderUserID.equals(userID)) {
+                        showAnimation();
+                    }
+                }
+            });
+
+        }catch (Exception e){
+
+        }
     }
 
     public View getGiftButton(Context context, long appID, String serverSecret, String roomID) {

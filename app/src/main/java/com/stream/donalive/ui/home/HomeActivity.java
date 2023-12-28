@@ -97,12 +97,12 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        ZIMKit.connectUser(String.valueOf(userDetails.getUid()), userDetails.getUsername(), !Objects.equals(userDetails.getImage(), "") ?userDetails.getImage():Constant.USER_PLACEHOLDER_PATH, error -> {
-            if (error.code != ZIMErrorCode.SUCCESS) {
-                String message = error.message + ": " + error.code.value();
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-            }
-        });
+//        ZIMKit.connectUser(String.valueOf(userDetails.getUid()), userDetails.getUsername(), !Objects.equals(userDetails.getImage(), "") ?userDetails.getImage():Constant.USER_PLACEHOLDER_PATH, error -> {
+//            if (error.code != ZIMErrorCode.SUCCESS) {
+//                String message = error.message + ": " + error.code.value();
+//                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     private void signInZEGOSDK(String userID, String userName, ZEGOSDKCallBack callback) {

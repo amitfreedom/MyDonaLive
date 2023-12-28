@@ -27,12 +27,14 @@ import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityUserInfoBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.streaming.ZEGOSDKKeyCenter;
 import com.stream.donalive.ui.chat.activity.ConversationActivity;
 import com.stream.donalive.ui.follow.TestUser;
 import com.stream.donalive.ui.follow.methods.FirestoreUtils;
 import com.stream.donalive.ui.follow.methods.FollowUnfollowManager;
 import com.stream.donalive.ui.utill.Constant;
 import com.zegocloud.zimkit.services.ZIMKit;
+import com.zegocloud.zimkit.services.config.InputConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,6 +69,22 @@ public class UserInfoActivity extends AppCompatActivity {
         image = getIntent().getStringExtra("image");
         level = getIntent().getStringExtra("level");
         uid = getIntent().getStringExtra("uid");
+
+//        ZIMKit.initWith(getApplication(), ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.appSign);
+//        ZIMKit.initNotifications();
+//
+//        InputConfig inputConfig = new InputConfig();
+//        inputConfig.showVoiceButton = true;
+//        inputConfig.showEmojiButton = true;
+//        inputConfig.showAddButton = true;
+//        ZIMKit.setInputConfig(inputConfig);
+//
+//        ZIMKit.connectUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID), "userDetails.getUsername()",Constant.USER_PLACEHOLDER_PATH, error -> {
+//            if (error.code != ZIMErrorCode.SUCCESS) {
+//                String message = error.message + ": " + error.code.value();
+//                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
 //        createDocuments(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userId);
         checkFollowFollowingStatus();

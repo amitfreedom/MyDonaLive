@@ -40,7 +40,7 @@ public class SVGAAnimation implements GiftAnimation {
             @Override
             public void onComplete(@NonNull SVGAVideoEntity svgaVideoEntity) {
                 SVGAImageView svgaImageView = new SVGAImageView(parentView.getContext());
-                svgaImageView.setLoops(1);
+                svgaImageView.setLoops(2);
                 parentView.addView(svgaImageView);
                 svgaImageView.setVideoItem(svgaVideoEntity);
                 svgaImageView.stepToFrame(0, true);
