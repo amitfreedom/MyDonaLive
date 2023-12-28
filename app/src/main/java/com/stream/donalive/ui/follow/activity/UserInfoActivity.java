@@ -32,12 +32,15 @@ import com.stream.donalive.ui.follow.TestUser;
 import com.stream.donalive.ui.follow.methods.FirestoreUtils;
 import com.stream.donalive.ui.follow.methods.FollowUnfollowManager;
 import com.stream.donalive.ui.utill.Constant;
+import com.zegocloud.zimkit.services.ZIMKit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import im.zego.zim.enums.ZIMErrorCode;
 
 public class UserInfoActivity extends AppCompatActivity {
     private static final String TAG = "UserInfoActivity";
@@ -102,12 +105,23 @@ public class UserInfoActivity extends AppCompatActivity {
         binding.btnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(UserInfoActivity.this, ConversationActivity.class);
-                intent.putExtra("senderId",ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
-                intent.putExtra("receiverId",userId);
-                intent.putExtra("image",image);
-                intent.putExtra("username",username);
-                startActivity(intent);
+
+//                ZIMKit.connectUser(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID), "userName", "https://storage.zego.im/IMKit/avatar/avatar-0.png", error -> {
+//                    if (error.code != ZIMErrorCode.SUCCESS) {
+//                        String message = error.message + ": " + error.code.value();
+//                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
+
+                    Intent intent = new Intent(UserInfoActivity.this, ConversationActivity.class);
+                    startActivity(intent);
+//                });
+//                Intent intent = new Intent(UserInfoActivity.this, ConversationActivity.class);
+//                intent.putExtra("senderId",ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+//                intent.putExtra("receiverId",userId);
+//                intent.putExtra("image",image);
+//                intent.putExtra("username",username);
+//                startActivity(intent);
             }
         });
 

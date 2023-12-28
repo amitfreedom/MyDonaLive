@@ -13,14 +13,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.ui.PlayerView;
-
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
-import com.stream.donalive.R;
 import com.stream.donalive.databinding.FragmentSortVideoBinding;
 
 import java.util.ArrayList;
@@ -29,7 +21,7 @@ import java.util.List;
 public class SortVideoFragment extends Fragment {
 
  private FragmentSortVideoBinding binding;
-    private VideoPagerAdapter videoPagerAdapter;
+//    private VideoPagerAdapter videoPagerAdapter;
 
     private List<String>videoUrls = new ArrayList<>();
     @Override
@@ -45,9 +37,9 @@ public class SortVideoFragment extends Fragment {
 //        binding.viewPager.setAdapter(videoPagerAdapter);
 
 
-        videoPagerAdapter = new VideoPagerAdapter(getActivity());
-
-        binding.viewPager.setAdapter(videoPagerAdapter);
+//        videoPagerAdapter = new VideoPagerAdapter(getActivity());
+//
+//        binding.viewPager.setAdapter(videoPagerAdapter);
 
         return root;
     }

@@ -10,6 +10,8 @@ import android.widget.Toast;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.stream.donalive.streaming.ZEGOSDKKeyCenter;
 import com.stream.donalive.streaming.internal.sdk.ZEGOSDKManager;
+import com.zegocloud.zimkit.services.ZIMKit;
+import com.zegocloud.zimkit.services.config.InputConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,8 +35,14 @@ public class ApplicationClass extends Application {
         singleton = new Singleton();
 
         initZEGOSDK();
+        ZIMKit.initWith(this, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.appSign);
+        ZIMKit.initNotifications();
 
-//        mPref = getSharedPreferences(AppConstants.DB, Context.MODE_PRIVATE);
+        InputConfig inputConfig = new InputConfig();
+        inputConfig.showVoiceButton = true;
+        inputConfig.showEmojiButton = true;
+        inputConfig.showAddButton = true;
+        ZIMKit.setInputConfig(inputConfig);
 
 
     }

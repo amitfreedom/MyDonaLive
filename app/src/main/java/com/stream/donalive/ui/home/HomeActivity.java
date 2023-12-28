@@ -31,9 +31,13 @@ import com.stream.donalive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.donalive.streaming.internal.sdk.basic.ZEGOSDKCallBack;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.utill.Constant;
+import com.zegocloud.zimkit.services.ZIMKit;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import im.zego.zim.enums.ZIMErrorCode;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -90,6 +94,13 @@ public class HomeActivity extends AppCompatActivity {
         signInZEGOSDK(String.valueOf(userDetails.getUid()), userDetails.getUsername(), (errorCode, message) -> {
             if (errorCode == 0) {
 //                Toast.makeText(this, ""+message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ZIMKit.connectUser(String.valueOf(userDetails.getUid()), userDetails.getUsername(), !Objects.equals(userDetails.getImage(), "") ?userDetails.getImage():Constant.USER_PLACEHOLDER_PATH, error -> {
+            if (error.code != ZIMErrorCode.SUCCESS) {
+                String message = error.message + ": " + error.code.value();
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
     }
