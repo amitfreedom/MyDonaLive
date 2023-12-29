@@ -10,8 +10,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -27,6 +29,8 @@ import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.notification.FCMNotificationSender;
 import com.stream.donalive.streaming.ZEGOSDKKeyCenter;
+import com.stream.donalive.streaming.activity.adapter.GiftAdapter;
+import com.stream.donalive.streaming.activity.model.GiftModel;
 import com.stream.donalive.streaming.gift.GiftHelper;
 import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager;
@@ -39,6 +43,8 @@ import com.stream.donalive.streaming.internal.sdk.express.IExpressEngineEventHan
 import com.stream.donalive.streaming.internal.sdk.zim.IZIMEventHandler;
 import com.stream.donalive.streaming.internal.utils.ToastUtil;
 import com.stream.donalive.streaming.internal.utils.Utils;
+import com.stream.donalive.ui.home.ui.explore.adapter.CountryAdapter;
+import com.stream.donalive.ui.home.ui.explore.models.CountryModel;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.utill.Constant;
 
@@ -55,6 +61,7 @@ import im.zego.zim.entity.ZIMMessage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.json.JSONObject;
 import org.w3c.dom.Text;
@@ -75,6 +82,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private UserDetailsModel userDetails;
     private String level;
     View giftButton;
+    private ArrayList<GiftModel> countryList;
 
     String TAG = "LiveAudioRoomActivity";
 
@@ -187,14 +195,49 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         FrameLayout giftButtonContainer = findViewById(R.id.giftButtonContainer);
         giftButtonContainer.addView(giftButton);
 
-        giftButton.post(new Runnable() {
-            @Override
-            public void run() {
-                giftButton.performClick();
-            }
+        binding.giftButton.setOnClickListener(v -> {
+            showBottomSheetDialog();
         });
 
+//        giftButton.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                giftButton.performClick();
+//            }
+//        });
 
+
+    }
+
+    private void showBottomSheetDialog() {
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this,R.style.TransparentBottomSheetDialog);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout_gift);
+
+        RecyclerView recyclerView = bottomSheetDialog.findViewById(R.id.recycler_gift);
+        // Create a list of country names (Replace this with your actual list)
+        countryList = new ArrayList<>();
+        countryList.add(new GiftModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt6PpzPvDn1dMtgc-FQ-l89Rst-nJIy08iOg&usqp=CAU","Global","500"));
+        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/bd-flag.jpg","Bangladesh","500"));
+        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/af-flag.jpg","Afghanistan","500"));
+        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/kw-flag.jpg","Kuwait","500"));
+        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/qa-flag.jpg","Qatar","500"));
+        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/au-flag.jpg","Australia","500"));
+        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/ir-flag.jpg","Iran","500"));
+        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/in-flag.jpg","India","500"));
+        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/tr-flag.jpg","Turkey","500"));
+        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/uk-flag.jpg","United Kingdom","500"));
+
+//        countryList.add("Country 2");
+
+        GiftAdapter adapter = new GiftAdapter(this, countryList, new GiftAdapter.Select() {
+            @Override
+            public void select(String name,String url) {
+
+            }
+        });
+        recyclerView.setAdapter(adapter);
+
+        bottomSheetDialog.show();
     }
 
     private long pressedTime;
