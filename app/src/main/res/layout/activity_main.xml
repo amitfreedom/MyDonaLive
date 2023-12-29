@@ -134,6 +134,23 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:text="Watch Live Audio Room" />
+
+        <Button
+            android:visibility="gone"
+            android:id="@+id/subscribeButton"
+            android:layout_width="@dimen/standard_field_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="@string/subscribe_to_weather" />
+
+        <Button
+            android:visibility="gone"
+            android:id="@+id/logTokenButton"
+            android:layout_width="@dimen/standard_field_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/log_token" />
     </LinearLayout>
 
     <LinearLayout

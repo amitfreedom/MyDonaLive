@@ -1,47 +1,11 @@
 {
   "project_info": {
     "project_number": "150849685541",
+    "firebase_url": "https://mydreamlive-c1586-default-rtdb.firebaseio.com",
     "project_id": "mydreamlive-c1586",
     "storage_bucket": "mydreamlive-c1586.appspot.com"
   },
   "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:150849685541:android:3d32cd810aa9859dfad7cc",
-        "android_client_info": {
-          "package_name": "com.amilive.mydreamlive"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "150849685541-ahrvttg2vton79lf8grrgdmfbsg6coeh.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.amilive.mydreamlive",
-            "certificate_hash": "6a57872f97806c5f796cb7d5f3fd6844da06c616"
-          }
-        },
-        {
-          "client_id": "150849685541-vjkp5db0rfi61deiq5ggd11qmc69svff.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDyMuRtHLTDM_Tlyu9TilQYoBSZk4kK6Wk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "150849685541-vjkp5db0rfi61deiq5ggd11qmc69svff.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:150849685541:android:b5b4078a4e222e51fad7cc",
@@ -50,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "150849685541-00so536vsm4l4acm5uhkl1j6empgq9u9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.stream.donalive",
+            "certificate_hash": "f48b25e1062d759dc34fd018362b147e548cb964"
+          }
+        },
         {
           "client_id": "150849685541-stfe6icbkl3opne9j4ofalvomuooirnb.apps.googleusercontent.com",
           "client_type": 1,

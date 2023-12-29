@@ -41,6 +41,7 @@ import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityLiveStreamingBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.notification.FCMNotificationSender;
 import com.stream.donalive.streaming.ZEGOSDKKeyCenter;
 import com.stream.donalive.streaming.activity.adapter.ViewUserAdapter;
 import com.stream.donalive.streaming.activity.model.RoomUsers;
@@ -435,6 +436,9 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         boolean isHost = getIntent().getBooleanExtra("host", true);
         if (isHost) {
             ZEGOLiveStreamingManager.getInstance().startPublishingStream();
+            // Call the FCMNotificationSender's sendNotification method
+            FCMNotificationSender.sendNotificationToDevice("deviceToken", "PrettyLive",""+username+"!!"+" started videoLive" );
+
         }
 
         ZEGOSDKManager.getInstance().expressService.startSoundLevelMonitor();

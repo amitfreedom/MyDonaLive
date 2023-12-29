@@ -25,6 +25,7 @@ import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityLiveAudioRoomBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.notification.FCMNotificationSender;
 import com.stream.donalive.streaming.ZEGOSDKKeyCenter;
 import com.stream.donalive.streaming.gift.GiftHelper;
 import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager;
@@ -165,6 +166,9 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
                             }
                         });
+                        // Call the FCMNotificationSender's sendNotification method
+                        FCMNotificationSender.sendNotificationToDevice("deviceToken", "PrettyLive",""+username+"!!"+" started AudioParty" );
+
                     }
                     initListenerAfterLoginRoom();
                 }

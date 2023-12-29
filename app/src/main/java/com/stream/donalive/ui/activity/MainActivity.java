@@ -1,27 +1,38 @@
 package com.stream.donalive.ui.activity;
 
-import android.Manifest.permission;
+import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityMainBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.notification.FCMNotificationSender;
 import com.stream.donalive.streaming.activity.CallWaitActivity;
 import com.stream.donalive.streaming.activity.LiveAudioRoomActivity;
 import com.stream.donalive.streaming.activity.LiveStreamingActivity;
@@ -46,11 +57,22 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity123";
     private ActivityMainBinding binding;
     private FirebaseFirestore firestore;
     private FirebaseAuth mAuth;
     private CollectionReference usersRef;
     private UserDetailsModel userDetails;
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Toast.makeText(this, "Notifications permission granted",Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    Toast.makeText(this, "FCM can't post notifications without POST_NOTIFICATIONS permission",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +94,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        createChannel();
+
         binding.startLiveStreaming.setOnClickListener(v -> {
-            List<String> permissions = Arrays.asList(permission.CAMERA, permission.RECORD_AUDIO);
+            List<String> permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
             requestPermissionIfNeeded(permissions, new RequestCallback() {
                 @Override
                 public void onResult(boolean allGranted, @NonNull List<String> grantedList,
@@ -112,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 //                binding.liveIdAudioRoom.setError("please input liveID");
 //                return;
 //            }
-            List<String> permissions = Arrays.asList(permission.RECORD_AUDIO);
+            List<String> permissions = Arrays.asList(Manifest.permission.RECORD_AUDIO);
             requestPermissionIfNeeded(permissions, new RequestCallback() {
                 @Override
                 public void onResult(boolean allGranted, @NonNull List<String> grantedList,
@@ -151,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 binding.callUserId.setError("please input targetUserID");
                 return;
             }
-            List<String> permissions = Arrays.asList(permission.CAMERA, permission.RECORD_AUDIO);
+            List<String> permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
             requestPermissionIfNeeded(permissions, new RequestCallback() {
                 @Override
                 public void onResult(boolean allGranted, @NonNull List<String> grantedList,
@@ -186,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 binding.callUserId.setError("please input targetUserID");
                 return;
             }
-            List<String> permissions = Collections.singletonList(permission.RECORD_AUDIO);
+            List<String> permissions = Collections.singletonList(Manifest.permission.RECORD_AUDIO);
             requestPermissionIfNeeded(permissions, new RequestCallback() {
                 @Override
                 public void onResult(boolean allGranted, @NonNull List<String> grantedList,
@@ -225,6 +249,71 @@ public class MainActivity extends AppCompatActivity {
 //        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
+        binding.subscribeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String deviceToken = "fB3hNLrZQbOfqHEeoigQAX:APA91bEXpEnclLTkl05Hj1pxfg2NPpQwQ0nc_591-agntE0EjRw3-m4HT3ATjp6SarqVbas3_J3VnoxvtvE3vyL18alqJ_Zk21u_TzORgfEA8xvp9AkmDO9TqMaOt_Yv-KcdkqeoscHn";
+                String title = "Notification Title";
+                String body = "Notification Body";
+
+//                // Call the FCMNotificationSender's sendNotification method
+//                FCMNotificationSender.sendNotificationToDevice(deviceToken, title, body);
+            }
+        });
+
+        binding.logTokenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get token
+                // [START log_reg_token]
+                FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(new OnCompleteListener<String>() {
+                            @Override
+                            public void onComplete(@NonNull Task<String> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                                    return;
+                                }
+
+                                // Get new FCM registration token
+                                String token = task.getResult();
+
+                                // Log and toast
+                                String msg = getString(R.string.msg_token_fmt, token);
+                                Log.d(TAG, msg);
+                                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                // [END log_reg_token]
+            }
+        });
+
+        askNotificationPermission();
+    }
+
+    private void askNotificationPermission() {
+        // This is only necessary for API Level > 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                // FCM SDK (and your app) can post notifications.
+            } else {
+                // Directly ask for the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
+
+
+
+    private void createChannel() {
+        // Create channel to show notifications.
+        String channelId  = getString(R.string.default_notification_channel_id);
+        String channelName = getString(R.string.default_notification_channel_name);
+        NotificationManager notificationManager =
+                getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(new NotificationChannel(channelId,
+                channelName, NotificationManager.IMPORTANCE_HIGH));
     }
 
 //    @Override
@@ -301,16 +390,16 @@ public class MainActivity extends AppCompatActivity {
         PermissionX.init(this).permissions(permissions).onExplainRequestReason((scope, deniedList) -> {
             String message = "";
             if (permissions.size() == 1) {
-                if (deniedList.contains(permission.CAMERA)) {
+                if (deniedList.contains(Manifest.permission.CAMERA)) {
                     message = this.getString(R.string.permission_explain_camera);
-                } else if (deniedList.contains(permission.RECORD_AUDIO)) {
+                } else if (deniedList.contains(Manifest.permission.RECORD_AUDIO)) {
                     message = this.getString(R.string.permission_explain_mic);
                 }
             } else {
                 if (deniedList.size() == 1) {
-                    if (deniedList.contains(permission.CAMERA)) {
+                    if (deniedList.contains(Manifest.permission.CAMERA)) {
                         message = this.getString(R.string.permission_explain_camera);
-                    } else if (deniedList.contains(permission.RECORD_AUDIO)) {
+                    } else if (deniedList.contains(Manifest.permission.RECORD_AUDIO)) {
                         message = this.getString(R.string.permission_explain_mic);
                     }
                 } else {
@@ -321,16 +410,16 @@ public class MainActivity extends AppCompatActivity {
         }).onForwardToSettings((scope, deniedList) -> {
             String message = "";
             if (permissions.size() == 1) {
-                if (deniedList.contains(permission.CAMERA)) {
+                if (deniedList.contains(Manifest.permission.CAMERA)) {
                     message = this.getString(R.string.settings_camera);
-                } else if (deniedList.contains(permission.RECORD_AUDIO)) {
+                } else if (deniedList.contains(Manifest.permission.RECORD_AUDIO)) {
                     message = this.getString(R.string.settings_mic);
                 }
             } else {
                 if (deniedList.size() == 1) {
-                    if (deniedList.contains(permission.CAMERA)) {
+                    if (deniedList.contains(Manifest.permission.CAMERA)) {
                         message = this.getString(R.string.settings_camera);
-                    } else if (deniedList.contains(permission.RECORD_AUDIO)) {
+                    } else if (deniedList.contains(Manifest.permission.RECORD_AUDIO)) {
                         message = this.getString(R.string.settings_mic);
                     }
                 } else {
