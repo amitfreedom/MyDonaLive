@@ -5,20 +5,32 @@ import static com.stream.donalive.streaming.internal.utils.Utils.dp2px;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.opensource.svgaplayer.SVGASoundManager;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.stream.donalive.R;
+import com.stream.donalive.global.ApplicationClass;
 //import com.zegocloud.uikit.ZegoUIKit;
 //import com.zegocloud.uikit.plugin.adapter.plugins.signaling.ZegoSignalingInRoomTextMessage;
 //import com.zegocloud.uikit.service.defines.ZegoInRoomCommandListener;
 //import com.zegocloud.uikit.service.defines.ZegoUIKitUser;
 //import com.zegocloud.uikit.utils.Utils;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,21 +39,73 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 public class GiftHelper {
 
     private Handler handler = new Handler(Looper.getMainLooper());
+
+    private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private final DatabaseReference ref = firebaseDatabase.getReference().child("userInfo");
+
     private GiftAnimation giftAnimation;
     private String userID;
     private String userName;
+    private String otherUserId;
+    private String liveType;
 
-    public GiftHelper(ViewGroup animationViewParent, String userID, String userName) {
+    public GiftHelper(ViewGroup animationViewParent, String userID, String userName,String otherUserId,String liveType) {
         giftAnimation = new SVGAAnimation(animationViewParent);
 //        giftAnimation = new VAPAnimation(animationViewParent);
         this.userID = userID;
         this.userName = userName;
+        this.otherUserId = otherUserId;
+        this.liveType = liveType;
 
 
+
+        ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                if (snapshot.exists()) {
+                    Map<String, Object> data = (Map<String, Object>) snapshot.getValue();
+                    // Now you can access individual fields
+                    if (data != null) {
+                        String senderId = (String) data.get("giftCoin");
+                        Toast.makeText(ApplicationClass.getInstance(), ""+senderId, Toast.LENGTH_SHORT).show();
+
+                        // Use the retrieved data as needed
+                    }
+
+//                    GiftModel giftModel = snapshot.getValue(GiftModel.class);
+//
+//                    setUpdateCoinFirebase(giftModel);
+//                    showGiftDialog(giftModel);
+//                    showGift(giftModel);
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                Toast.makeText(ApplicationClass.getInstance(), "errrr :"+error, Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
 
 //        try{
@@ -85,24 +149,24 @@ public class GiftHelper {
         // click will post json to server
         imageView.setOnClickListener(v -> {
 
-            final String path = "https://zego-example-server-nextjs.vercel.app/api/send_gift";
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("app_id", appID);
-                jsonObject.put("server_secret", serverSecret);
-                jsonObject.put("room_id", roomID);
-                jsonObject.put("user_id", userID);
-                jsonObject.put("user_name", userName);
-                jsonObject.put("gift_type", 1001);
-                jsonObject.put("gift_count", 1);
-                jsonObject.put("timestamp", System.currentTimeMillis());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            String jsonString = jsonObject.toString();
+//            final String path = "https://zego-example-server-nextjs.vercel.app/api/send_gift";
+//            JSONObject jsonObject = new JSONObject();
+//            try {
+//                jsonObject.put("app_id", appID);
+//                jsonObject.put("server_secret", serverSecret);
+//                jsonObject.put("room_id", roomID);
+//                jsonObject.put("user_id", userID);
+//                jsonObject.put("user_name", userName);
+//                jsonObject.put("gift_type", 1001);
+//                jsonObject.put("gift_count", 1);
+//                jsonObject.put("timestamp", System.currentTimeMillis());
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            String jsonString = jsonObject.toString();
             new Thread() {
                 public void run() {
-                    httpPost(path, jsonString, () -> showAnimation());
+                    showAnimation();
                 }
             }.start();
         });

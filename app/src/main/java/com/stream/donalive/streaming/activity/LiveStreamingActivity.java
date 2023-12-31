@@ -210,7 +210,7 @@ public class LiveStreamingActivity extends AppCompatActivity implements ViewUser
         setViewersAdapter();
 
         // add a gift button to liveAudioRoom audience
-        GiftHelper giftHelper = new GiftHelper(findViewById(R.id.layout), String.valueOf(uid), username);
+        GiftHelper giftHelper = new GiftHelper(findViewById(R.id.layout), String.valueOf(uid), username,"","");
         giftButton = giftHelper.getGiftButton(this, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.serverSecret, liveID);
 
         // Get reference to the giftButtonContainer

@@ -134,6 +134,8 @@
 
     <style name="TransparentBottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
         <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:topRightRadius">@dimen/_40dp</item>
+        <item name="android:topLeftRadius">@dimen/_40dp</item>
         <item name="android:backgroundDimAmount">0.0</item> <!-- Set the dim amount to 0 for no dimming -->
     </style>
 

@@ -6,15 +6,168 @@
     android:layout_width="match_parent"
     android:paddingHorizontal="@dimen/_10dp"
     android:paddingTop="@dimen/_20dp"
-    android:layout_height="350dp">
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_marginHorizontal="@dimen/_10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/lv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_100dp">
+
+            <TextView
+                android:id="@+id/txt_level1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/pink_top"
+                android:paddingHorizontal="@dimen/_10dp"
+                android:paddingVertical="2dp"
+                android:text="lv1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12sp" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:layout_toRightOf="@id/lv1"
+            android:layout_toLeftOf="@id/lv2"
+            android:progress="10"
+            android:focusableInTouchMode="false"
+            android:progressTint="@color/pink_top"
+            android:progressBackgroundTint="@color/black"
+            android:thumbTint="@color/pink_top"
+            android:focusable="false"
+            android:clickable="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_alignParentRight="true"
+            android:id="@+id/lv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_100dp">
+
+            <TextView
+                android:id="@+id/txt_level"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/pink_top"
+                android:paddingHorizontal="@dimen/_10dp"
+                android:paddingVertical="2dp"
+                android:text="lv2"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12sp" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+    </RelativeLayout>
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleGroup"
+        android:layout_margin="@dimen/dp_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_hot"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:text="Hot"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_popular"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:layout_weight="1"
+            android:text="Popular"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_lucky"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:text="Lucky"/>
+
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/recycler_gift"
+        android:layout_marginHorizontal="@dimen/space10"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:listitem="@layout/item_gift"
         app:spanCount="4"/>
+
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
+
+
+
+<!--    </RelativeLayout>-->
+
+    <RelativeLayout
+        android:layout_marginVertical="@dimen/_15dp"
+        android:layout_marginHorizontal="@dimen/_10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/black"
+            android:drawablePadding="6dp"
+            style="@style/HeaderTextStyle"
+            android:drawableTint="@android:color/holo_orange_dark"
+            app:drawableLeftCompat="@drawable/ic_bean" />
+
+        <Spinner
+            android:layout_marginRight="@dimen/_10dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/materialButtonSend"
+            android:id="@+id/spinner"
+            android:layout_width="65dp"
+            android:layout_height="@dimen/_40dp"
+            android:background="@drawable/line_transparent_color"
+            android:padding="@dimen/space5"
+            android:entries="@array/gift_count"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/materialButtonSend"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/pink_top"
+            android:textSize="@dimen/_14sp"
+            android:textColor="@color/white"
+            android:text="@string/send" />
+    </RelativeLayout>
+
 
 
 </LinearLayout>

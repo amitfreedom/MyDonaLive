@@ -6,6 +6,7 @@ public class Constant {
             "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541";
 
 //    collection name
+    public  static final String GIFTS  = "gifts";
     public  static final String LIVE_DETAILS  = "live_details";
     public  static final String MESSAGE  = "messages";
     public  static final String VIP  = "vip";

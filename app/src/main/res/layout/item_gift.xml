@@ -16,16 +16,17 @@
         <com.makeramen.roundedimageview.RoundedImageView
             app:riv_corner_radius="@dimen/_5dp"
             android:id="@+id/image_gift"
-            android:layout_width="@dimen/_50dp"
+            android:layout_width="@dimen/space40"
             android:layout_height="@dimen/space40"
             android:src="@drawable/ic_launcher_background"
-            android:scaleType="centerCrop"/>
+            android:scaleType="fitCenter"/>
 
         <TextView
             android:id="@+id/txt_gift_live_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_14sp"
+            android:textSize="@dimen/_16sp"
+            android:textStyle="bold"
             android:text="Name"/>
 
         <TextView

@@ -14,81 +14,121 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.stream.donalive.R;
+import com.stream.donalive.databinding.ItemGiftBinding;
 import com.stream.donalive.streaming.activity.model.GiftModel;
+import com.stream.donalive.ui.home.ui.home.adapter.FirestoreAdapter;
+import com.stream.donalive.ui.home.ui.home.models.LiveUser;
+import com.stream.donalive.ui.utill.Constant;
+import com.stream.donalive.ui.utill.Convert;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class GiftAdapter extends RecyclerView.Adapter<GiftAdapter.CountryViewHolder> {
-    private ArrayList<GiftModel> giftList;
-    private Context context;
+public class GiftAdapter extends FirestoreAdapter<GiftAdapter.ViewHolder> {
 
     private int index=-1;
 
-    private GiftAdapter.Select select;
+    public interface OnGiftSelectedListener {
 
-    public interface Select{
-        void select(String name,String url);
+        void onGiftSelected(DocumentSnapshot user);
+
     }
 
-    public GiftAdapter(Context context, ArrayList<GiftModel> giftList, GiftAdapter.Select select) {
-        this.context = context;
-        this.giftList = giftList;
-        this.select=select;
+    private GiftAdapter.OnGiftSelectedListener mListener;
+
+
+    public GiftAdapter(Query query, GiftAdapter.OnGiftSelectedListener listener) {
+        super(query);
+        mListener = listener;
     }
 
     @NonNull
     @Override
-    public GiftAdapter.CountryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_gift, parent, false);
-        return new GiftAdapter.CountryViewHolder(view);
+    public GiftAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new GiftAdapter.ViewHolder(ItemGiftBinding.inflate(
+                LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GiftAdapter.CountryViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        String countryName = giftList.get(position).getName();
-        String image = giftList.get(position).getImage();
-        holder.textViewCountryName.setText(countryName);
-        holder.txt_coin.setText("500");
-        Glide.with(context).load(image).into(holder.countryImage);
+    public void onBindViewHolder(GiftAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        holder.bind(getSnapshot(position), mListener);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 index=position;
-                select.select(giftList.get(position).getName(),giftList.get(position).getImage());
+                mListener.onGiftSelected(getSnapshot(position));
                 notifyDataSetChanged();
 
             }
+
         });
-
         if (index==position){
-            holder.materialCardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.app_color1));
+            holder.binding.cardViewRoot.setCardBackgroundColor(ContextCompat.getColor(holder.binding.cardViewRoot.getContext(), R.color.pink_top));
         }else {
-            holder.materialCardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.start_color1));
+            holder.binding.cardViewRoot.setCardBackgroundColor(ContextCompat.getColor(holder.binding.cardViewRoot.getContext(), R.color.white));
 
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return giftList.size();
-    }
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-    public static class CountryViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewCountryName,txt_coin;
-        ImageView countryImage;
-        MaterialCardView materialCardView;
+        private ItemGiftBinding binding;
 
-        public CountryViewHolder(@NonNull View itemView) {
+        public ViewHolder(ItemGiftBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        public ViewHolder(View itemView) {
             super(itemView);
-            txt_coin = itemView.findViewById(R.id.txt_coin_gift);
-            textViewCountryName = itemView.findViewById(R.id.txt_gift_live_name);
-            countryImage = itemView.findViewById(R.id.image_gift);
-            materialCardView = itemView.findViewById(R.id.cardViewRoot);
         }
+
+        public void bind(final DocumentSnapshot snapshot,
+                         final GiftAdapter.OnGiftSelectedListener listener) {
+
+            GiftModel restaurant = snapshot.toObject(GiftModel.class);
+
+//            if (Objects.equals(restaurant.getLiveType(), "0")){
+//                binding.liveType.setText("Video Live");
+//            }
+//
+//            if (Objects.equals(restaurant.getLiveType(), "1")){
+//                binding.liveType.setText("Audio Party");
+//            }
+
+            if (Objects.equals(restaurant.getImage(), "")){
+                // Load image
+                Glide.with(binding.imageGift.getContext())
+                        .load(Constant.USER_PLACEHOLDER_PATH)
+                        .into(binding.imageGift);
+            }else {
+                // Load image
+                Glide.with(binding.imageGift.getContext())
+                        .load(restaurant.getImage())
+                        .into(binding.imageGift);
+            }
+
+
+            binding.txtGiftLiveName.setText(restaurant.getGiftName());
+            binding.txtCoinGift.setText(new Convert().prettyCount(Integer.parseInt(restaurant.getPrice())));
+
+
+
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if (listener != null) {
+//                        index=position;
+//                        listener.onGiftSelected(snapshot);
+//                    }
+//                }
+//            });
+        }
+
     }
 }
 

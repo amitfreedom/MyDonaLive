@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -19,6 +20,7 @@ import com.stream.donalive.streaming.internal.business.audioroom.LiveAudioRoomSe
 import com.stream.donalive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.donalive.streaming.internal.sdk.basic.ZEGOSDKUser;
 import com.stream.donalive.streaming.internal.sdk.components.express.AudioOutputButton;
+import com.stream.donalive.streaming.internal.sdk.components.express.GiftButton;
 import com.stream.donalive.streaming.internal.sdk.components.express.ToggleMicrophoneButton;
 import com.stream.donalive.streaming.internal.sdk.express.IExpressEngineEventHandler;
 import com.stream.donalive.streaming.internal.utils.Utils;
@@ -34,6 +36,7 @@ public class BottomMenuBar extends LinearLayout {
     private TakeSeatButton takeSeatButton;
     private RoomRequestButton takeSeatRequestListButton;
     private AudioOutputButton audioOutputButton;
+    private GiftButton giftButton;
 
     public BottomMenuBar(Context context) {
         super(context);
@@ -112,6 +115,14 @@ public class BottomMenuBar extends LinearLayout {
         audioOutputButton.open();
         childLinearLayout.addView(audioOutputButton, generateChildImageLayoutParams());
 
+//        giftButton = new GiftButton(getContext());
+//        giftButton.open();
+//        childLinearLayout.addView(giftButton, generateChildImageLayoutParams());
+//
+//        giftButton.setOnClickListener(view -> {
+//            Toast.makeText(getContext(), "okkkk", Toast.LENGTH_SHORT).show();
+//        });
+
         ZEGOLiveAudioRoomManager.getInstance().addLiveAudioRoomListener(new LiveAudioRoomListener() {
             @Override
             public void onHostChanged(ZEGOSDKUser hostUser) {
@@ -136,6 +147,7 @@ public class BottomMenuBar extends LinearLayout {
         takeSeatButton.setVisibility(GONE);
         takeSeatRequestListButton.setVisibility(GONE);
         audioOutputButton.setVisibility(GONE);
+//        giftButton.setVisibility(GONE);
     }
 
     private void updateWidgets() {

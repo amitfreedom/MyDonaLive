@@ -6,19 +6,26 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.opensource.svgaplayer.SVGASoundManager;
@@ -33,7 +40,6 @@ import com.stream.donalive.streaming.activity.adapter.GiftAdapter;
 import com.stream.donalive.streaming.activity.model.GiftModel;
 import com.stream.donalive.streaming.gift.GiftHelper;
 import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager;
-import com.stream.donalive.streaming.internal.ZEGOLiveStreamingManager;
 import com.stream.donalive.streaming.internal.business.RoomRequestExtendedData;
 import com.stream.donalive.streaming.internal.business.RoomRequestType;
 import com.stream.donalive.streaming.internal.business.audioroom.LiveAudioRoomLayoutConfig;
@@ -43,8 +49,6 @@ import com.stream.donalive.streaming.internal.sdk.express.IExpressEngineEventHan
 import com.stream.donalive.streaming.internal.sdk.zim.IZIMEventHandler;
 import com.stream.donalive.streaming.internal.utils.ToastUtil;
 import com.stream.donalive.streaming.internal.utils.Utils;
-import com.stream.donalive.ui.home.ui.explore.adapter.CountryAdapter;
-import com.stream.donalive.ui.home.ui.explore.models.CountryModel;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.utill.Constant;
 
@@ -54,23 +58,23 @@ import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.entity.ZegoPlayerConfig;
 import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.callback.ZIMRoomAttributesOperatedCallback;
-import im.zego.zim.entity.ZIMAppConfig;
 import im.zego.zim.entity.ZIMError;
-import im.zego.zim.entity.ZIMMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 public class LiveAudioRoomActivity extends AppCompatActivity {
 
     private ActivityLiveAudioRoomBinding binding;
+    private static final int LIMIT = 50;
+    private FirebaseFirestore mFirestore;
+    private Query mQuery;
     private String roomID;
     private String userId;
+    private String otherUserId;
     private String username;
     private String country;
     private String image;
@@ -83,6 +87,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private String level;
     View giftButton;
     private ArrayList<GiftModel> countryList;
+    private GiftAdapter mAdapter;
+    private DocumentSnapshot documentSnapshot;
+    private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private final DatabaseReference ref = firebaseDatabase.getReference().child("userInfo");
 
     String TAG = "LiveAudioRoomActivity";
 
@@ -100,8 +108,17 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         SVGASoundManager.INSTANCE.init();
 
 
+        mFirestore = FirebaseFirestore.getInstance();
+
+        mQuery = mFirestore.collection(Constant.GIFTS)
+                .orderBy("price", Query.Direction.ASCENDING)
+//                .whereEqualTo("gift_type","1000")
+                .limit(LIMIT);
+
+
         boolean isHost = getIntent().getBooleanExtra("host", true);
         userId = getIntent().getStringExtra("userId");
+        otherUserId = getIntent().getStringExtra("userId");
         roomID = getIntent().getStringExtra("liveID");
         username = getIntent().getStringExtra("username");
         country = getIntent().getStringExtra("country_name");
@@ -159,9 +176,6 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     Log.e(TAG, "onRoomLoginResult: error: " + errorCode);
                     finish();
                 } else {
-
-
-
                     if (isHost) {
                         // save live data
                         saveLiveData(userId,uid,username,true,roomID,"1",country,image);
@@ -188,7 +202,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
         });
         // add a gift button to liveAudioRoom audience
-        GiftHelper giftHelper = new GiftHelper(findViewById(R.id.layout), String.valueOf(uid), username);
+        GiftHelper giftHelper = new GiftHelper(findViewById(R.id.layout), String.valueOf(uid), username,otherUserId,"0");
         giftButton = giftHelper.getGiftButton(this, ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.serverSecret, roomID);
 
         // Get reference to the giftButtonContainer
@@ -210,34 +224,161 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     }
 
     private void showBottomSheetDialog() {
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this,R.style.TransparentBottomSheetDialog);
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout_gift);
 
         RecyclerView recyclerView = bottomSheetDialog.findViewById(R.id.recycler_gift);
-        // Create a list of country names (Replace this with your actual list)
-        countryList = new ArrayList<>();
-        countryList.add(new GiftModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt6PpzPvDn1dMtgc-FQ-l89Rst-nJIy08iOg&usqp=CAU","Global","500"));
-        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/bd-flag.jpg","Bangladesh","500"));
-        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/af-flag.jpg","Afghanistan","500"));
-        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/kw-flag.jpg","Kuwait","500"));
-        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/qa-flag.jpg","Qatar","500"));
-        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/au-flag.jpg","Australia","500"));
-        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/ir-flag.jpg","Iran","500"));
-        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/in-flag.jpg","India","500"));
-        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/tr-flag.jpg","Turkey","500"));
-        countryList.add(new GiftModel("https://www.worldatlas.com/r/w425/img/flag/uk-flag.jpg","United Kingdom","500"));
+        MaterialButton button_hot = bottomSheetDialog.findViewById(R.id.button_hot);
+        MaterialButton send = bottomSheetDialog.findViewById(R.id.materialButtonSend);
+//        MaterialButton button_one_month = bottomSheetDialog.findViewById(R.id.button_one_month);
+//        MaterialButton button_six_month = bottomSheetDialog.findViewById(R.id.button_six_month);
 
-//        countryList.add("Country 2");
+        MaterialButtonToggleGroup toggleGroup = bottomSheetDialog.findViewById(R.id.toggleGroup);
 
-        GiftAdapter adapter = new GiftAdapter(this, countryList, new GiftAdapter.Select() {
+        assert toggleGroup != null;
+        assert button_hot != null;
+        toggleGroup.check(button_hot.getId());
+        button_hot.setBackgroundColor(getResources().getColor(R.color.pink_top));
+        button_hot.setTextColor(getResources().getColor(R.color.white));
+        button_hot.setStrokeColorResource(R.color.pink_top);
+
+        assert send != null;
+        send.setOnClickListener(V->{
+            if (documentSnapshot==null){
+                return;
+            }
+            sendGift(documentSnapshot);
+        });
+
+        toggleGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
             @Override
-            public void select(String name,String url) {
+            public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
+                if (isChecked) {
+                    MaterialButton checkedButton = group.findViewById(checkedId);
+                    String title = checkedButton.getText().toString();
+                    checkedButton.setBackgroundColor(getResources().getColor(R.color.pink_top));
+                    checkedButton.setTextColor(getResources().getColor(R.color.white));
+                    checkedButton.setStrokeColorResource(R.color.pink_top);
 
+//                    if (title.equals("Hot")){
+//                        mQuery = mFirestore.collection(Constant.GIFTS)
+//                                .orderBy("price", Query.Direction.ASCENDING)
+//                                .whereEqualTo("gift_type","1000")
+//                                .limit(LIMIT);
+//
+//                        mAdapter.setQuery(mQuery);
+//
+//                    }else  if (title.equals("Popular")){
+//                        mQuery = mFirestore.collection(Constant.GIFTS)
+//                                .orderBy("price", Query.Direction.ASCENDING)
+//                                .whereEqualTo("gift_type","1001")
+//                                .limit(LIMIT);
+//
+//                        mAdapter.setQuery(mQuery);
+//
+//                    }
+//                    else  if (title.equals("Lucky")){
+//                        mQuery = mFirestore.collection(Constant.GIFTS)
+//                                .orderBy("price", Query.Direction.ASCENDING)
+//                                .whereEqualTo("gift_type","1002")
+//                                .limit(LIMIT);
+//
+//                        mAdapter.setQuery(mQuery);
+//
+//                    }
+
+                }
+                else {
+                    MaterialButton checkedButton = group.findViewById(checkedId);
+                    checkedButton.setBackgroundColor(getResources().getColor(R.color.white));
+                    checkedButton.setTextColor(getResources().getColor(R.color.gray));
+//                    checkedButton.setTextSize(R.dimen._14sp);
+
+                }
             }
         });
-        recyclerView.setAdapter(adapter);
+        mAdapter = new GiftAdapter(mQuery, new GiftAdapter.OnGiftSelectedListener() {
+            @Override
+            public void onGiftSelected(DocumentSnapshot user) {
+                documentSnapshot=user;
+//                Toast.makeText(LiveAudioRoomActivity.this, ""+user.getString("giftName"), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+                    recyclerView.setVisibility(View.GONE);
+//                    binding.viewEmpty.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+//                    binding.viewEmpty.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                Log.e("FirebaseFirestoreException", "onError: "+e );
+            }
+
+
+        };
+        recyclerView.setAdapter(mAdapter);
+//        GiftAdapter adapter = new GiftAdapter(this, countryList, new GiftAdapter.Select() {
+//            @Override
+//            public void select(String name,String url) {
+//
+//            }
+//        });
+
+        mAdapter.setQuery(mQuery);
 
         bottomSheetDialog.show();
+    }
+
+
+    private void sendGift(DocumentSnapshot giftModel) {
+        long timestamp = System.currentTimeMillis();
+        Map<String, Object> data = new HashMap<>();
+        data.put("senderId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+        data.put("diamond", giftModel.getString("price"));
+        data.put("receiverId", "123456");
+        data.put("giftId", giftModel.getString("giftId"));
+        data.put("liveId", roomID);
+        data.put("time", timestamp);
+        firestore.collection("giftDetails").document(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID)).set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                String liveType="0";
+                Map<String, Object> data = new HashMap<>();
+                data.put("fileName", "car.svga");
+                data.put("giftCoin", giftModel.getString("price"));
+                data.put("userId", "123456");
+                data.put("giftId", giftModel.getString("giftId"));
+                data.put("liveType", liveType);
+                data.put("gift_count", 1);
+                data.put("liveId", roomID);
+                String key = ref.push().getKey();
+                ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(data);
+//                sendCustomeMessage("Sends you gift", detail.getImage());
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(LiveAudioRoomActivity.this, "Internal server error please try again."+e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+//        GiftModel giftModel = new GiftModel();
+//        giftModel.setGiftPath(detail.getImage());
+//        giftModel.setGiftCoin(detail.getAmount());
+//        giftModel.setUserId(CommonUtils.Companion.getUserId());
+//        giftModel.setUserName(CommonUtils.Companion.getName());
+//        String key = ref.push().getKey();
+//        ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(giftModel);
+//        sendCustomeMessage("Sends you gift", detail.getImage());
+        Toast.makeText(this, ""+giftModel.getString("giftName"), Toast.LENGTH_SHORT).show();
     }
 
     private long pressedTime;
@@ -386,6 +527,24 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
             }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Start listening for Firestore updates
+        if (mAdapter != null) {
+            mAdapter.startListening();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAdapter != null) {
+            mAdapter.stopListening();
         }
     }
 

@@ -249,6 +249,9 @@ public class MainActivity extends AppCompatActivity {
 //        fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
+
+
+
         binding.subscribeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                 String body = "Notification Body";
 
 //                // Call the FCMNotificationSender's sendNotification method
-//                FCMNotificationSender.sendNotificationToDevice(deviceToken, title, body);
+                FCMNotificationSender.sendNotificationToDevice(deviceToken, title, body);
             }
         });
 
