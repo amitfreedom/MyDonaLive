@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_5dp"
+    android:id="@+id/cardViewRoot"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:padding="@dimen/_10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            app:riv_corner_radius="@dimen/_5dp"
+            android:id="@+id/image_flag"
+            android:layout_width="@dimen/_50dp"
+            android:layout_height="@dimen/_35dp"
+            android:src="@drawable/ic_launcher_background"/>
+
+        <LinearLayout
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/image_flag"
+            android:layout_toLeftOf="@+id/txtLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_14sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Name"/>
+
+            <TextView
+                android:id="@+id/txtUID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/s12"
+                android:text="ID : 100000"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/txtLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text14"
+            android:textColor="@color/pink_top"
+            android:text="LV1"/>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

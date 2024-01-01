@@ -58,7 +58,7 @@ public class ImageUtils {
 
         // Convert the Bitmap to a byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
         byte[] data = baos.toByteArray();
 
         // Upload the image to Firebase Storage

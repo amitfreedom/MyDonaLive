@@ -132,17 +132,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
+        <LinearLayout
             android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
+            android:gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
-            android:textColor="@color/black"
-            android:drawablePadding="6dp"
-            style="@style/HeaderTextStyle"
-            android:drawableTint="@android:color/holo_orange_dark"
-            app:drawableLeftCompat="@drawable/ic_bean" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_12dp"
+                android:layout_height="@dimen/_12dp"
+                android:src="@drawable/coin"/>
+
+            <TextView
+                android:layout_marginLeft="@dimen/_5dp"
+                android:id="@+id/txt_beans"
+                style="@style/NormalTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+
 
         <Spinner
             android:layout_marginRight="@dimen/_10dp"

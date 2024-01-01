@@ -58,7 +58,7 @@ public class VAPAnimation implements GiftAnimation {
     }
 
     @Override
-    public void startPlay() {
+    public void startPlay(String fileName, String gift_count) {
         animView.startPlay(parentView.getContext().getAssets(), animationFileName);
     }
 }

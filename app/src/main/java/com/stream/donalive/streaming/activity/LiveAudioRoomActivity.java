@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,7 +40,10 @@ import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.notification.FCMNotificationSender;
 import com.stream.donalive.streaming.ZEGOSDKKeyCenter;
 import com.stream.donalive.streaming.activity.adapter.GiftAdapter;
+import com.stream.donalive.streaming.activity.adapter.ViewUserAdapter;
+import com.stream.donalive.streaming.activity.adapter.ViewersListAdapter;
 import com.stream.donalive.streaming.activity.model.GiftModel;
+import com.stream.donalive.streaming.activity.model.RoomUsers;
 import com.stream.donalive.streaming.gift.GiftHelper;
 import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.donalive.streaming.internal.business.RoomRequestExtendedData;
@@ -50,7 +56,9 @@ import com.stream.donalive.streaming.internal.sdk.zim.IZIMEventHandler;
 import com.stream.donalive.streaming.internal.utils.ToastUtil;
 import com.stream.donalive.streaming.internal.utils.Utils;
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
+import com.stream.donalive.ui.home.ui.profile.models.UserModel;
 import com.stream.donalive.ui.utill.Constant;
+import com.stream.donalive.ui.utill.Convert;
 
 import im.zego.zegoexpress.constants.ZegoScenario;
 import im.zego.zegoexpress.constants.ZegoStreamResourceMode;
@@ -63,6 +71,7 @@ import im.zego.zim.entity.ZIMError;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.json.JSONObject;
 
@@ -71,11 +80,13 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private ActivityLiveAudioRoomBinding binding;
     private static final int LIMIT = 50;
     private FirebaseFirestore mFirestore;
-    private Query mQuery;
+    private Query mQuery,mQuery1;
+
     private String roomID;
     private String userId;
     private String otherUserId;
     private String username;
+    private String audienceId;
     private String country;
     private String image;
     private long uid;
@@ -85,10 +96,16 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private CollectionReference usersRef;
     private UserDetailsModel userDetails;
     private String level;
+
     View giftButton;
     private ArrayList<GiftModel> countryList;
     private GiftAdapter mAdapter;
+    private ViewersListAdapter mAdapter1;
+    private ViewUserAdapter viewUserAdapter;
     private DocumentSnapshot documentSnapshot;
+    private UserModel userModel;
+    private String totalBeans="0";
+    private int giftCount=1;
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private final DatabaseReference ref = firebaseDatabase.getReference().child("userInfo");
 
@@ -110,7 +127,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
         mFirestore = FirebaseFirestore.getInstance();
 
-        mQuery = mFirestore.collection(Constant.GIFTS)
+        mQuery1 = mFirestore.collection(Constant.GIFTS)
                 .orderBy("price", Query.Direction.ASCENDING)
 //                .whereEqualTo("gift_type","1000")
                 .limit(LIMIT);
@@ -124,16 +141,27 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         country = getIntent().getStringExtra("country_name");
         image = getIntent().getStringExtra("image");
         level = getIntent().getStringExtra("level");
+        audienceId = getIntent().getStringExtra("audienceId");
         uid = getIntent().getLongExtra("uid",0);
         if (TextUtils.isEmpty(roomID)) {
             finish();
             return;
         }
 
-        Log.i("otherUserId123", "onCreate: "+otherUserId);
+        if (!isHost){
+            currentUserDetails(audienceId);
+        }else {
 
+        }
 
+        mQuery = firestore.collection("room_users").document(roomID).collection("viewers")
+//                .orderBy("uid", Query.Direction.DESCENDING)
+                .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
+                .limit(LIMIT);
+
+        getUserCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         fetchUserDetails(userId);
+        setViewersAdapter();
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,10 +170,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-        binding.liveAudioroomTopbar.setRoomID(roomID);
+//        binding.liveAudioroomTopbar.setRoomID(roomID);
         // two rows, four columns
         seatLayoutConfig = new LiveAudioRoomLayoutConfig();
         seatLayoutConfig.rowSpacing = Utils.dp2px(8, getResources().getDisplayMetrics());
@@ -193,15 +218,15 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                         // Call the FCMNotificationSender's sendNotification method
                         FCMNotificationSender.sendNotificationToDevice("deviceToken", "PrettyLive",""+username+"!!"+" started AudioParty" );
 
+                    }else {
+                        if (userModel!=null){
+                            saveRoomUsers(userModel);
+                        }
+
                     }
                     initListenerAfterLoginRoom();
                 }
             }
-        });
-
-        ZEGOLiveAudioRoomManager.getInstance().updateUserAvatarUrl(Constant.USER_PLACEHOLDER_PATH,(userAvatarUrl, errorInfo) -> {
-            Toast.makeText(this, ""+userAvatarUrl, Toast.LENGTH_SHORT).show();
-
         });
         // add a gift button to liveAudioRoom audience
         GiftHelper giftHelper = new GiftHelper(findViewById(R.id.layout), String.valueOf(uid), username,otherUserId,"0");
@@ -210,6 +235,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         // Get reference to the giftButtonContainer
         FrameLayout giftButtonContainer = findViewById(R.id.giftButtonContainer);
         giftButtonContainer.addView(giftButton);
+
+        binding.cardUserCount.setOnClickListener(v -> {
+            showViewersBottomSheetDialog();
+        });
 
         binding.giftButton.setOnClickListener(v -> {
             showBottomSheetDialog();
@@ -225,17 +254,163 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
     }
 
+    private void currentUserDetails(String userId) {
+
+        usersRef.whereEqualTo("userId", userId)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle error
+                        Log.e("test2334", "Listen failed: " + error.getMessage());
+                        return;
+                    }
+
+                    for (DocumentSnapshot document : value) {
+                        userModel = document.toObject(UserModel.class);
+//                        saveRoomUsers(userModel);
+                        Log.i("test2334", "current user name "+userModel.getUsername());
+                        Log.i("test2334", "current user uid: "+userModel.getUid());
+                        Log.i("test2334", "current user userId: "+userModel.getUsername());
+//
+                    }
+                });
+
+
+    }
+
+    private void showViewersBottomSheetDialog() {
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_viewers);
+
+        RecyclerView recyclerViewAudience = bottomSheetDialog.findViewById(R.id.recyclerViewAudience);
+        TextView notFound = bottomSheetDialog.findViewById(R.id.notFound);
+
+        mAdapter1 = new ViewersListAdapter(mQuery, new ViewersListAdapter.OnActiveUserSelectedListener() {
+            @Override
+            public void onActiveUserSelected(DocumentSnapshot user) {
+
+            }
+        }) {
+            @Override
+            protected void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+                    recyclerViewAudience.setVisibility(View.GONE);
+                    notFound.setVisibility(View.VISIBLE);
+
+                } else {
+                    recyclerViewAudience.setVisibility(View.VISIBLE);
+                    notFound.setVisibility(View.GONE);
+
+                }
+            }
+
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                Log.e("FirebaseFirestoreException", "onError: "+e );
+            }
+
+
+        };
+        recyclerViewAudience.setAdapter(mAdapter1);
+        mAdapter1.setQuery(mQuery);
+
+
+        bottomSheetDialog.show();
+    }
+
+    private void setViewersAdapter() {
+        viewUserAdapter = new ViewUserAdapter(mQuery, new ViewUserAdapter.OnActiveUserSelectedListener() {
+            @Override
+            public void onActiveUserSelected(DocumentSnapshot user) {
+
+            }
+        }) {
+            @Override
+            protected void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+                    binding.rvViewers.setVisibility(View.GONE);
+                    binding.txtUserCount.setText("0");
+
+                } else {
+                    binding.rvViewers.setVisibility(View.VISIBLE);
+                    binding.txtUserCount.setText(""+getItemCount());
+
+                }
+            }
+
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                Log.e("FirebaseFirestoreException", "onError: "+e );
+            }
+
+
+        };
+        binding.rvViewers.setAdapter(viewUserAdapter);
+    }
+
+    private void getUserCoins(String userId) {
+        Log.i("Coins123", "userId =: " + userId);
+        usersRef.whereEqualTo("userId", userId)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle error
+                        Log.e("FirestoreListener", "Listen failed: " + error.getMessage());
+                        return;
+                    }
+
+                    for (DocumentSnapshot document : value) {
+                        if (document.exists()) {
+                            // Get the "coins" field from the document
+                            String beans = document.getString("coins");
+                            String image1 = document.getString("image");
+//                            String image1 ="https://firebasestorage.googleapis.com/v0/b/mydreamlive-c1586.appspot.com/o/images%2FYM8itLzKNsm5orQzeXPy?alt=media&token=d9f663b6-3242-48f1-be60-32317dbca562";
+
+                            if (beans != null) {
+                                totalBeans=beans;
+                            }
+                            if (!Objects.equals(image1, "")) {
+                                ZEGOLiveAudioRoomManager.getInstance().updateUserAvatarUrl(image1,(userAvatarUrl, errorInfo) -> {
+
+                                    Log.i("3456789", "userAvatarUrl: "+userAvatarUrl);
+
+                                });
+                            }else {
+                                ZEGOLiveAudioRoomManager.getInstance().updateUserAvatarUrl(Constant.USER_PLACEHOLDER_PATH,(userAvatarUrl, errorInfo) -> {
+
+
+                                });
+                            }
+
+                        }
+                    }
+                });
+    }
+
+
     private void showBottomSheetDialog() {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout_gift);
 
         RecyclerView recyclerView = bottomSheetDialog.findViewById(R.id.recycler_gift);
+        Spinner spinner = bottomSheetDialog.findViewById(R.id.spinner);
         MaterialButton button_hot = bottomSheetDialog.findViewById(R.id.button_hot);
         MaterialButton send = bottomSheetDialog.findViewById(R.id.materialButtonSend);
-//        MaterialButton button_one_month = bottomSheetDialog.findViewById(R.id.button_one_month);
-//        MaterialButton button_six_month = bottomSheetDialog.findViewById(R.id.button_six_month);
+        TextView txt_beans = bottomSheetDialog.findViewById(R.id.txt_beans);
 
         MaterialButtonToggleGroup toggleGroup = bottomSheetDialog.findViewById(R.id.toggleGroup);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                giftCount = Integer.parseInt(parent.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         assert toggleGroup != null;
         assert button_hot != null;
@@ -244,13 +419,27 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         button_hot.setTextColor(getResources().getColor(R.color.white));
         button_hot.setStrokeColorResource(R.color.pink_top);
 
+        try {
+            txt_beans.setText(new Convert().prettyCount(Integer.parseInt(totalBeans)));
+        }catch (Exception e){
+
+        }
+
         assert send != null;
         send.setOnClickListener(V->{
             if (documentSnapshot==null){
+                Toast.makeText(this, "Please select gift first", Toast.LENGTH_SHORT).show();
                 return;
             }
-            sendGift(documentSnapshot);
+            if (Integer.parseInt(totalBeans) >= Integer.parseInt(Objects.requireNonNull(documentSnapshot.getString("price")))){
+                sendGift(documentSnapshot,bottomSheetDialog,giftCount);
+            }else {
+                Toast.makeText(this, "Insufficient balance, please recharge first", Toast.LENGTH_SHORT).show();
+            }
+
+
         });
+
 
         toggleGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
             @Override
@@ -299,22 +488,18 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 }
             }
         });
-        mAdapter = new GiftAdapter(mQuery, new GiftAdapter.OnGiftSelectedListener() {
+        mAdapter = new GiftAdapter(mQuery1, new GiftAdapter.OnGiftSelectedListener() {
             @Override
             public void onGiftSelected(DocumentSnapshot user) {
                 documentSnapshot=user;
-//                Toast.makeText(LiveAudioRoomActivity.this, ""+user.getString("giftName"), Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
             protected void onDataChanged() {
-                // Show/hide content if the query returns empty.
                 if (getItemCount() == 0) {
                     recyclerView.setVisibility(View.GONE);
-//                    binding.viewEmpty.setVisibility(View.VISIBLE);
                 } else {
                     recyclerView.setVisibility(View.VISIBLE);
-//                    binding.viewEmpty.setVisibility(View.GONE);
                 }
             }
 
@@ -326,26 +511,23 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
         };
         recyclerView.setAdapter(mAdapter);
-//        GiftAdapter adapter = new GiftAdapter(this, countryList, new GiftAdapter.Select() {
-//            @Override
-//            public void select(String name,String url) {
-//
-//            }
-//        });
 
-        mAdapter.setQuery(mQuery);
+        mAdapter.setQuery(mQuery1);
 
         bottomSheetDialog.show();
     }
 
 
-    private void sendGift(DocumentSnapshot giftModel) {
+    private void sendGift(DocumentSnapshot giftModel, BottomSheetDialog bottomSheetDialog, int giftCount) {
+
+
         long timestamp = System.currentTimeMillis();
         Map<String, Object> data = new HashMap<>();
         data.put("senderId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         data.put("diamond", giftModel.getString("price"));
         data.put("receiverId", otherUserId);
         data.put("giftId", giftModel.getString("giftId"));
+        data.put("fileName", giftModel.getString("fileName"));
         data.put("liveId", roomID);
         data.put("time", timestamp);
         firestore.collection("giftDetails").document(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID)).set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -353,16 +535,18 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             public void onSuccess(Void unused) {
                 String liveType="0";
                 Map<String, Object> data = new HashMap<>();
-                data.put("fileName", "kingset.svga");
+                data.put("fileName", giftModel.getString("fileName"));
                 data.put("giftCoin", giftModel.getString("price"));
                 data.put("userId", otherUserId);
                 data.put("giftId", giftModel.getString("giftId"));
                 data.put("liveType", liveType);
-                data.put("gift_count", 1);
+                data.put("gift_count", String.valueOf(giftCount));
                 data.put("liveId", roomID);
                 String key = ref.push().getKey();
                 ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(data);
 //                sendCustomeMessage("Sends you gift", detail.getImage());
+
+                bottomSheetDialog.dismiss();
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -371,16 +555,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 Toast.makeText(LiveAudioRoomActivity.this, "Internal server error please try again."+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
-//        GiftModel giftModel = new GiftModel();
-//        giftModel.setGiftPath(detail.getImage());
-//        giftModel.setGiftCoin(detail.getAmount());
-//        giftModel.setUserId(CommonUtils.Companion.getUserId());
-//        giftModel.setUserName(CommonUtils.Companion.getName());
-//        String key = ref.push().getKey();
-//        ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(giftModel);
 //        sendCustomeMessage("Sends you gift", detail.getImage());
-        Toast.makeText(this, ""+giftModel.getString("giftName"), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, ""+giftModel.getString("giftName"), Toast.LENGTH_SHORT).show();
     }
 
     private long pressedTime;
@@ -447,15 +623,25 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     }
 
     private void updateUI(UserDetailsModel userDetails) {
-        if(userDetails.getImage()!="") {
-            Glide.with(this).load(userDetails.getImage()).into(binding.ivUserImage);
-        }else {
-            Glide.with(this).load(Constant.USER_PLACEHOLDER_PATH).into(binding.ivUserImage);
+        try {
+            if(!Objects.equals(userDetails.getImage(), "")) {
+                Glide.with(this).load(userDetails.getImage()).into(binding.ivUserImage);
+            }else {
+                Glide.with(this).load(Constant.USER_PLACEHOLDER_PATH).into(binding.ivUserImage);
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    binding.txtUsername.setText(userDetails.getUsername());
+                    binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
+                    binding.txtLevel.setText("Lv"+userDetails.getLevel());
+                    binding.txtCoin.setText(userDetails.getCoins());
+                }
+            });
+        }catch (Exception e){
+            Log.e(TAG, "Exception in Update coin: "+e.getMessage() );
+
         }
-        binding.txtUsername.setText(userDetails.getUsername());
-        binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
-        binding.txtLevel.setText("Lv"+userDetails.getLevel());
-        binding.txtCoin.setText(userDetails.getCoins());
     }
 
     private void saveLiveData(String userId, long uid, String userName, boolean isHost, String liveID, String liveType, String country,String image) {
@@ -528,6 +714,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             if (isHost){
                 updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
+            }else {
+                deleteUserFromViewersCollection(roomID,userModel.getUid());
             }
         }
     }
@@ -540,6 +728,113 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         if (mAdapter != null) {
             mAdapter.startListening();
         }
+        // Start listening for Firestore updates
+        if (mAdapter1 != null) {
+            mAdapter1.startListening();
+        }
+        // Start listening for Firestore updates
+        if (viewUserAdapter != null) {
+            viewUserAdapter.startListening();
+        }
+    }
+
+    private void deleteUserFromViewersCollection(String streamId, long uid) {
+
+        usersRef.whereEqualTo("uid", uid)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle error
+                        Log.e("test2334", "Listen failed: " + error.getMessage());
+                        return;
+                    }
+                    String userid="";
+                    for (DocumentSnapshot document : value) {
+
+                        userid=document.getString("userId");
+                        Log.i("deleteUserFromViewersCollection", "deleteUserFromViewersCollection: "+userid);
+//
+                    }
+                    firestore.collection("room_users")
+                            .document(streamId)
+                            .collection("viewers")
+                            .document(userid)
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.i("delete_user", "User deleted from viewers collection successfully");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.i("delete_user", "Failed to delete user from viewers collection: " + e.getMessage());
+                                }
+                            });
+                });
+
+
+
+    }
+
+    private void saveRoomUsers(UserModel userDetails) {
+
+        long timestamp = System.currentTimeMillis();
+        RoomUsers roomUsers = new RoomUsers();
+        roomUsers.setLiveId(roomID);
+        roomUsers.setUserId(userDetails.getUserId());
+        roomUsers.setUid(String.valueOf(userDetails.getUid()));
+        roomUsers.setUsername(userDetails.getUsername());
+        roomUsers.setCountry_name(userDetails.getCountry_name());
+        roomUsers.setImage(userDetails.getImage());
+        roomUsers.setLevel(userDetails.getLevel());
+        roomUsers.setFriends(userDetails.getFriends());
+        roomUsers.setFollowers(userDetails.getFollowers());
+        roomUsers.setFollowing(userDetails.getFollowing());
+        roomUsers.setCoins(userDetails.getCoins());
+        roomUsers.setTime(timestamp);
+
+        firestore.collection("room_users").document(roomID).collection("viewers").document(userDetails.getUserId()).set(roomUsers).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+                Log.i("room_users", "onSuccess: done");
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.i("room_users", "Exception: err"+e);
+            }
+        });
+
+//        firestore.collection("room_users").document(streamId).set(roomUsers).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//
+//                Log.i("room_users", "onSuccess: done");
+//
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.i("room_users", "Exception: err"+e);
+//            }
+//        });
+
+        // Add the login details to Firestore
+//        firestore.collection("room_users")
+//                .add(roomUsers)
+//                .addOnSuccessListener(documentReference -> {
+//                    // Login details added successfully
+//                    Toast.makeText(LiveStreamingActivity.this, "saved",
+//                            Toast.LENGTH_SHORT).show();
+//                })
+//                .addOnFailureListener(e -> {
+//                    Toast.makeText(LiveStreamingActivity.this, "Error : "+e,Toast.LENGTH_SHORT).show();
+//                    // Handle failure
+//                    Log.e("LiveStreamingActivity", "Error adding login details", e);
+//                });
     }
 
     @Override
@@ -547,6 +842,14 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         super.onStop();
         if (mAdapter != null) {
             mAdapter.stopListening();
+        }
+        // Start listening for Firestore updates
+        if (mAdapter1 != null) {
+            mAdapter1.stopListening();
+        }
+        // Start listening for Firestore updates
+        if (viewUserAdapter != null) {
+            viewUserAdapter.stopListening();
         }
     }
 
@@ -582,5 +885,23 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 Log.e("UpdateLiveType", "Error getting documents: ", task.getException());
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        if (mAdapter != null) {
+//            mAdapter.stopListening();
+//        }
+//        // Start listening for Firestore updates
+//        if (mAdapter1 != null) {
+//            mAdapter1.stopListening();
+//        }
+//        // Start listening for Firestore updates
+//        if (viewUserAdapter != null) {
+//            viewUserAdapter.stopListening();
+//        }
+//
+//        binding = null;
     }
 }

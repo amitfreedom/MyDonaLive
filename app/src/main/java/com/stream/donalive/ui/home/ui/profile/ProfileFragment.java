@@ -146,29 +146,7 @@ public class ProfileFragment extends Fragment {
                         userDetails = document.toObject(UserDetailsModel.class);
                         updateUI(userDetails);
                     }
-
-                    // Now userDetailsList contains UserDetails objects from Firestore
-                    // Use the list as needed (e.g., display in UI, perform operations)
                 });
-
-//        Query query = usersRef.whereEqualTo("userId", userId);
-//
-//        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    for (DocumentSnapshot document : task.getResult()) {
-//                        userDetails = document.toObject(UserDetailsModel.class);
-//                        updateUI(userDetails);
-//
-////                        username = document.getString("username");
-//                    }
-//                } else {
-//                    // Handle failure
-//                    Log.e("MainActivity", "Error getting user document: ", task.getException());
-//                }
-//            }
-//        });
     }
 
     private void updateUI(UserDetailsModel userDetails) {

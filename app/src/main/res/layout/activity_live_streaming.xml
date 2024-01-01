@@ -203,6 +203,19 @@ tools:context=".streaming.activity.LiveStreamingActivity">
     app:layout_constraintBottom_toTopOf="@+id/live_bottom_menu_bar"
     app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageView
+        android:id="@+id/gift_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10dp"
+        android:src="@drawable/presents_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="@dimen/_10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/live_bottom_menu_bar"
+        android:background="@drawable/bg_gray_round_rect1"
+        app:tint="@color/white" />
+
 <com.stream.donalive.streaming.components.cohost.BottomMenuBar
     android:id="@+id/live_bottom_menu_bar"
     android:layout_width="match_parent"
@@ -360,7 +373,7 @@ tools:context=".streaming.activity.LiveStreamingActivity">
                             android:layout_height="wrap_content"
                             android:text="0"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/_10sp" />
+                            android:textSize="@dimen/text14" />
 
                         <ImageView
                             android:layout_width="wrap_content"

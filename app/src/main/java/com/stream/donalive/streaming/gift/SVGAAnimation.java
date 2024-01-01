@@ -1,49 +1,53 @@
 package com.stream.donalive.streaming.gift;
 
 import android.media.MediaPlayer;
-import android.util.Log;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.opensource.svgaplayer.SVGACallback;
 import com.opensource.svgaplayer.SVGAImageView;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAParser.ParseCompletion;
-import com.opensource.svgaplayer.SVGASoundManager;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.stream.donalive.R;
 
 public class SVGAAnimation implements GiftAnimation {
 
+    private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private final DatabaseReference ref = firebaseDatabase.getReference().child("userInfo");
+    private String otherUserId;
+    private String liveType;
+
     private String animationFileName = "kingset.svga";
-//    private String animationFileName = "car.svga";
-//    private String animationFileName = "sports-car.svga";
+//    private String animationFileName = "star.svga";
+//    private String animationFileName = "sports-star.svga";
 //    private String animationFileName = "mp3_to_long.svga";
     private ViewGroup parentView;
 
-    public SVGAAnimation(ViewGroup animationViewParent) {
+    public SVGAAnimation(ViewGroup animationViewParent,String otherUserId,String liveType) {
         this.parentView = animationViewParent;
+        this.otherUserId=otherUserId;
+        this.liveType = liveType;
         SVGAParser.Companion.shareParser().init(animationViewParent.getContext());
-//        SVGASoundManager.INSTANCE.init();
-//        SVGASoundManager.INSTANCE.release();
 
     }
 
     @Override
-    public void startPlay() {
-//        SVGASoundManager.INSTANCE.setVolume(2f, svgaVideoEntity);
+    public void startPlay(String fileName,String gift_count) {
         MediaPlayer mediaPlayer = MediaPlayer.create(parentView.getContext(), R.raw.car_cound);
 
-        SVGAParser.Companion.shareParser().decodeFromAssets(animationFileName, new ParseCompletion() {
+        SVGAParser.Companion.shareParser().decodeFromAssets(fileName, new ParseCompletion() {
             @Override
             public void onComplete(@NonNull SVGAVideoEntity svgaVideoEntity) {
                 SVGAImageView svgaImageView = new SVGAImageView(parentView.getContext());
-                svgaImageView.setLoops(1);
+                svgaImageView.setLoops(Integer.parseInt(gift_count));
                 parentView.addView(svgaImageView);
                 svgaImageView.setVideoItem(svgaVideoEntity);
                 svgaImageView.stepToFrame(0, true);
+
                 svgaImageView.setCallback(new SVGACallback() {
                     @Override
                     public void onPause() {
@@ -54,6 +58,7 @@ public class SVGAAnimation implements GiftAnimation {
                     public void onFinished() {
                         mediaPlayer.stop();
                         parentView.removeView(svgaImageView);
+                        ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").removeValue();
                     }
 
                     @Override

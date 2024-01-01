@@ -1,6 +1,8 @@
 package com.stream.donalive.streaming.activity.model;
 
 public class GiftModel {
+
+    String fileName;
     String giftId;
     String giftName;
     String gift_type;
@@ -11,7 +13,8 @@ public class GiftModel {
     public GiftModel() {
     }
 
-    public GiftModel(String giftId, String giftName, String gift_type, String image, String price, long timestamp) {
+    public GiftModel(String fileName,String giftId, String giftName, String gift_type, String image, String price, long timestamp) {
+        this.fileName = fileName;
         this.giftId = giftId;
         this.giftName = giftName;
         this.gift_type = gift_type;
@@ -20,6 +23,13 @@ public class GiftModel {
         this.timestamp = timestamp;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     public String getGiftId() {
         return giftId;

@@ -10,16 +10,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
-import com.stream.donalive.databinding.ItemActiveUserBinding;
 import com.stream.donalive.databinding.ItemActiveViewersBinding;
+import com.stream.donalive.databinding.ItemActiveViewersListBinding;
 import com.stream.donalive.streaming.activity.model.RoomUsers;
 import com.stream.donalive.ui.home.ui.home.adapter.FirestoreAdapter;
-import com.stream.donalive.ui.home.ui.home.models.LiveUser;
 import com.stream.donalive.ui.utill.Constant;
 
 import java.util.Objects;
 
-public class ViewUserAdapter extends FirestoreAdapter<ViewUserAdapter.ViewHolder> {
+public class ViewersListAdapter extends FirestoreAdapter<ViewersListAdapter.ViewHolder> {
 
     public interface OnActiveUserSelectedListener {
 
@@ -27,32 +26,32 @@ public class ViewUserAdapter extends FirestoreAdapter<ViewUserAdapter.ViewHolder
 
     }
 
-    private ViewUserAdapter.OnActiveUserSelectedListener mListener;
+    private ViewersListAdapter.OnActiveUserSelectedListener mListener;
 
 
-    public ViewUserAdapter(Query query, ViewUserAdapter.OnActiveUserSelectedListener listener) {
+    public ViewersListAdapter(Query query, ViewersListAdapter.OnActiveUserSelectedListener listener) {
         super(query);
         mListener = listener;
     }
 
     @NonNull
     @Override
-    public ViewUserAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewUserAdapter.ViewHolder(ItemActiveViewersBinding.inflate(
+    public ViewersListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewersListAdapter.ViewHolder(ItemActiveViewersListBinding.inflate(
                 LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewUserAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewersListAdapter.ViewHolder holder, int position) {
         holder.bind(getSnapshot(position), mListener);
 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private ItemActiveViewersBinding binding;
+        private ItemActiveViewersListBinding binding;
 
-        public ViewHolder(ItemActiveViewersBinding binding) {
+        public ViewHolder(ItemActiveViewersListBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
@@ -62,24 +61,29 @@ public class ViewUserAdapter extends FirestoreAdapter<ViewUserAdapter.ViewHolder
         }
 
         public void bind(final DocumentSnapshot snapshot,
-                         final ViewUserAdapter.OnActiveUserSelectedListener listener) {
+                         final ViewersListAdapter.OnActiveUserSelectedListener listener) {
 
             RoomUsers roomUsers = snapshot.toObject(RoomUsers.class);
 
-                binding.name.setText(roomUsers.getUsername());
-            binding.name.setText(roomUsers.getUsername());
+            if (roomUsers!=null){
+                binding.txtUsername.setText(roomUsers.getUsername());
+                binding.txtUID.setText("ID : "+roomUsers.getUid());
+                binding.txtLevel.setText("Lv"+roomUsers.getLevel());
 
-            if (!Objects.equals(roomUsers.getImage(), "")){
-                // Load image
-                Glide.with(binding.ivViewer.getContext())
-                        .load(roomUsers.getImage())
-                        .into(binding.ivViewer);
-            }else {
-                // Load image
-                Glide.with(binding.ivViewer.getContext())
-                        .load(Constant.USER_PLACEHOLDER_PATH)
-                        .into(binding.ivViewer);
+                if (!Objects.equals(roomUsers.getImage(), "")){
+                    // Load image
+                    Glide.with(binding.imageFlag.getContext())
+                            .load(roomUsers.getImage())
+                            .into(binding.imageFlag);
+                }else {
+                    // Load image
+                    Glide.with(binding.imageFlag.getContext())
+                            .load(Constant.USER_PLACEHOLDER_PATH)
+                            .into(binding.imageFlag);
+                }
             }
+
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -92,4 +96,3 @@ public class ViewUserAdapter extends FirestoreAdapter<ViewUserAdapter.ViewHolder
 
     }
 }
-

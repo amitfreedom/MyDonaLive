@@ -5,22 +5,43 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:paddingHorizontal="@dimen/_10dp"
-    android:paddingTop="@dimen/_20dp"
+    android:paddingTop="@dimen/space10"
+    android:background="#0C000000"
     android:layout_height="350dp">
 
+    <View
+        android:layout_marginBottom="@dimen/space20"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="@dimen/space60"
+        android:layout_height="3dp"
+        android:background="@color/gray"/>
+
     <TextView
+        android:layout_marginBottom="@dimen/_10dp"
+        android:layout_gravity="left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/HeaderTextStyle"
+        android:textColor="@color/black"
+        android:text="Audience"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recyclerViewAudience"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_active_viewers_list"/>
+
+    <TextView
+        android:id="@+id/notFound"
+        android:layout_marginTop="@dimen/_30dp"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Coming soon...!"/>
-
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/recycler_country"-->
-<!--        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"-->
-<!--        tools:listitem="@layout/item_country"-->
-<!--        app:spanCount="2"/>-->
+        style="@style/NormalTextStyle"
+        android:textColor="@color/gray"
+        android:text="@string/no_user_found"/>
 
 
 </LinearLayout>

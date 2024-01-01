@@ -50,7 +50,7 @@ public class GiftHelper {
     private String liveType;
 
     public GiftHelper(ViewGroup animationViewParent, String userID, String userName,String otherUserId,String liveType) {
-        giftAnimation = new SVGAAnimation(animationViewParent);
+        giftAnimation = new SVGAAnimation(animationViewParent,otherUserId,liveType);
 //        giftAnimation = new VAPAnimation(animationViewParent);
         this.userID = userID;
         this.userName = userName;
@@ -67,7 +67,8 @@ public class GiftHelper {
                     // Now you can access individual fields
                     if (data != null) {
                         String fileName = (String) data.get("fileName");
-                        showAnimation(fileName);
+                        String gift_count = (String) data.get("gift_count");
+                        showAnimation(fileName,gift_count);
 //                        Toast.makeText(ApplicationClass.getInstance(), ""+senderId, Toast.LENGTH_SHORT).show();
 
                         // Use the retrieved data as needed
@@ -209,13 +210,12 @@ public class GiftHelper {
             } else {
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
 
         }
     }
 
-    private void showAnimation(String fileName) {
-        giftAnimation.startPlay();
+    private void showAnimation(String fileName, String gift_count) {
+        giftAnimation.startPlay(fileName,gift_count);
     }
 }
