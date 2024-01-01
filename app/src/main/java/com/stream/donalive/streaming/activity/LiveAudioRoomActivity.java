@@ -130,6 +130,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             return;
         }
 
+        Log.i("otherUserId123", "onCreate: "+otherUserId);
+
 
         fetchUserDetails(userId);
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
@@ -342,7 +344,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         Map<String, Object> data = new HashMap<>();
         data.put("senderId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         data.put("diamond", giftModel.getString("price"));
-        data.put("receiverId", "123456");
+        data.put("receiverId", otherUserId);
         data.put("giftId", giftModel.getString("giftId"));
         data.put("liveId", roomID);
         data.put("time", timestamp);
@@ -351,9 +353,9 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             public void onSuccess(Void unused) {
                 String liveType="0";
                 Map<String, Object> data = new HashMap<>();
-                data.put("fileName", "car.svga");
+                data.put("fileName", "kingset.svga");
                 data.put("giftCoin", giftModel.getString("price"));
-                data.put("userId", "123456");
+                data.put("userId", otherUserId);
                 data.put("giftId", giftModel.getString("giftId"));
                 data.put("liveType", liveType);
                 data.put("gift_count", 1);

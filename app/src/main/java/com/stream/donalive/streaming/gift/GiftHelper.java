@@ -5,7 +5,6 @@ import static com.stream.donalive.streaming.internal.utils.Utils.dp2px;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,8 +19,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.opensource.svgaplayer.SVGASoundManager;
-import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.stream.donalive.R;
 import com.stream.donalive.global.ApplicationClass;
 //import com.zegocloud.uikit.ZegoUIKit;
@@ -31,8 +28,6 @@ import com.stream.donalive.global.ApplicationClass;
 //import com.zegocloud.uikit.utils.Utils;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -71,8 +66,9 @@ public class GiftHelper {
                     Map<String, Object> data = (Map<String, Object>) snapshot.getValue();
                     // Now you can access individual fields
                     if (data != null) {
-                        String senderId = (String) data.get("giftCoin");
-                        Toast.makeText(ApplicationClass.getInstance(), ""+senderId, Toast.LENGTH_SHORT).show();
+                        String fileName = (String) data.get("fileName");
+                        showAnimation(fileName);
+//                        Toast.makeText(ApplicationClass.getInstance(), ""+senderId, Toast.LENGTH_SHORT).show();
 
                         // Use the retrieved data as needed
                     }
@@ -164,11 +160,11 @@ public class GiftHelper {
 //                e.printStackTrace();
 //            }
 //            String jsonString = jsonObject.toString();
-            new Thread() {
-                public void run() {
-                    showAnimation();
-                }
-            }.start();
+//            new Thread() {
+//                public void run() {
+//                    showAnimation();
+//                }
+//            }.start();
         });
         return imageView;
     }
@@ -219,7 +215,7 @@ public class GiftHelper {
         }
     }
 
-    private void showAnimation() {
+    private void showAnimation(String fileName) {
         giftAnimation.startPlay();
     }
 }
