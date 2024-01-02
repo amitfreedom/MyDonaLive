@@ -15,6 +15,7 @@ import com.stream.donalive.databinding.SvgaListItemBinding;
 import com.stream.donalive.ui.home.ui.home.adapter.FirestoreAdapter;
 import com.stream.donalive.ui.home.ui.home.models.LiveUser;
 import com.stream.donalive.ui.utill.Constant;
+import com.stream.donalive.ui.utill.Convert;
 import com.stream.donalive.ui.vip.model.GiftModel;
 
 import java.util.Objects;
@@ -79,7 +80,7 @@ public class VipGiftAdapter extends FirestoreAdapter<VipGiftAdapter.ViewHolder> 
 
 
             binding.title.setText(giftModel.getTitle());
-            binding.txtBeans.setText(giftModel.getBeans());
+            binding.txtBeans.setText(new Convert().prettyCount(Integer.parseInt(giftModel.getBeans())));
 
             // Click listener
             itemView.setOnClickListener(new View.OnClickListener() {

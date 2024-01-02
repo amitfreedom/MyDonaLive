@@ -2,6 +2,7 @@ package com.stream.donalive.ui.vip.model;
 
 public class GiftModel {
     String vipId;
+    String fileName;
     String title;
     String image;
     String beans;
@@ -9,8 +10,9 @@ public class GiftModel {
     public GiftModel() {
     }
 
-    public GiftModel(String vipId, String title, String image, String beans) {
+    public GiftModel(String vipId, String fileName, String title, String image, String beans) {
         this.vipId = vipId;
+        this.fileName = fileName;
         this.title = title;
         this.image = image;
         this.beans = beans;
@@ -22,6 +24,14 @@ public class GiftModel {
 
     public void setVipId(String vipId) {
         this.vipId = vipId;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getTitle() {

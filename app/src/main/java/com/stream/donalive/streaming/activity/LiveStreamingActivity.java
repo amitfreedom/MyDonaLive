@@ -37,6 +37,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -91,6 +92,7 @@ import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,6 +121,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
     private FirebaseAuth mAuth;
     private CollectionReference usersRef;
     private UserDetailsModel userDetails;
+    private String docId;
     private UserModel userModel;
     private ViewersListAdapter mAdapter1;
     private ViewUserAdapter mAdapter;
@@ -128,6 +131,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
     private GiftAdapter giftAdapter;
     private DocumentSnapshot documentSnapshot;
     private String totalBeans="0";
+    private String hostTotalCoins="0";
     private int giftCount=1;
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private final DatabaseReference ref = firebaseDatabase.getReference().child("userInfo");
@@ -160,8 +164,11 @@ public class LiveStreamingActivity extends AppCompatActivity{
         if (!isHost){
             currentUserDetails(audienceId);
         }else {
+//            hostCoins(otherUserId);
 
         }
+
+        getUserCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
 
         ZEGOLiveStreamingManager.getInstance().addRoomListeners();
@@ -184,7 +191,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
             }
         });
 
-        getUserCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
 
         binding.previewBeauty.setOnClickListener(v -> {
             if (beautyDialog == null) {
@@ -224,7 +231,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
         mQuery = firestore.collection("room_users").document(liveID).collection("viewers")
 //                .orderBy("uid", Query.Direction.DESCENDING)
-//                .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
+                .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
                 .limit(LIMIT);
 
         mQuery1 = firestore.collection(Constant.GIFTS)
@@ -271,6 +278,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
                             // Get the "coins" field from the document
                             String beans = document.getString("coins");
                             String image1 = document.getString("image");
+                            docId = document.getString("docId");
 
                             if (beans != null) {
                                 totalBeans=beans;
@@ -426,6 +434,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
 
     private void sendGift(DocumentSnapshot giftModel, BottomSheetDialog bottomSheetDialog, int giftCount) {
+
+
         long timestamp = System.currentTimeMillis();
         Map<String, Object> data = new HashMap<>();
         data.put("senderId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
@@ -449,7 +459,34 @@ public class LiveStreamingActivity extends AppCompatActivity{
                 data.put("liveId", liveID);
                 String key = ref.push().getKey();
                 ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(data);
-//                sendCustomeMessage("Sends you gift", detail.getImage());
+
+                updateGiftSenderCoins(audienceId,totalBeans,giftModel.getString("price"));
+
+                updateGiftReceiverCoins(otherUserId,userDetails.getCoins(),giftModel.getString("price"));
+
+//                String senderName = ZEGOSDKManager.getInstance().expressService.getUser(audienceId).userName;
+//                String receiverName = ZEGOSDKManager.getInstance().expressService.getUser(otherUserId).userName;
+//
+                ZEGOSDKManager.getInstance().expressService.sendBarrageMessage("Sent a gift", (errorCode, messageID) -> {
+
+                });
+
+//                Log.i("sender1234", "senderId: "+audienceId);
+//                Log.i("sender1234", "totalBeans: "+userDetails.getCoins());
+//                Log.i("sender1234", "price : "+giftModel.getString("price"));
+//
+//                Log.i("sender1234", "----------------------------");
+//
+
+                Log.i("sender1234", "otherUserId: "+otherUserId);
+                Log.i("sender1234", "audienceId: "+audienceId);
+                Log.i("sender1234", "totalBeans: "+hostTotalCoins);
+                Log.i("sender1234", "userModel: "+userModel.getCoins());
+                Log.i("sender1234", "userDetails: "+userDetails.getCoins());
+                Log.i("sender1234", "price : "+giftModel.getString("price"));
+
+
+
 
                 bottomSheetDialog.dismiss();
 
@@ -462,6 +499,69 @@ public class LiveStreamingActivity extends AppCompatActivity{
         });
 //        sendCustomeMessage("Sends you gift", detail.getImage());
 //        Toast.makeText(this, ""+giftModel.getString("giftName"), Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateGiftSenderCoins(String senderId, String totalCoins, String currentPrice) {
+        // Reference to the Firestore collection
+        CollectionReference detailsRef = firestore.collection(Constant.LOGIN_DETAILS);
+
+        // Create a query to find the document with the given userId
+        Query query = detailsRef.whereEqualTo("userId", senderId);
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    // Get the document ID for the matched document
+                    String documentId = document.getId();
+                    Long totalCoin = Long.parseLong(totalCoins) - Long.parseLong(currentPrice);
+                    Map<String, Object> updateDetails = new HashMap<>();
+                    updateDetails.put("coins", String.valueOf(totalCoin));
+                    // Update the liveType field from 0 to 1
+                    detailsRef.document(documentId)
+                            .update(updateDetails)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.i("Coinsup", "Coins updated successfully for user with ID: " + senderId);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("UpdateLiveType", "Error updating liveType for user with ID: " + userId, e);
+                            });
+                }
+            } else {
+                Log.e("UpdateLiveType", "Error getting documents: ", task.getException());
+            }
+        });
+
+    }
+    private void updateGiftReceiverCoins(String senderId, String totalCoins, String currentPrice) {
+        // Reference to the Firestore collection
+        CollectionReference detailsRef = firestore.collection(Constant.LOGIN_DETAILS);
+
+        // Create a query to find the document with the given userId
+        Query query = detailsRef.whereEqualTo("userId", senderId);
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    // Get the document ID for the matched document
+                    String documentId = document.getId();
+                    Long totalCoin = Long.parseLong(totalCoins) + Long.parseLong(currentPrice);
+                    Map<String, Object> updateDetails = new HashMap<>();
+                    updateDetails.put("coins", String.valueOf(totalCoin));
+                    // Update the liveType field from 0 to 1
+                    detailsRef.document(documentId)
+                            .update(updateDetails)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.i("Coinsup", "Coins updated successfully for user with ID: " + senderId);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("UpdateLiveType", "Error updating liveType for user with ID: " + userId, e);
+                            });
+                }
+            } else {
+                Log.e("UpdateLiveType", "Error getting documents: ", task.getException());
+            }
+        });
+
     }
 
     private long pressedTime;
@@ -549,6 +649,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     for (DocumentSnapshot document : value) {
                         userDetails = document.toObject(UserDetailsModel.class);
                         updateUI(userDetails);
+
                         Log.i("test2334", "other user name "+userDetails.getUsername());
                         Log.i("test2334", "other user uid: "+userDetails.getUid());
                         Log.i("test2334", "other user userId: "+userDetails.getUsername());
@@ -580,6 +681,28 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
 
     }
+    private void hostCoins(String userId) {
+
+        usersRef.whereEqualTo("userId", userId)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle error
+                        Log.e("test2334", "Listen failed: " + error.getMessage());
+                        return;
+                    }
+
+                    for (DocumentSnapshot document : value) {
+                        if (document!=null){
+                            hostTotalCoins=document.getString("coins");
+                        }
+
+                        ToastUtil.show(LiveStreamingActivity.this,""+document.getString("coins"));
+//
+                    }
+                });
+
+
+    }
 
     private void updateUI(UserDetailsModel userDetails) {
         try {
@@ -594,7 +717,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     binding.txtUsername.setText(userDetails.getUsername());
                     binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
                     binding.txtLevel.setText("Lv"+userDetails.getLevel());
-                    binding.txtCoin.setText(userDetails.getCoins());
+                    binding.txtCoin.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getCoins())));
                 }
             });
         }catch (Exception e){
@@ -707,7 +830,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
         binding.previewBeauty.setVisibility(View.GONE);
         binding.liveBottomMenuBar.setVisibility(View.VISIBLE);
         binding.welcomeText.setVisibility(View.VISIBLE);
-        binding.giftButton.setVisibility(View.VISIBLE);
+
 
         startMarqueeAnimation1();
         giftButton.post(new Runnable() {
@@ -723,7 +846,9 @@ public class LiveStreamingActivity extends AppCompatActivity{
             ZEGOLiveStreamingManager.getInstance().startPublishingStream();
             // Call the FCMNotificationSender's sendNotification method
             FCMNotificationSender.sendNotificationToDevice("deviceToken", "PrettyLive",""+username+"!!"+" started videoLive" );
-
+            binding.giftButton.setVisibility(View.GONE);
+        }else {
+            binding.giftButton.setVisibility(View.VISIBLE);
         }
 
         ZEGOSDKManager.getInstance().expressService.startSoundLevelMonitor();
@@ -735,12 +860,49 @@ public class LiveStreamingActivity extends AppCompatActivity{
         binding.audienceMixOtherIcon.setCircleBackgroundRadius(width / 2);
         binding.mainHostVideoIcon.setCircleBackgroundRadius(width);
 
+        if (!Objects.equals(docId, "")){
+            checkGiftExpiration(docId);
+        }
+
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
 ////                binding.welcomeText.setVisibility(View.GONE);
 //            }
 //        },8000);
+    }
+
+    private void checkGiftExpiration(String documentId) {
+        DocumentReference giftDocument = FirebaseFirestore.getInstance().collection("purchaseGift").document(documentId);
+        giftDocument.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Date endDate = documentSnapshot.getDate("endDate");
+                        if (endDate != null) {
+                            // Compare the endDate with the current date
+                            if (isGiftExpired(endDate)) {
+                                Toast.makeText(this, "Gift has expired", Toast.LENGTH_SHORT).show();
+                                // Gift has expired, handle accordingly (e.g., show an expired message)
+                            } else {
+                                Toast.makeText(this, "Gift is still valid", Toast.LENGTH_SHORT).show();
+                                // Gift is still valid
+                            }
+                        }
+                    } else {
+                        // Document does not exist, handle accordingly
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure (e.g., show an error message)
+                });
+    }
+    private boolean isGiftExpired(Date endDate) {
+        // Get the current date
+        Date currentDate = new Date();
+        Log.i("isGiftExpired", "isGiftExpired: "+currentDate);
+
+        // Compare the endDate with the current date
+        return currentDate.after(endDate);
     }
 
     @Override

@@ -25,7 +25,9 @@
             android:id="@+id/txt_gift_live_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_16sp"
+            android:textSize="@dimen/text14"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:textStyle="bold"
             android:text="Name"/>
 
@@ -33,7 +35,7 @@
             android:id="@+id/txt_coin_gift"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_14sp"
+            android:textSize="@dimen/_10sp"
             android:text="500"/>
 
     </LinearLayout>

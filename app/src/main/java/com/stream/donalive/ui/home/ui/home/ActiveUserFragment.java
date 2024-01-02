@@ -29,6 +29,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 import com.stream.donalive.R;
@@ -49,7 +50,9 @@ import com.stream.donalive.ui.utill.Constant;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -92,6 +95,8 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
         mQuery = mFirestore.collection(Constant.LIVE_DETAILS)
                 .orderBy("startTime", Query.Direction.DESCENDING)
                 .whereEqualTo("liveStatus","online")
+
+//                .whereNotEqualTo("userId",ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
                 .limit(LIMIT);
 
         imageSliderAdapter = new ImageSliderAdapter(getActivity(), images);
@@ -155,6 +160,47 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
             }
         });
 
+        updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
+    }
+
+    private void updateLiveStatus(String userId) {
+        // Reference to the Firestore collection
+        CollectionReference liveDetailsRef = FirebaseFirestore.getInstance().collection(Constant.LIVE_DETAILS);
+
+        // Create a query to find the document with the given userId
+        Query query = liveDetailsRef.whereEqualTo("userId", userId);
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    // Get the document ID for the matched document
+                    String documentId = document.getId();
+                    String liveStatus = document.getString("liveStatus");
+
+//                    if (Objects.equals(liveStatus, "offline")){
+//                        return;
+//                    }
+
+                    long timestamp = System.currentTimeMillis();
+                    Map<String, Object> updateDetails = new HashMap<>();
+                    updateDetails.put("liveStatus", "offline");
+                    updateDetails.put("endTime", timestamp);
+
+                    // Update the liveType field from 0 to 1
+                    liveDetailsRef.document(documentId)
+                            .update(updateDetails)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.i("UpdateLiveType", "liveType updated successfully for user with ID: " + userId);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("UpdateLiveType", "Error updating liveType for user with ID: " + userId, e);
+                            });
+                }
+            } else {
+                Log.e("UpdateLiveType", "Error getting documents: ", task.getException());
+            }
+        });
     }
 
     private void addDotsIndicator(int position) {
@@ -185,6 +231,8 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
         if (mAdapter != null) {
             mAdapter.startListening();
         }
+
+
     }
 
     @Override

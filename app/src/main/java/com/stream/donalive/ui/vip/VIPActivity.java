@@ -2,7 +2,6 @@ package com.stream.donalive.ui.vip;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,21 +13,24 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityVipactivityBinding;
 import com.stream.donalive.global.AppConstants;
+import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.ui.utill.Constant;
 import com.stream.donalive.ui.vip.adapter.VipGiftAdapter;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnVipSelectedListener {
 
@@ -36,6 +38,7 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
     private VipGiftAdapter mAdapter;
     private Query mQuery;
     private FirebaseFirestore db;
+    private CollectionReference giftsCollection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +47,76 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
         setContentView(binding.getRoot());
 
         db = FirebaseFirestore.getInstance();
+        giftsCollection = db.collection("purchaseGift");
 
         buttonSelect();
 
+
+
         setAdapter();
+    }
+
+    private void updateDocId(String userId,String docId) {
+        Log.i("8963457834534", "updateDocId: "+docId);
+        // Reference to the Firestore collection
+        CollectionReference liveDetailsRef = db.collection(Constant.LOGIN_DETAILS);
+
+        // Create a query to find the document with the given userId
+        Query query = liveDetailsRef.whereEqualTo("userId", userId);
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    // Get the document ID for the matched document
+                    String documentId = document.getId();
+                    Map<String, Object> updateDetails = new HashMap<>();
+                    updateDetails.put("docId", docId);
+
+                    // Update the liveType field from 0 to 1
+                    liveDetailsRef.document(documentId)
+                            .update(updateDetails)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.i("8963457834534", "liveType updated successfully for user with ID: " + userId);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("8963457834534", "Error updating liveType for user with ID: " + userId, e);
+                            });
+                }
+            } else {
+                Log.e("8963457834534", "Error getting documents: ", task.getException());
+            }
+        });
+    }
+    private void purchaseGiftForSixWeeks(String userId, String vipId, String fileName, String price,String title) {
+        // Calculate end date for 6 weeks from now
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.WEEK_OF_YEAR, 1);
+        Date endDate = calendar.getTime();
+
+        // 1 for y 0 for No
+        // Create a Map with purchase details
+        Map<String, Object> purchaseDetails = new HashMap<>();
+        purchaseDetails.put("userId", userId); // Replace with the user's ID
+        purchaseDetails.put("giftId", vipId);
+        purchaseDetails.put("fileName", fileName);
+        purchaseDetails.put("title", title);
+        purchaseDetails.put("giftPrice", price);
+        purchaseDetails.put("show", "1");
+        purchaseDetails.put("purchaseDate", new Date());
+        purchaseDetails.put("endDate", endDate);
+
+        // Add this purchase to Firestore
+        giftsCollection.add(purchaseDetails)
+                .addOnSuccessListener(documentReference -> {
+                    String docId = documentReference.getId();
+                    if (docId!=null){
+                        updateDocId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),docId);
+                    }
+
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure (e.g., show an error message)
+                });
     }
 
     private void buttonSelect() {
@@ -86,7 +155,7 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
         mQuery = db.collection(Constant.VIP)
 //                .orderBy("startTime", Query.Direction.DESCENDING)
 //                .whereEqualTo("liveStatus","online")
-                .limit(30);
+                .limit(50);
         mAdapter = new VipGiftAdapter(mQuery, this) {
             @Override
             protected void onDataChanged() {
@@ -166,10 +235,12 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
         String image = user.getString("image");
         String title = user.getString("title");
         String price = user.getString("beans");
-        showBottomSheetDialog(image,title,price);
+        String fileName = user.getString("fileName");
+        String vipId = user.getString("vipId");
+        showBottomSheetDialog(image,title,price,fileName,vipId);
     }
 
-    private void showBottomSheetDialog(String image, String title, String price) {
+    private void showBottomSheetDialog(String image, String title, String price, String fileName, String vipId) {
 
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_vip);
@@ -187,7 +258,8 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
 
 
         topUp.setOnClickListener(view -> {
-            startActivity(new Intent(VIPActivity.this, TopUpActivity.class));
+            purchaseGiftForSixWeeks(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),vipId,fileName,price,title);
+//            startActivity(new Intent(VIPActivity.this, TopUpActivity.class));
         });
         if(!Objects.equals(image, "")){
             assert giftImage != null;

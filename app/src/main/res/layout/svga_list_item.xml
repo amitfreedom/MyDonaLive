@@ -28,7 +28,9 @@
                 android:layout_height="wrap_content"
                 android:text="Ferrari"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_18sp"
+                android:textSize="@dimen/text16"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:fontFamily="@font/libre_baskerville_bold"
                 android:textFontWeight="700"/>
 

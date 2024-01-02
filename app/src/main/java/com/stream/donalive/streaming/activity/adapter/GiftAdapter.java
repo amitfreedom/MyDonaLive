@@ -2,6 +2,7 @@ package com.stream.donalive.streaming.activity.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,9 +69,12 @@ public class GiftAdapter extends FirestoreAdapter<GiftAdapter.ViewHolder> {
         });
         if (index==position){
             holder.binding.cardViewRoot.setCardBackgroundColor(ContextCompat.getColor(holder.binding.cardViewRoot.getContext(), R.color.pink_top));
+            holder.binding.txtGiftLiveName.setTextColor(Color.WHITE);
+            holder.binding.txtCoinGift.setTextColor(Color.WHITE);
         }else {
             holder.binding.cardViewRoot.setCardBackgroundColor(ContextCompat.getColor(holder.binding.cardViewRoot.getContext(), R.color.white));
-
+            holder.binding.txtGiftLiveName.setTextColor(Color.BLACK);
+            holder.binding.txtCoinGift.setTextColor(Color.BLACK);
         }
     }
 

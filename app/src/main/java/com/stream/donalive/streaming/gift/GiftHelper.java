@@ -68,6 +68,7 @@ public class GiftHelper {
                     if (data != null) {
                         String fileName = (String) data.get("fileName");
                         String gift_count = (String) data.get("gift_count");
+
                         showAnimation(fileName,gift_count);
 //                        Toast.makeText(ApplicationClass.getInstance(), ""+senderId, Toast.LENGTH_SHORT).show();
 

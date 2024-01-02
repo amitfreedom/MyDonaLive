@@ -116,15 +116,7 @@
         android:layout_marginHorizontal="@dimen/space10"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:listitem="@layout/item_gift"
-        app:spanCount="4"/>
-
-<!--    <RelativeLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content">-->
-
-
-
-<!--    </RelativeLayout>-->
+        app:spanCount="3"/>
 
     <RelativeLayout
         android:layout_marginVertical="@dimen/_15dp"

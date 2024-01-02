@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -69,6 +70,7 @@ import im.zego.zim.callback.ZIMRoomAttributesOperatedCallback;
 import im.zego.zim.entity.ZIMError;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -204,6 +206,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     finish();
                 } else {
                     if (isHost) {
+                        binding.giftButton1.setVisibility(View.GONE);
                         // save live data
                         saveLiveData(userId,uid,username,true,roomID,"1",country,image);
 
@@ -219,6 +222,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                         FCMNotificationSender.sendNotificationToDevice("deviceToken", "PrettyLive",""+username+"!!"+" started AudioParty" );
 
                     }else {
+                        binding.giftButton1.setVisibility(View.VISIBLE);
                         if (userModel!=null){
                             saveRoomUsers(userModel);
                         }
@@ -240,7 +244,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             showViewersBottomSheetDialog();
         });
 
-        binding.giftButton.setOnClickListener(v -> {
+        binding.giftButton1.setOnClickListener(v -> {
             showBottomSheetDialog();
         });
 
@@ -545,6 +549,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 String key = ref.push().getKey();
                 ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(data);
 //                sendCustomeMessage("Sends you gift", detail.getImage());
+                updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
+
+                updateGiftReceiverCoins(otherUserId,userDetails.getCoins(),giftModel.getString("price"));
+
 
                 bottomSheetDialog.dismiss();
 
@@ -557,6 +565,69 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         });
 //        sendCustomeMessage("Sends you gift", detail.getImage());
 //        Toast.makeText(this, ""+giftModel.getString("giftName"), Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateGiftSenderCoins(String senderId, String totalCoins, String currentPrice) {
+        // Reference to the Firestore collection
+        CollectionReference detailsRef = firestore.collection(Constant.LOGIN_DETAILS);
+
+        // Create a query to find the document with the given userId
+        Query query = detailsRef.whereEqualTo("userId", senderId);
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    // Get the document ID for the matched document
+                    String documentId = document.getId();
+                    Long totalCoin = Long.parseLong(totalCoins) - Long.parseLong(currentPrice);
+                    Map<String, Object> updateDetails = new HashMap<>();
+                    updateDetails.put("coins", String.valueOf(totalCoin));
+                    // Update the liveType field from 0 to 1
+                    detailsRef.document(documentId)
+                            .update(updateDetails)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.i("Coinsup", "Coins updated successfully for user with ID: " + senderId);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("UpdateLiveType", "Error updating liveType for user with ID: " + userId, e);
+                            });
+                }
+            } else {
+                Log.e("UpdateLiveType", "Error getting documents: ", task.getException());
+            }
+        });
+
+    }
+    private void updateGiftReceiverCoins(String senderId, String totalCoins, String currentPrice) {
+        // Reference to the Firestore collection
+        CollectionReference detailsRef = firestore.collection(Constant.LOGIN_DETAILS);
+
+        // Create a query to find the document with the given userId
+        Query query = detailsRef.whereEqualTo("userId", senderId);
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    // Get the document ID for the matched document
+                    String documentId = document.getId();
+                    Long totalCoin = Long.parseLong(totalCoins) + Long.parseLong(currentPrice);
+                    Map<String, Object> updateDetails = new HashMap<>();
+                    updateDetails.put("coins", String.valueOf(totalCoin));
+                    // Update the liveType field from 0 to 1
+                    detailsRef.document(documentId)
+                            .update(updateDetails)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.i("Coinsup", "Coins updated successfully for user with ID: " + senderId);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("UpdateLiveType", "Error updating liveType for user with ID: " + userId, e);
+                            });
+                }
+            } else {
+                Log.e("UpdateLiveType", "Error getting documents: ", task.getException());
+            }
+        });
+
     }
 
     private long pressedTime;
@@ -635,7 +706,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     binding.txtUsername.setText(userDetails.getUsername());
                     binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
                     binding.txtLevel.setText("Lv"+userDetails.getLevel());
-                    binding.txtCoin.setText(userDetails.getCoins());
+                    binding.txtCoin.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getCoins())));
                 }
             });
         }catch (Exception e){
@@ -903,5 +974,35 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 //        }
 //
 //        binding = null;
+    }
+
+    private void checkGiftExpiration(String documentId) {
+        DocumentReference giftDocument = FirebaseFirestore.getInstance().document(documentId);
+        giftDocument.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Date endDate = documentSnapshot.getDate("endDate");
+                        if (endDate != null) {
+                            // Compare the endDate with the current date
+                            if (isGiftExpired(endDate)) {
+                                // Gift has expired, handle accordingly (e.g., show an expired message)
+                            } else {
+                                // Gift is still valid
+                            }
+                        }
+                    } else {
+                        // Document does not exist, handle accordingly
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure (e.g., show an error message)
+                });
+    }
+    private boolean isGiftExpired(Date endDate) {
+        // Get the current date
+        Date currentDate = new Date();
+
+        // Compare the endDate with the current date
+        return currentDate.after(endDate);
     }
 }
