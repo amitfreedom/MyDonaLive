@@ -66,21 +66,25 @@ public class VipGiftAdapter extends FirestoreAdapter<VipGiftAdapter.ViewHolder> 
 
             GiftModel giftModel = snapshot.toObject(GiftModel.class);
 
-            if (Objects.equals(giftModel.getImage(), "")){
-                // Load image
-                Glide.with(binding.vipImage.getContext())
-                        .load(Constant.USER_PLACEHOLDER_PATH)
-                        .into(binding.vipImage);
-            }else {
-                // Load image
-                Glide.with(binding.vipImage.getContext())
-                        .load(giftModel.getImage())
-                        .into(binding.vipImage);
+            try{
+                if (Objects.equals(giftModel.getImage(), "")){
+                    // Load image
+                    Glide.with(binding.vipImage.getContext())
+                            .load(Constant.USER_PLACEHOLDER_PATH)
+                            .into(binding.vipImage);
+                }else {
+                    // Load image
+                    Glide.with(binding.vipImage.getContext())
+                            .load(giftModel.getImage())
+                            .into(binding.vipImage);
+                }
+
+
+                binding.title.setText(giftModel.getTitle());
+                binding.txtBeans.setText(new Convert().prettyCount(Integer.parseInt(giftModel.getBeans())));
+            }catch (Exception e){
+
             }
-
-
-            binding.title.setText(giftModel.getTitle());
-            binding.txtBeans.setText(new Convert().prettyCount(Integer.parseInt(giftModel.getBeans())));
 
             // Click listener
             itemView.setOnClickListener(new View.OnClickListener() {

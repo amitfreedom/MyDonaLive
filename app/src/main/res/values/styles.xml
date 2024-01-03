@@ -139,4 +139,15 @@
         <item name="android:backgroundDimAmount">0.0</item> <!-- Set the dim amount to 0 for no dimming -->
     </style>
 
+
+    <style name="Widget.Material3.BottomNavigationView.ActiveIndicator" parent="">
+    <item name="android:width">@dimen/_24dp</item>
+    <item name="android:height">@dimen/_24dp</item>
+    <item name="marginHorizontal">@dimen/m3_bottom_nav_item_active_indicator_margin_horizontal</item>
+    <item name="shapeAppearance">@style/ShapeAppearance.Material3.NavigationBarView.ActiveIndicator</item>
+    <item name="android:color">@android:color/transparent</item>
+
+    </style>
+
+
 </resources>

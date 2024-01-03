@@ -15,7 +15,7 @@
         android:id="@+id/sortVideoFragment"
         android:icon="@drawable/reels"
         android:iconTint="@color/app_color3"
-        android:title="@string/live" />
+        android:title="@string/Video" />
 
     <item
         android:id="@+id/navigation_chat"

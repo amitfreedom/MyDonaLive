@@ -44,6 +44,7 @@ import com.stream.donalive.streaming.activity.adapter.GiftAdapter;
 import com.stream.donalive.streaming.activity.adapter.ViewUserAdapter;
 import com.stream.donalive.streaming.activity.adapter.ViewersListAdapter;
 import com.stream.donalive.streaming.activity.model.GiftModel;
+import com.stream.donalive.streaming.activity.model.PurchageGiftModel;
 import com.stream.donalive.streaming.activity.model.RoomUsers;
 import com.stream.donalive.streaming.gift.GiftHelper;
 import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager;
@@ -98,6 +99,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private CollectionReference usersRef;
     private UserDetailsModel userDetails;
     private String level;
+    private String docId;
 
     View giftButton;
     private ArrayList<GiftModel> countryList;
@@ -108,6 +110,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private UserModel userModel;
     private String totalBeans="0";
     private int giftCount=1;
+    private PurchageGiftModel purchageGiftModel;
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private final DatabaseReference ref = firebaseDatabase.getReference().child("userInfo");
 
@@ -205,6 +208,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     Log.e(TAG, "onRoomLoginResult: error: " + errorCode);
                     finish();
                 } else {
+
                     if (isHost) {
                         binding.giftButton1.setVisibility(View.GONE);
                         // save live data
@@ -227,6 +231,9 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                             saveRoomUsers(userModel);
                         }
 
+                    }
+                    if (!Objects.equals(docId, "")){
+                        checkGiftExpiration(docId);
                     }
                     initListenerAfterLoginRoom();
                 }
@@ -368,6 +375,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                             // Get the "coins" field from the document
                             String beans = document.getString("coins");
                             String image1 = document.getString("image");
+                            docId = document.getString("docId");
 //                            String image1 ="https://firebasestorage.googleapis.com/v0/b/mydreamlive-c1586.appspot.com/o/images%2FYM8itLzKNsm5orQzeXPy?alt=media&token=d9f663b6-3242-48f1-be60-32317dbca562";
 
                             if (beans != null) {
@@ -977,26 +985,55 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     }
 
     private void checkGiftExpiration(String documentId) {
-        DocumentReference giftDocument = FirebaseFirestore.getInstance().document(documentId);
-        giftDocument.get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Date endDate = documentSnapshot.getDate("endDate");
-                        if (endDate != null) {
-                            // Compare the endDate with the current date
-                            if (isGiftExpired(endDate)) {
-                                // Gift has expired, handle accordingly (e.g., show an expired message)
-                            } else {
-                                // Gift is still valid
+        try {
+            DocumentReference giftDocument = FirebaseFirestore.getInstance().collection("purchaseGift").document(documentId);
+            giftDocument.get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            Date endDate = documentSnapshot.getDate("endDate");
+                            purchageGiftModel=documentSnapshot.toObject(PurchageGiftModel.class);
+                            if (endDate != null) {
+                                // Compare the endDate with the current date
+                                if (isGiftExpired(endDate)) {
+                                    Toast.makeText(this, "Gift has expired", Toast.LENGTH_SHORT).show();
+                                    // Gift has expired, handle accordingly (e.g., show an expired message)
+                                } else {
+                                    Toast.makeText(this, "Gift is still valid", Toast.LENGTH_SHORT).show();
+
+                                    sendVipGiftEntry(purchageGiftModel);
+
+                                }
                             }
+                        } else {
+                            // Document does not exist, handle accordingly
                         }
-                    } else {
-                        // Document does not exist, handle accordingly
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    // Handle failure (e.g., show an error message)
-                });
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle failure (e.g., show an error message)
+                    });
+
+        }catch (Exception e){
+
+        }
+    }
+
+    private void sendVipGiftEntry(PurchageGiftModel purchageGiftModel) {
+        try {
+            String liveType="0";
+            Map<String, Object> data = new HashMap<>();
+            data.put("fileName", purchageGiftModel.getFileName());
+            data.put("giftCoin", purchageGiftModel.getGiftCoin());
+            data.put("userId", otherUserId);
+            data.put("giftId", purchageGiftModel.getGiftId());
+            data.put("liveType", liveType);
+            data.put("gift_count","1");
+            data.put("liveId", roomID);
+            String key = ref.push().getKey();
+            ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(data);
+        }catch (Exception e){
+
+        }
+
     }
     private boolean isGiftExpired(Date endDate) {
         // Get the current date

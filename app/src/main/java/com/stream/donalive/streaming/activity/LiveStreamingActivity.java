@@ -54,6 +54,7 @@ import com.stream.donalive.streaming.ZEGOSDKKeyCenter;
 import com.stream.donalive.streaming.activity.adapter.GiftAdapter;
 import com.stream.donalive.streaming.activity.adapter.ViewUserAdapter;
 import com.stream.donalive.streaming.activity.adapter.ViewersListAdapter;
+import com.stream.donalive.streaming.activity.model.PurchageGiftModel;
 import com.stream.donalive.streaming.activity.model.RoomUsers;
 import com.stream.donalive.streaming.gift.GiftHelper;
 import com.stream.donalive.streaming.internal.ZEGOLiveAudioRoomManager;
@@ -135,6 +136,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
     private int giftCount=1;
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private final DatabaseReference ref = firebaseDatabase.getReference().child("userInfo");
+    private PurchageGiftModel purchageGiftModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -463,31 +465,10 @@ public class LiveStreamingActivity extends AppCompatActivity{
                 updateGiftSenderCoins(audienceId,totalBeans,giftModel.getString("price"));
 
                 updateGiftReceiverCoins(otherUserId,userDetails.getCoins(),giftModel.getString("price"));
-
-//                String senderName = ZEGOSDKManager.getInstance().expressService.getUser(audienceId).userName;
-//                String receiverName = ZEGOSDKManager.getInstance().expressService.getUser(otherUserId).userName;
 //
                 ZEGOSDKManager.getInstance().expressService.sendBarrageMessage("Sent a gift", (errorCode, messageID) -> {
 
                 });
-
-//                Log.i("sender1234", "senderId: "+audienceId);
-//                Log.i("sender1234", "totalBeans: "+userDetails.getCoins());
-//                Log.i("sender1234", "price : "+giftModel.getString("price"));
-//
-//                Log.i("sender1234", "----------------------------");
-//
-
-                Log.i("sender1234", "otherUserId: "+otherUserId);
-                Log.i("sender1234", "audienceId: "+audienceId);
-                Log.i("sender1234", "totalBeans: "+hostTotalCoins);
-                Log.i("sender1234", "userModel: "+userModel.getCoins());
-                Log.i("sender1234", "userDetails: "+userDetails.getCoins());
-                Log.i("sender1234", "price : "+giftModel.getString("price"));
-
-
-
-
                 bottomSheetDialog.dismiss();
 
             }
@@ -873,29 +854,56 @@ public class LiveStreamingActivity extends AppCompatActivity{
     }
 
     private void checkGiftExpiration(String documentId) {
-        DocumentReference giftDocument = FirebaseFirestore.getInstance().collection("purchaseGift").document(documentId);
-        giftDocument.get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Date endDate = documentSnapshot.getDate("endDate");
-                        if (endDate != null) {
-                            // Compare the endDate with the current date
-                            if (isGiftExpired(endDate)) {
-                                Toast.makeText(this, "Gift has expired", Toast.LENGTH_SHORT).show();
-                                // Gift has expired, handle accordingly (e.g., show an expired message)
-                            } else {
-                                Toast.makeText(this, "Gift is still valid", Toast.LENGTH_SHORT).show();
-                                // Gift is still valid
+        try {
+            DocumentReference giftDocument = FirebaseFirestore.getInstance().collection("purchaseGift").document(documentId);
+            giftDocument.get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            Date endDate = documentSnapshot.getDate("endDate");
+                            purchageGiftModel=documentSnapshot.toObject(PurchageGiftModel.class);
+                            if (endDate != null) {
+                                // Compare the endDate with the current date
+                                if (isGiftExpired(endDate)) {
+                                    Toast.makeText(this, "Gift has expired", Toast.LENGTH_SHORT).show();
+                                    // Gift has expired, handle accordingly (e.g., show an expired message)
+                                } else {
+                                    Toast.makeText(this, "Gift is still valid", Toast.LENGTH_SHORT).show();
+
+                                    sendVipGiftEntry(purchageGiftModel);
+
+                                }
                             }
+                        } else {
+                            // Document does not exist, handle accordingly
                         }
-                    } else {
-                        // Document does not exist, handle accordingly
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    // Handle failure (e.g., show an error message)
-                });
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle failure (e.g., show an error message)
+                    });
+        }catch (Exception e){
+
+        }
     }
+
+    private void sendVipGiftEntry(PurchageGiftModel purchageGiftModel) {
+        String liveType="1";
+        try {
+            Map<String, Object> data = new HashMap<>();
+            data.put("fileName", purchageGiftModel.getFileName());
+            data.put("giftCoin", purchageGiftModel.getGiftCoin());
+            data.put("userId", otherUserId);
+            data.put("giftId", purchageGiftModel.getGiftId());
+            data.put("liveType", liveType);
+            data.put("gift_count","1");
+            data.put("liveId", liveID);
+            String key = ref.push().getKey();
+            ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(data);
+        }catch (Exception e){
+
+        }
+
+    }
+
     private boolean isGiftExpired(Date endDate) {
         // Get the current date
         Date currentDate = new Date();

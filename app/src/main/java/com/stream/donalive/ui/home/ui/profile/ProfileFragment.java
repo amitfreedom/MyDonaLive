@@ -38,6 +38,7 @@ import com.stream.donalive.ui.home.ui.profile.activity.UpdateUserDetailsActivity
 import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.startup.activity.OnboardingActivity;
 import com.stream.donalive.ui.utill.Constant;
+import com.stream.donalive.ui.utill.Convert;
 import com.stream.donalive.ui.vip.VIPActivity;
 
 import java.util.List;
@@ -45,6 +46,8 @@ import java.util.Objects;
 
 
 public class ProfileFragment extends Fragment {
+
+    private static final String TAG = "ProfileFragment";
 
     private FragmentProfileBinding binding;
     private FirebaseFirestore db;
@@ -150,18 +153,23 @@ public class ProfileFragment extends Fragment {
     }
 
     private void updateUI(UserDetailsModel userDetails) {
-        binding.txtUsername.setText(userDetails.getUsername());
-        binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
-        binding.txtCountry.setText(userDetails.getCountry_name());
-        // Load image
-        if (Objects.equals(userDetails.getImage(), "")){
-            Glide.with(getActivity())
-                    .load(Constant.USER_PLACEHOLDER_PATH)
-                    .into(binding.profileImage);
-        }else {
-            Glide.with(getActivity())
-                    .load(userDetails.getImage())
-                    .into(binding.profileImage);
+        try {
+            binding.txtUsername.setText(userDetails.getUsername());
+            binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
+            binding.txtCountry.setText(userDetails.getCountry_name());
+            binding.txtCoin.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getCoins())));
+            // Load image
+            if (Objects.equals(userDetails.getImage(), "")){
+                Glide.with(getActivity())
+                        .load(Constant.USER_PLACEHOLDER_PATH)
+                        .into(binding.profileImage);
+            }else {
+                Glide.with(getActivity())
+                        .load(userDetails.getImage())
+                        .into(binding.profileImage);
+            }
+        }catch (Exception e){
+            Log.i(TAG, "updateUI: "+e);
         }
 
     }

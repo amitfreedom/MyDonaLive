@@ -2,6 +2,8 @@ package com.stream.donalive.ui.vip;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +25,9 @@ import com.stream.donalive.R;
 import com.stream.donalive.databinding.ActivityVipactivityBinding;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
+import com.stream.donalive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.donalive.ui.utill.Constant;
+import com.stream.donalive.ui.utill.Convert;
 import com.stream.donalive.ui.vip.adapter.VipGiftAdapter;
 
 import java.util.Calendar;
@@ -38,7 +42,11 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
     private VipGiftAdapter mAdapter;
     private Query mQuery;
     private FirebaseFirestore db;
-    private CollectionReference giftsCollection;
+    private CollectionReference giftsCollection,usersRef;
+    private UserDetailsModel userDetailsModel;
+    private String totalCoins="0";
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,20 +56,49 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
 
         db = FirebaseFirestore.getInstance();
         giftsCollection = db.collection("purchaseGift");
+        usersRef = db.collection(Constant.LOGIN_DETAILS);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Please wait...!");
 
         buttonSelect();
 
-
+        getUserCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
         setAdapter();
     }
 
-    private void updateDocId(String userId,String docId) {
-        Log.i("8963457834534", "updateDocId: "+docId);
+    private void getUserCoins(String userId) {
+        Log.i("Coins123", "userId =: " + userId);
+        usersRef.whereEqualTo("userId", userId)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Handle error
+                        Log.e("FirestoreListener", "Listen failed: " + error.getMessage());
+                        return;
+                    }
+
+                    for (DocumentSnapshot document : value) {
+                        if (document.exists()) {
+                            userDetailsModel = document.toObject(UserDetailsModel.class);
+                            // Get the "coins" field from the document
+                            String coins = document.getString("coins");
+                            Long uid = document.getLong("uid");
+
+                            if (coins != null) {
+                                totalCoins=coins;
+                            }
+
+                        }
+                    }
+                });
+    }
+
+
+    private void updateDocId(String userId, String docId, BottomSheetDialog bottomSheetDialog) {
         // Reference to the Firestore collection
         CollectionReference liveDetailsRef = db.collection(Constant.LOGIN_DETAILS);
-
-        // Create a query to find the document with the given userId
         Query query = liveDetailsRef.whereEqualTo("userId", userId);
 
         query.get().addOnCompleteListener(task -> {
@@ -76,9 +113,16 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
                     liveDetailsRef.document(documentId)
                             .update(updateDetails)
                             .addOnSuccessListener(aVoid -> {
-                                Log.i("8963457834534", "liveType updated successfully for user with ID: " + userId);
+                                progressDialog.dismiss();
+                                bottomSheetDialog.dismiss();
+                                Toast.makeText(this, "Congratulation , you have successfully purchase vip", Toast.LENGTH_SHORT).show();
+
                             })
                             .addOnFailureListener(e -> {
+                                progressDialog.dismiss();
+                                bottomSheetDialog.dismiss();
+                                Toast.makeText(this, "Somethings went wrong , try again", Toast.LENGTH_SHORT).show();
+
                                 Log.e("8963457834534", "Error updating liveType for user with ID: " + userId, e);
                             });
                 }
@@ -87,7 +131,7 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
             }
         });
     }
-    private void purchaseGiftForSixWeeks(String userId, String vipId, String fileName, String price,String title) {
+    private void purchaseGiftForSixWeeks(String userId, String vipId, String fileName, String price, String title, BottomSheetDialog bottomSheetDialog) {
         // Calculate end date for 6 weeks from now
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.WEEK_OF_YEAR, 1);
@@ -110,13 +154,45 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
                 .addOnSuccessListener(documentReference -> {
                     String docId = documentReference.getId();
                     if (docId!=null){
-                        updateDocId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),docId);
+                        updateDocId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),docId,bottomSheetDialog);
                     }
 
                 })
                 .addOnFailureListener(e -> {
                     // Handle failure (e.g., show an error message)
                 });
+    }
+
+    private void updateUserCoins(String senderId, String totalCoins, String currentPrice) {
+        // Reference to the Firestore collection
+        CollectionReference detailsRef = db.collection(Constant.LOGIN_DETAILS);
+
+        // Create a query to find the document with the given userId
+        Query query = detailsRef.whereEqualTo("userId", senderId);
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    // Get the document ID for the matched document
+                    String documentId = document.getId();
+                    Long totalCoin = Long.parseLong(totalCoins) - Long.parseLong(currentPrice);
+                    Map<String, Object> updateDetails = new HashMap<>();
+                    updateDetails.put("coins", String.valueOf(totalCoin));
+                    // Update the liveType field from 0 to 1
+                    detailsRef.document(documentId)
+                            .update(updateDetails)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.i("Coinsup", "Coins updated successfully for user with ID: " + senderId);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("UpdateLiveType", "Error updating liveType for user with ID: "+e);
+                            });
+                }
+            } else {
+                Log.e("UpdateLiveType", "Error getting documents: ", task.getException());
+            }
+        });
+
     }
 
     private void buttonSelect() {
@@ -161,11 +237,11 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
             protected void onDataChanged() {
                 // Show/hide content if the query returns empty.
                 if (getItemCount() == 0) {
-//                    binding.recyclerRestaurants.setVisibility(View.GONE);
-//                    binding.viewEmpty.setVisibility(View.VISIBLE);
+                    binding.progressCircular.setVisibility(View.VISIBLE);
+                    binding.rvVipGift.setVisibility(View.GONE);
                 } else {
-//                    binding.recyclerRestaurants.setVisibility(View.VISIBLE);
-//                    binding.viewEmpty.setVisibility(View.GONE);
+                    binding.rvVipGift.setVisibility(View.VISIBLE);
+                    binding.progressCircular.setVisibility(View.GONE);
                 }
             }
 
@@ -255,11 +331,25 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
         TextView uid = bottomSheetDialog.findViewById(R.id.txt_UID);
         TextView txt_price = bottomSheetDialog.findViewById(R.id.txt_price);
         MaterialButton topUp = bottomSheetDialog.findViewById(R.id.btn_topup);
+        Long totalCoin = Long.parseLong(totalCoins);
+        Long giftPrice = Long.parseLong(price);
 
+        if (totalCoin>=giftPrice){
+            topUp.setText("Continue");
+        }else {
+            topUp.setText("Insufficient balance. Top-up now!");
+        }
 
         topUp.setOnClickListener(view -> {
-            purchaseGiftForSixWeeks(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),vipId,fileName,price,title);
-//            startActivity(new Intent(VIPActivity.this, TopUpActivity.class));
+
+            if (totalCoin>=giftPrice){
+                progressDialog.show();
+                purchaseGiftForSixWeeks(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),vipId,fileName,price,title,bottomSheetDialog);
+                updateUserCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalCoins,price);
+            }else {
+                startActivity(new Intent(VIPActivity.this, TopUpActivity.class));
+
+            }
         });
         if(!Objects.equals(image, "")){
             assert giftImage != null;
@@ -272,7 +362,9 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
 
         assert giftName != null;
         giftName.setText(title);
-        txt_price.setText(price);
+        assert uid != null;
+        uid.setText(String.valueOf(userDetailsModel.getUid()));
+        txt_price.setText(new Convert().prettyCount(Integer.parseInt(price)));
 
 
 
@@ -293,37 +385,38 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
                     checkedButton.setStrokeColorResource(R.color.pink_top);
 
                     if (title.equals("1 week")){
-                        txt_price.setText(price);
-                    }else  if (title.equals("1 month")){
-                        try {
-                            try {
-                                // Attempt to parse the string to an integer
-                                int i = Integer.parseInt(price);
-                                int finalPrice = i * 3;
-                                txt_price.setText(String.valueOf(finalPrice));
-                            } catch (NumberFormatException e) {
-                                e.printStackTrace(); // Log the exception or handle it in an appropriate way
-                            }
-                        }catch (Exception e){
-
-                        }
+                        txt_price.setText(new Convert().prettyCount(Integer.parseInt(price)));
                     }
-                    else  if (title.equals("6 months")){
-                        try {
-                            // Attempt to parse the string to an integer
-                            int i = Integer.parseInt(price);
-
-                            // Multiply the integer value by 3
-                            int finalPrice = i * 12;
-
-                            // Convert the final price to a string and set it in the txt_price view
-                            txt_price.setText(String.valueOf(finalPrice));
-                        } catch (NumberFormatException e) {
-                            // Handle the case where the string cannot be parsed as an integer
-                            e.printStackTrace(); // Log the exception or handle it in an appropriate way
-                        }
-
-                    }
+//                    else  if (title.equals("1 month")){
+//                        try {
+//                            try {
+//                                // Attempt to parse the string to an integer
+//                                int i = Integer.parseInt(price);
+//                                int finalPrice = i * 3;
+//                                txt_price.setText(String.valueOf(finalPrice));
+//                            } catch (NumberFormatException e) {
+//                                e.printStackTrace(); // Log the exception or handle it in an appropriate way
+//                            }
+//                        }catch (Exception e){
+//
+//                        }
+//                    }
+//                    else  if (title.equals("6 months")){
+//                        try {
+//                            // Attempt to parse the string to an integer
+//                            int i = Integer.parseInt(price);
+//
+//                            // Multiply the integer value by 3
+//                            int finalPrice = i * 12;
+//
+//                            // Convert the final price to a string and set it in the txt_price view
+//                            txt_price.setText(String.valueOf(finalPrice));
+//                        } catch (NumberFormatException e) {
+//                            // Handle the case where the string cannot be parsed as an integer
+//                            e.printStackTrace(); // Log the exception or handle it in an appropriate way
+//                        }
+//
+//                    }
 
                 }
                 else {
@@ -337,12 +430,6 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
                 }
             }
         });
-
-//        LinearLayout copy = bottomSheetDialog.findViewById(R.id.copyLinearLayout);
-//        LinearLayout share = bottomSheetDialog.findViewById(R.id.shareLinearLayout);
-//        LinearLayout upload = bottomSheetDialog.findViewById(R.id.uploadLinearLayout);
-//        LinearLayout download = bottomSheetDialog.findViewById(R.id.download);
-//        LinearLayout delete = bottomSheetDialog.findViewById(R.id.delete);
 
         bottomSheetDialog.show();
     }

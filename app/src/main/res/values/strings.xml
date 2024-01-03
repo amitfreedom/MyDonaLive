@@ -335,5 +335,6 @@
     <string name="fcm_message">FCM Message</string>
     <string name="send">Send</string>
     <string name="no_user_found">No user found</string>
+    <string name="Video">Video</string>
 
 </resources>
