@@ -19,10 +19,15 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.stream.donalive.R;
 import com.stream.donalive.global.AppConstants;
 import com.stream.donalive.global.ApplicationClass;
 import com.stream.donalive.ui.home.HomeActivity;
+
+import java.util.Objects;
 
 public class SplashActivity extends AppCompatActivity {
     private static final int SPLASH_SCREEN_TIME_OUT = 2000;
@@ -32,6 +37,9 @@ public class SplashActivity extends AppCompatActivity {
     private TextView txt_logo;
     private FirebaseAuth mAuth;
     TextView marqueeTextView;
+    FirebaseFirestore db;
+    private String work="1";
+    private String dev="0";
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +50,26 @@ public class SplashActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         relativeLayout=findViewById(R.id.main_logo);
         txt_logo=findViewById(R.id.txt_logo);
+        db = FirebaseFirestore.getInstance();
+        CollectionReference collectionRef = db.collection("stop_app");
+
+        collectionRef.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // Iterate through the documents
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
+                        work = documentSnapshot.getString("working");
+                        dev = documentSnapshot.getString("dev");
+
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    work="0";
+                    dev="0";
+                    // Handle any errors
+                    //
+                    //
+                });
 
         TextView marqueeText = findViewById(R.id.marqueeText);
 
@@ -63,6 +91,16 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 FirebaseUser user = mAuth.getCurrentUser();
+
+                if (Objects.equals(work, "0")) {
+                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (Objects.equals(dev, "0")) {
+//                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if (user == null) {
                     Intent intent = new Intent(SplashActivity.this, OnboardingActivity.class);
