@@ -18,12 +18,12 @@ tools:context=".streaming.activity.LiveStreamingActivity">
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.stream.donalive.streaming.internal.sdk.components.express.ZEGOVideoView
+    <com.stream.prettylive.streaming.internal.sdk.components.express.ZEGOVideoView
         android:id="@+id/main_host_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.stream.donalive.streaming.components.LetterIconView
+    <com.stream.prettylive.streaming.components.LetterIconView
         android:id="@+id/main_host_video_icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -48,12 +48,12 @@ tools:context=".streaming.activity.LiveStreamingActivity">
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.stream.donalive.streaming.internal.sdk.components.express.ZEGOVideoView
+        <com.stream.prettylive.streaming.internal.sdk.components.express.ZEGOVideoView
             android:id="@+id/audience_mix_video"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.stream.donalive.streaming.components.LetterIconView
+        <com.stream.prettylive.streaming.components.LetterIconView
             android:id="@+id/audience_mix_self_icon"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -65,7 +65,7 @@ tools:context=".streaming.activity.LiveStreamingActivity">
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.stream.donalive.streaming.components.LetterIconView
+        <com.stream.prettylive.streaming.components.LetterIconView
             android:id="@+id/audience_mix_other_icon"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -117,12 +117,12 @@ tools:context=".streaming.activity.LiveStreamingActivity">
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.stream.donalive.streaming.internal.sdk.components.express.ZEGOVideoView
+        <com.stream.prettylive.streaming.internal.sdk.components.express.ZEGOVideoView
             android:id="@+id/pk_self_video"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.stream.donalive.streaming.components.LetterIconView
+        <com.stream.prettylive.streaming.components.LetterIconView
             android:id="@+id/pk_self_video_icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -140,12 +140,12 @@ tools:context=".streaming.activity.LiveStreamingActivity">
         app:layout_constraintStart_toEndOf="@id/pk_self_video_layout"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.stream.donalive.streaming.internal.sdk.components.express.ZEGOVideoView
+        <com.stream.prettylive.streaming.internal.sdk.components.express.ZEGOVideoView
             android:id="@+id/pk_other_video"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.stream.donalive.streaming.components.LetterIconView
+        <com.stream.prettylive.streaming.components.LetterIconView
             android:id="@+id/pk_other_video_icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -185,7 +185,7 @@ tools:context=".streaming.activity.LiveStreamingActivity">
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent" />
 
-<com.stream.donalive.streaming.components.BeautyButton
+<com.stream.prettylive.streaming.components.BeautyButton
     android:id="@+id/preview_beauty"
     android:layout_width="48dp"
     android:layout_height="48dp"
@@ -195,7 +195,7 @@ tools:context=".streaming.activity.LiveStreamingActivity">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="@id/preview_start" />
 
-<com.stream.donalive.streaming.components.message.barrage.BarrageMessageView
+<com.stream.prettylive.streaming.components.message.barrage.BarrageMessageView
     android:id="@+id/live_message_view"
     android:layout_width="270dp"
     android:layout_height="200dp"
@@ -217,7 +217,7 @@ tools:context=".streaming.activity.LiveStreamingActivity">
         android:background="@drawable/bg_gray_round_rect1"
         app:tint="@color/white" />
 
-<com.stream.donalive.streaming.components.cohost.BottomMenuBar
+<com.stream.prettylive.streaming.components.cohost.BottomMenuBar
     android:id="@+id/live_bottom_menu_bar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -234,7 +234,7 @@ tools:context=".streaming.activity.LiveStreamingActivity">
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent">
 
-    <com.stream.donalive.streaming.components.cohost.CoHostView
+    <com.stream.prettylive.streaming.components.cohost.CoHostView
         android:id="@+id/live_cohost_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -246,7 +246,7 @@ tools:context=".streaming.activity.LiveStreamingActivity">
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-<com.stream.donalive.streaming.components.cohost.TopMenuBar
+<com.stream.prettylive.streaming.components.cohost.TopMenuBar
     android:id="@+id/live_audioroom_topbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

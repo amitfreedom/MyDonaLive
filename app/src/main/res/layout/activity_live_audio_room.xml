@@ -16,7 +16,7 @@
         tools:context=".streaming.activity.LiveAudioRoomActivity">
 
 
-        <com.stream.donalive.streaming.components.audioroom.LiveAudioRoomSeatContainer
+        <com.stream.prettylive.streaming.components.audioroom.LiveAudioRoomSeatContainer
             android:id="@+id/seat_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.stream.donalive.streaming.components.message.barrage.BarrageMessageView
+        <com.stream.prettylive.streaming.components.message.barrage.BarrageMessageView
             android:id="@+id/live_message_view"
             android:layout_width="270dp"
             android:layout_height="200dp"
@@ -36,7 +36,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
 
-        <com.stream.donalive.streaming.components.audioroom.BottomMenuBar
+        <com.stream.prettylive.streaming.components.audioroom.BottomMenuBar
             android:id="@+id/live_bottom_menu_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
             android:background="@drawable/bg_gray_round_rect1"
             app:tint="@color/white" />
 
-        <com.stream.donalive.streaming.components.audioroom.TopMenuBar
+        <com.stream.prettylive.streaming.components.audioroom.TopMenuBar
             android:id="@+id/live_audioroom_topbar"
             android:layout_width="match_parent"
             android:visibility="gone"

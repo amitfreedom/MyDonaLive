@@ -7,32 +7,32 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.stream.donalive.ui.home.ui.home.HomeFragment"
+        android:name="com.stream.prettylive.ui.home.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/navigation_explore"
-        android:name="com.stream.donalive.ui.home.ui.explore.ExploreFragment"
+        android:name="com.stream.prettylive.ui.home.ui.explore.ExploreFragment"
         android:label="fragment_explore"
         tools:layout="@layout/fragment_explore" />
     <fragment
         android:id="@+id/navigation_live"
-        android:name="com.stream.donalive.ui.home.ui.live.LiveFragment"
+        android:name="com.stream.prettylive.ui.home.ui.live.LiveFragment"
         android:label="fragment_live"
         tools:layout="@layout/fragment_live" />
     <fragment
         android:id="@+id/navigation_chat"
-        android:name="com.stream.donalive.ui.home.ui.chat.ChatFragment"
+        android:name="com.stream.prettylive.ui.home.ui.chat.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" />
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.stream.donalive.ui.home.ui.profile.ProfileFragment"
+        android:name="com.stream.prettylive.ui.home.ui.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/sortVideoFragment"
-        android:name="com.stream.donalive.ui.home.ui.reels.SortVideoFragment"
+        android:name="com.stream.prettylive.ui.home.ui.reels.SortVideoFragment"
         android:label="fragment_sort_video"
         tools:layout="@layout/fragment_sort_video" />
 

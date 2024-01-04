@@ -11,7 +11,7 @@
         android:background="@color/gray_555"
         android:visibility="gone">
 
-        <com.stream.donalive.streaming.components.ZEGOAudioVideoView
+        <com.stream.prettylive.streaming.components.ZEGOAudioVideoView
             android:id="@+id/other_video_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -29,13 +29,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.stream.donalive.streaming.components.ZEGOAudioVideoView
+        <com.stream.prettylive.streaming.components.ZEGOAudioVideoView
             android:id="@+id/self_video_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </com.google.android.material.card.MaterialCardView>
 
-    <com.stream.donalive.streaming.internal.sdk.components.express.SwitchCameraButton
+    <com.stream.prettylive.streaming.internal.sdk.components.express.SwitchCameraButton
         android:id="@+id/call_camera_switch_btn"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -48,7 +48,7 @@
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.stream.donalive.streaming.internal.sdk.components.express.ToggleCameraButton
+    <com.stream.prettylive.streaming.internal.sdk.components.express.ToggleCameraButton
         android:id="@+id/call_camera_btn"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -59,7 +59,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/call_camera_switch_btn" />
 
-    <com.stream.donalive.streaming.components.BeautyButton
+    <com.stream.prettylive.streaming.components.BeautyButton
         android:id="@+id/call_beauty_btn"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -79,7 +79,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/call_beauty_btn" />
 
-    <com.stream.donalive.streaming.internal.sdk.components.express.ToggleMicrophoneButton
+    <com.stream.prettylive.streaming.internal.sdk.components.express.ToggleMicrophoneButton
         android:id="@+id/call_mic_btn"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -90,7 +90,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/call_hangup_btn" />
 
-    <com.stream.donalive.streaming.internal.sdk.components.express.AudioOutputButton
+    <com.stream.prettylive.streaming.internal.sdk.components.express.AudioOutputButton
         android:id="@+id/call_speaker_btn"
         android:layout_width="48dp"
         android:layout_height="48dp"

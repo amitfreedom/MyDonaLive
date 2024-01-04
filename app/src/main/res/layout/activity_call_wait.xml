@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:background="@color/gray_666">
 
-    <com.stream.donalive.streaming.internal.sdk.components.express.ZEGOVideoView
+    <com.stream.prettylive.streaming.internal.sdk.components.express.ZEGOVideoView
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.stream.donalive.streaming.components.LetterIconView
+    <com.stream.prettylive.streaming.components.LetterIconView
         android:id="@+id/waiting_icon"
         android:layout_width="96dp"
         android:layout_height="96dp"

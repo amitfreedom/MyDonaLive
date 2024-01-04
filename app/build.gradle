@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.stream.donalive'
+    namespace 'com.stream.prettylive'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.stream.donalive"
+        applicationId "com.stream.prettylive"
         minSdk 26
         targetSdk 34
         versionCode 1
@@ -52,6 +52,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        dataBinding true
     }
 }
 
@@ -79,8 +80,6 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-
-    implementation 'androidx.core:core-splashscreen:1.0.0-beta02'
     implementation platform('com.google.firebase:firebase-bom:32.6.0')
     // country code picker
     implementation 'com.hbb20:ccp:2.6.0'
@@ -102,9 +101,6 @@ dependencies {
     implementation "com.airbnb.android:lottie:5.1.1"
     implementation 'com.github.yyued:SVGAPlayer-Android:2.6.1'
     implementation "io.github.tencent:vap:2.0.28"
-//    implementation 'com.github.ZEGOCLOUD:zego_uikit_prebuilt_live_audio_room_android:+'
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.16.1'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.16.1'
 
 
 

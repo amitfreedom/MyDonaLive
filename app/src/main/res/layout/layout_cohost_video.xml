@@ -6,7 +6,7 @@
     app:cardBackgroundColor="@color/gray_333"
     app:cardCornerRadius="8dp">
 
-    <com.stream.donalive.streaming.components.ZEGOAudioVideoView
+    <com.stream.prettylive.streaming.components.ZEGOAudioVideoView
         android:id="@+id/cohost_video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

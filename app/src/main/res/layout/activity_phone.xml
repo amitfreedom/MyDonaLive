@@ -168,7 +168,7 @@
             android:text="@string/verify_phone_auth"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/fieldVerificationCode" />
+            tools:ignore="MissingConstraints" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonResend"
@@ -182,22 +182,22 @@
             app:layout_constraintStart_toEndOf="@+id/buttonVerifyPhone"
             app:layout_constraintTop_toTopOf="@+id/buttonVerifyPhone" />
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/phoneAuthFields"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="fieldPhoneNumber, fieldVerificationCode, buttonResend, buttonStartVerification, buttonVerifyPhone" />
+<!--        <androidx.constraintlayout.widget.Group-->
+<!--            android:id="@+id/phoneAuthFields"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:constraint_referenced_ids="fieldPhoneNumber, fieldVerificationCode, buttonResend, buttonStartVerification, buttonVerifyPhone" />-->
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/signOutButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="sign_out"
-            android:theme="@style/ThemeOverlay.MyDarkButton"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/fieldVerificationCode"
-            app:layout_constraintStart_toStartOf="@+id/fieldPhoneNumber"
-            app:layout_constraintTop_toBottomOf="@+id/buttonVerifyPhone" />
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/signOutButton"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="sign_out"-->
+<!--            android:theme="@style/ThemeOverlay.MyDarkButton"-->
+<!--            android:visibility="gone"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/fieldVerificationCode"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/fieldPhoneNumber"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/buttonVerifyPhone" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
