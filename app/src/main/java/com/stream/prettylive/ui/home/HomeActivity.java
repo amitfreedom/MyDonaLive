@@ -2,6 +2,7 @@ package com.stream.prettylive.ui.home;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,6 +49,7 @@ public class HomeActivity extends AppCompatActivity {
 
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         db = FirebaseFirestore.getInstance();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
