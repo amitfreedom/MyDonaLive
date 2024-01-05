@@ -205,6 +205,7 @@ public class ZEGOLiveAudioRoomManager {
         return seatService.findMyRoomSeatIndex();
     }
 
+
     public void takeSeat(int seatIndex, ZIMRoomAttributesOperatedCallback callback) {
         seatService.takeSeat(seatIndex, callback);
     }

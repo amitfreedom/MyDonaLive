@@ -22,7 +22,7 @@ public class FCMNotificationSender {
             notificationBody.put("body", notib);
             notificationBody.put("title", notificationTitle);
 //            notification.put("to", deviceToken);
-            notification.put("to", "/topics/" + "weather");
+//            notification.put("to", "/topics/" + "weather");
             notification.put("notification", notificationBody);
         } catch (JSONException e) {
             e.printStackTrace();

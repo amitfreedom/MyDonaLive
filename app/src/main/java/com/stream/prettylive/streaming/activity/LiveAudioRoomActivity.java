@@ -47,13 +47,17 @@ import com.stream.prettylive.streaming.activity.adapter.ViewersListAdapter;
 import com.stream.prettylive.streaming.activity.model.GiftModel;
 import com.stream.prettylive.streaming.activity.model.PurchageGiftModel;
 import com.stream.prettylive.streaming.activity.model.RoomUsers;
+import com.stream.prettylive.streaming.components.audioroom.ZEGOLiveAudioRoomSeatView;
+import com.stream.prettylive.streaming.functions.AddStreamInfo;
 import com.stream.prettylive.streaming.gift.GiftHelper;
 import com.stream.prettylive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.prettylive.streaming.internal.business.RoomRequestExtendedData;
 import com.stream.prettylive.streaming.internal.business.RoomRequestType;
 import com.stream.prettylive.streaming.internal.business.audioroom.LiveAudioRoomLayoutConfig;
+import com.stream.prettylive.streaming.internal.business.audioroom.LiveAudioRoomSeat;
 import com.stream.prettylive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.prettylive.streaming.internal.sdk.basic.ZEGOSDKCallBack;
+import com.stream.prettylive.streaming.internal.sdk.basic.ZEGOSDKUser;
 import com.stream.prettylive.streaming.internal.sdk.express.IExpressEngineEventHandler;
 import com.stream.prettylive.streaming.internal.sdk.zim.IZIMEventHandler;
 import com.stream.prettylive.streaming.internal.utils.ToastUtil;
@@ -63,17 +67,22 @@ import com.stream.prettylive.ui.home.ui.profile.models.UserModel;
 import com.stream.prettylive.ui.utill.Constant;
 import com.stream.prettylive.ui.utill.Convert;
 
+import im.zego.zegoexpress.constants.ZegoRoomState;
+import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason;
 import im.zego.zegoexpress.constants.ZegoScenario;
 import im.zego.zegoexpress.constants.ZegoStreamResourceMode;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.entity.ZegoPlayerConfig;
+import im.zego.zegoexpress.entity.ZegoRoomExtraInfo;
 import im.zego.zegoexpress.entity.ZegoStream;
+import im.zego.zegoexpress.entity.ZegoUser;
 import im.zego.zim.callback.ZIMRoomAttributesOperatedCallback;
 import im.zego.zim.entity.ZIMError;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -186,17 +195,80 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
         ZEGOSDKManager.getInstance().expressService.openCamera(false);
         ZEGOSDKManager.getInstance().expressService.addEventHandler(new IExpressEngineEventHandler() {
+
+
+            @Override
+            public void onReceiveStreamAdd(List<ZEGOSDKUser> userList) {
+                super.onReceiveStreamAdd(userList);
+
+                for (ZEGOSDKUser zegoUser : userList) {
+                    try {
+                        String mainStreamID = zegoUser.getMainStreamID(); // Assuming mainStreamID is accessible from ZEGOSDKUser
+                        String uid = zegoUser.userID;
+                        String userID = otherUserId;
+                        String userName = zegoUser.userName;
+                        String image = ZEGOLiveAudioRoomManager.getInstance().getUserAvatar(zegoUser.userID);
+
+                        new AddStreamInfo().addStreamInfo(mainStreamID,uid, userID, userName, image);
+                        Log.i("onRoomStreamUpdate123", "onReceiveStreamAdd: " + zegoUser.userName);
+                    } catch (Exception e) {
+                        // Handle exception
+                    }
+                }
+            }
+
+            @Override
+            public void onReceiveStreamRemove(List<ZEGOSDKUser> userList) {
+                super.onReceiveStreamRemove(userList);
+                for(ZEGOSDKUser zegoUser : userList){
+                    try {
+                        Log.i("onRoomStreamUpdate123", "onReceiveStreamRemove: "+zegoUser.userName);
+                    }catch (Exception e){
+
+                    }
+                }
+            }
+
             @Override
             public void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, ArrayList<ZegoStream> streamList,
                                            JSONObject extendedData) {
                 super.onRoomStreamUpdate(roomID, updateType, streamList, extendedData);
                 for (ZegoStream zegoStream : streamList) {
+//                    try {
+//                        Log.i("onRoomStreamUpdate123", "onRoomStreamUpdate: "+zegoStream.user.userName);
+//                    }catch (Exception e){
+//
+//                    }
                     if (updateType == ZegoUpdateType.ADD) {
                         ZegoPlayerConfig config = new ZegoPlayerConfig();
                         config.resourceMode = ZegoStreamResourceMode.ONLY_RTC;
                         ZEGOSDKManager.getInstance().expressService.startPlayingStream(zegoStream.streamID, config);
                     } else {
                         ZEGOSDKManager.getInstance().expressService.stopPlayingStream(zegoStream.streamID);
+                    }
+                }
+            }
+
+            @Override
+            public void onRoomStreamExtraInfoUpdate(String roomID, ArrayList<ZegoStream> streamList) {
+                super.onRoomStreamExtraInfoUpdate(roomID, streamList);
+                for(ZegoStream zegoUser : streamList){
+                    try {
+                        Log.i("onRoomStreamUpdate123", "onReceiveStreamRemove: "+zegoUser.user.userName);
+                    }catch (Exception e){
+
+                    }
+                }
+            }
+
+            @Override
+            public void onRoomExtraInfoUpdate(String roomID, ArrayList<ZegoRoomExtraInfo> roomExtraInfoList) {
+                super.onRoomExtraInfoUpdate(roomID, roomExtraInfoList);
+                for(ZegoRoomExtraInfo zegoUser : roomExtraInfoList){
+                    try {
+                        Log.i("onRoomStreamUpdate123", "onReceiveStreamRemove: "+zegoUser.updateUser.userName);
+                    }catch (Exception e){
+
                     }
                 }
             }
@@ -212,7 +284,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 } else {
 
                     if (isHost) {
-                        binding.giftButton1.setVisibility(View.GONE);
+                        binding.giftButton1.setVisibility(View.VISIBLE);
                         // save live data
                         saveLiveData(userId,uid,username,true,roomID,"1",country,image);
 
