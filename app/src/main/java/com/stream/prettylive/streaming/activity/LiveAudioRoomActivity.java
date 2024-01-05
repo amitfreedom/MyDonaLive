@@ -455,18 +455,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                             if (beans != null) {
                                 totalBeans=beans;
                             }
-                            if (!Objects.equals(image1, "")) {
-                                ZEGOLiveAudioRoomManager.getInstance().updateUserAvatarUrl(image1,(userAvatarUrl, errorInfo) -> {
 
-                                    Log.i("3456789", "userAvatarUrl: "+userAvatarUrl);
-
-                                });
-                            }else {
-                                ZEGOLiveAudioRoomManager.getInstance().updateUserAvatarUrl(Constant.USER_PLACEHOLDER_PATH,(userAvatarUrl, errorInfo) -> {
-
-
-                                });
-                            }
 
                         }
                     }

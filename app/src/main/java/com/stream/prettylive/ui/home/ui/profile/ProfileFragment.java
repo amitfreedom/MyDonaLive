@@ -22,6 +22,7 @@ import com.stream.prettylive.databinding.FragmentHomeBinding;
 import com.stream.prettylive.databinding.FragmentProfileBinding;
 import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
+import com.stream.prettylive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.prettylive.ui.follow.activity.FollowFollowingActivity;
 import com.stream.prettylive.ui.follow.methods.FirestoreHelper;
 import com.stream.prettylive.ui.home.ui.profile.activity.HostRegistrationFormActivity;
@@ -67,6 +68,8 @@ public class ProfileFragment extends Fragment {
         fetchFollowingUserList();
         fetchFollowersUserList();
         fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
+
 
     }
 
@@ -159,6 +162,13 @@ public class ProfileFragment extends Fragment {
                 Glide.with(getActivity())
                         .load(userDetails.getImage())
                         .into(binding.profileImage);
+            }
+            if (!Objects.equals(userDetails.getImage(), "")) {
+                ZEGOLiveAudioRoomManager.getInstance().updateUserAvatarUrl(userDetails.getImage(),(userAvatarUrl, errorInfo) -> {
+
+                    Log.i("3456789", "userAvatarUrl: "+userAvatarUrl);
+
+                });
             }
         }catch (Exception e){
             Log.i(TAG, "updateUI: "+e);
