@@ -7,6 +7,7 @@ public class Constant {
 
 //    collection name
     public  static final String GIFTS  = "gifts";
+    public  static final String STREAM  = "streams";
     public  static final String LIVE_DETAILS  = "live_details";
     public  static final String MESSAGE  = "messages";
     public  static final String VIP  = "vip";

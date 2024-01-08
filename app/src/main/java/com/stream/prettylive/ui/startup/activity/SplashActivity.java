@@ -91,15 +91,15 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 FirebaseUser user = mAuth.getCurrentUser();
 
-                if (Objects.equals(work, "0")) {
-                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (Objects.equals(dev, "0")) {
+//                if (Objects.equals(work, "0")) {
 //                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+//                    return;
+//                }
+//
+//                if (Objects.equals(dev, "0")) {
+////                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
 
                 if (user == null) {
                     Intent intent = new Intent(SplashActivity.this, OnboardingActivity.class);

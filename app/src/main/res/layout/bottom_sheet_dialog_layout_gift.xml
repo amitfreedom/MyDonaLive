@@ -13,57 +13,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/lv1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/_100dp">
-
-            <TextView
-                android:id="@+id/txt_level1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/pink_top"
-                android:paddingHorizontal="@dimen/_10dp"
-                android:paddingVertical="2dp"
-                android:text="lv1"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_12sp" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-
-        <androidx.appcompat.widget.AppCompatSeekBar
-            android:layout_toRightOf="@id/lv1"
-            android:layout_toLeftOf="@id/lv2"
-            android:progress="10"
-            android:focusableInTouchMode="false"
-            android:progressTint="@color/pink_top"
-            android:progressBackgroundTint="@color/black"
-            android:thumbTint="@color/pink_top"
-            android:focusable="false"
-            android:clickable="false"
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_toLeftOf="@id/btn_close"
+            android:id="@+id/rv_gift_user"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space10"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            tools:listitem="@layout/item_gift_user"/>
 
         <com.google.android.material.card.MaterialCardView
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:id="@+id/lv2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/_100dp">
+            android:id="@+id/btn_close"
+            android:layout_width="@dimen/_26dp"
+            android:layout_height="@dimen/_26dp"
+            app:cardCornerRadius="500dp">
 
-            <TextView
-                android:id="@+id/txt_level"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/pink_top"
-                android:paddingHorizontal="@dimen/_10dp"
-                android:paddingVertical="2dp"
-                android:text="lv2"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_12sp" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/_20dp"
+                android:layout_height="@dimen/_20dp"
+                android:src="@drawable/baseline_close_24"
+                android:layout_gravity="center"/>
+
 
         </com.google.android.material.card.MaterialCardView>
 

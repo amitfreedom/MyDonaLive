@@ -42,6 +42,7 @@ import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.notification.FCMNotificationSender;
 import com.stream.prettylive.streaming.ZEGOSDKKeyCenter;
 import com.stream.prettylive.streaming.activity.adapter.GiftAdapter;
+import com.stream.prettylive.streaming.activity.adapter.GiftViewUserAdapter;
 import com.stream.prettylive.streaming.activity.adapter.ViewUserAdapter;
 import com.stream.prettylive.streaming.activity.adapter.ViewersListAdapter;
 import com.stream.prettylive.streaming.activity.model.GiftModel;
@@ -93,7 +94,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private ActivityLiveAudioRoomBinding binding;
     private static final int LIMIT = 50;
     private FirebaseFirestore mFirestore;
-    private Query mQuery,mQuery1;
+    private Query mQuery,mQuery1,mQuery2;
 
     private String roomID;
     private String userId;
@@ -116,6 +117,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private GiftAdapter mAdapter;
     private ViewersListAdapter mAdapter1;
     private ViewUserAdapter viewUserAdapter;
+    private GiftViewUserAdapter giftViewUserAdapter;
     private DocumentSnapshot documentSnapshot;
     private UserModel userModel;
     private String totalBeans="0";
@@ -141,12 +143,14 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         SVGASoundManager.INSTANCE.init();
 
 
+
         mFirestore = FirebaseFirestore.getInstance();
 
         mQuery1 = mFirestore.collection(Constant.GIFTS)
                 .orderBy("price", Query.Direction.ASCENDING)
 //                .whereEqualTo("gift_type","1000")
                 .limit(LIMIT);
+
 
 
         boolean isHost = getIntent().getBooleanExtra("host", true);
@@ -186,8 +190,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             }
         });
 
-//        binding.liveAudioroomTopbar.setRoomID(roomID);
-        // two rows, four columns
+
         seatLayoutConfig = new LiveAudioRoomLayoutConfig();
         seatLayoutConfig.rowSpacing = Utils.dp2px(8, getResources().getDisplayMetrics());
         ZEGOLiveAudioRoomManager.getInstance().init(seatLayoutConfig);
@@ -205,11 +208,28 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     try {
                         String mainStreamID = zegoUser.getMainStreamID(); // Assuming mainStreamID is accessible from ZEGOSDKUser
                         String uid = zegoUser.userID;
-                        String userID = otherUserId;
                         String userName = zegoUser.userName;
                         String image = ZEGOLiveAudioRoomManager.getInstance().getUserAvatar(zegoUser.userID);
 
-                        new AddStreamInfo().addStreamInfo(mainStreamID,uid, userID, userName, image);
+
+                        usersRef.whereEqualTo("uid", Long.parseLong(uid))
+                                .addSnapshotListener((value, error) -> {
+                                    if (error != null) {
+                                        // Handle error
+                                        Log.e("test2334", "Listen failed: " + error.getMessage());
+                                        return;
+                                    }
+
+                                    assert value != null;
+
+                                    for (DocumentSnapshot document : value) {
+                                        String userId =document.getString("userId");
+                                        new AddStreamInfo().addStreamInfo(roomID,uid,userId, userName, image);
+                                    }
+
+                                });
+
+
                         Log.i("onRoomStreamUpdate123", "onReceiveStreamAdd: " + zegoUser.userName);
                     } catch (Exception e) {
                         // Handle exception
@@ -299,6 +319,19 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                         // Call the FCMNotificationSender's sendNotification method
                         FCMNotificationSender.sendNotificationToDevice("deviceToken", "PrettyLive",""+username+"!!"+" started AudioParty" );
 
+                        try {
+                            String mainStreamID = ZEGOLiveAudioRoomManager.getInstance().generateUserStreamID(String.valueOf(uid),roomID); // Assuming mainStreamID is accessible from ZEGOSDKUser
+                            String uid1 = String.valueOf(uid);
+                            String userName = username;
+                            String image1 = image;
+//                        String image = ZEGOLiveAudioRoomManager.getInstance().generateUserStreamID("","");
+//                        String image = ZEGOLiveAudioRoomManager.getInstance().getHostUser();
+
+                            new AddStreamInfo().addStreamInfo(roomID,uid1,userId, userName, image1);
+                        } catch (Exception e) {
+                            // Handle exception
+                        }
+
                     }else {
                         binding.giftButton1.setVisibility(View.VISIBLE);
                         if (userModel!=null){
@@ -329,13 +362,11 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             showBottomSheetDialog();
         });
 
-//        giftButton.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                giftButton.performClick();
-//            }
-//        });
 
+        mQuery2 = mFirestore.collection(Constant.STREAM).document(roomID).collection("current_room_user")
+//                .orderBy(Query.Direction.ASCENDING)
+//                .whereEqualTo("gift_type","1000")
+                .limit(LIMIT);
 
     }
 
@@ -468,6 +499,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout_gift);
 
         RecyclerView recyclerView = bottomSheetDialog.findViewById(R.id.recycler_gift);
+        RecyclerView rv_gift_user = bottomSheetDialog.findViewById(R.id.rv_gift_user);
         Spinner spinner = bottomSheetDialog.findViewById(R.id.spinner);
         MaterialButton button_hot = bottomSheetDialog.findViewById(R.id.button_hot);
         MaterialButton send = bottomSheetDialog.findViewById(R.id.materialButtonSend);
@@ -563,6 +595,37 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 }
             }
         });
+
+        giftViewUserAdapter = new GiftViewUserAdapter(mQuery2, new GiftViewUserAdapter.OnActiveUserSelectedListener() {
+            @Override
+            public void onActiveUserSelected(DocumentSnapshot user) {
+
+            }
+        }) {
+            @Override
+            protected void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+                    binding.rvViewers.setVisibility(View.GONE);
+                    binding.txtUserCount.setText("0");
+
+                } else {
+                    binding.rvViewers.setVisibility(View.VISIBLE);
+                    binding.txtUserCount.setText(""+getItemCount());
+
+                }
+            }
+
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                Log.e("FirebaseFirestoreException", "onError: "+e );
+            }
+
+
+        };
+        rv_gift_user.setAdapter(giftViewUserAdapter);
+        giftViewUserAdapter.setQuery(mQuery2);
+
         mAdapter = new GiftAdapter(mQuery1, new GiftAdapter.OnGiftSelectedListener() {
             @Override
             public void onGiftSelected(DocumentSnapshot user) {
@@ -877,6 +940,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         // Start listening for Firestore updates
         if (viewUserAdapter != null) {
             viewUserAdapter.startListening();
+        }if (giftViewUserAdapter != null) {
+            giftViewUserAdapter.startListening();
         }
     }
 
@@ -992,6 +1057,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         // Start listening for Firestore updates
         if (viewUserAdapter != null) {
             viewUserAdapter.stopListening();
+        }if (giftViewUserAdapter != null) {
+            giftViewUserAdapter.stopListening();
         }
     }
 
