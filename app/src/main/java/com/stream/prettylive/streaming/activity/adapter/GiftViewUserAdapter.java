@@ -1,8 +1,11 @@
 package com.stream.prettylive.streaming.activity.adapter;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +15,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.stream.prettylive.databinding.ItemActiveViewersBinding;
 import com.stream.prettylive.databinding.ItemGiftUserBinding;
+import com.stream.prettylive.streaming.activity.LiveAudioRoomActivity;
 import com.stream.prettylive.streaming.activity.model.GIftUser;
 import com.stream.prettylive.streaming.activity.model.RoomUsers;
 import com.stream.prettylive.ui.home.ui.home.adapter.FirestoreAdapter;
@@ -20,6 +24,8 @@ import com.stream.prettylive.ui.utill.Constant;
 import java.util.Objects;
 
 public class GiftViewUserAdapter extends FirestoreAdapter<GiftViewUserAdapter.ViewHolder> {
+
+    private int selectedIndex =-1;
 
     public interface OnActiveUserSelectedListener {
 
@@ -43,8 +49,36 @@ public class GiftViewUserAdapter extends FirestoreAdapter<GiftViewUserAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(GiftViewUserAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(GiftViewUserAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.bind(getSnapshot(position), mListener);
+
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedIndex=position;
+                if (mListener != null) {
+                    mListener.onActiveUserSelected(getSnapshot(position));
+                    notifyDataSetChanged();
+                }
+            }
+        });
+
+
+
+        if (selectedIndex==position){
+            holder.binding.selectedView.setVisibility(View.VISIBLE);
+        }else {
+            holder.binding.selectedView.setVisibility(View.GONE);
+        }
+
+//        if (position == 0 && selectedIndex==-1) {
+//            selectedIndex = 0;
+//            holder.binding.selectedView.setVisibility(View.VISIBLE);
+//            if (mListener != null) {
+//                mListener.onActiveUserSelected(getSnapshot(position));
+//            }        }
 
     }
 
@@ -80,14 +114,14 @@ public class GiftViewUserAdapter extends FirestoreAdapter<GiftViewUserAdapter.Vi
                         .load(Constant.USER_PLACEHOLDER_PATH)
                         .into(binding.ivViewer);
             }
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (listener != null) {
-                        listener.onActiveUserSelected(snapshot);
-                    }
-                }
-            });
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if (listener != null) {
+//                        listener.onActiveUserSelected(snapshot);
+//                    }
+//                }
+//            });
         }
 
     }

@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -51,6 +52,7 @@ import com.stream.prettylive.streaming.activity.model.RoomUsers;
 import com.stream.prettylive.streaming.components.audioroom.ZEGOLiveAudioRoomSeatView;
 import com.stream.prettylive.streaming.functions.AddStreamInfo;
 import com.stream.prettylive.streaming.gift.GiftHelper;
+import com.stream.prettylive.streaming.global.CustomDialog;
 import com.stream.prettylive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.prettylive.streaming.internal.business.RoomRequestExtendedData;
 import com.stream.prettylive.streaming.internal.business.RoomRequestType;
@@ -98,6 +100,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
     private String roomID;
     private String userId;
+    private String userIdForReceiveGift="";
     private String otherUserId;
     private String username;
     private String audienceId;
@@ -163,6 +166,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         level = getIntent().getStringExtra("level");
         audienceId = getIntent().getStringExtra("audienceId");
         uid = getIntent().getLongExtra("uid",0);
+        ApplicationClass.getSharedpref().saveString(AppConstants.ROOM_ID,roomID);
         if (TextUtils.isEmpty(roomID)) {
             finish();
             return;
@@ -242,7 +246,24 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 super.onReceiveStreamRemove(userList);
                 for(ZEGOSDKUser zegoUser : userList){
                     try {
-                        Log.i("onRoomStreamUpdate123", "onReceiveStreamRemove: "+zegoUser.userName);
+                        String uid = zegoUser.userID;
+                        usersRef.whereEqualTo("uid", Long.parseLong(uid))
+                                .addSnapshotListener((value, error) -> {
+                                    if (error != null) {
+                                        // Handle error
+                                        Log.e("test2334", "Listen failed: " + error.getMessage());
+                                        return;
+                                    }
+
+                                    assert value != null;
+
+                                    for (DocumentSnapshot document : value) {
+                                        String userId =document.getString("userId");
+                                        new AddStreamInfo().deleteStreamInfo(roomID,userId);
+                                    }
+
+                                });
+
                     }catch (Exception e){
 
                     }
@@ -254,11 +275,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                                            JSONObject extendedData) {
                 super.onRoomStreamUpdate(roomID, updateType, streamList, extendedData);
                 for (ZegoStream zegoStream : streamList) {
-//                    try {
-//                        Log.i("onRoomStreamUpdate123", "onRoomStreamUpdate: "+zegoStream.user.userName);
-//                    }catch (Exception e){
-//
-//                    }
+
                     if (updateType == ZegoUpdateType.ADD) {
                         ZegoPlayerConfig config = new ZegoPlayerConfig();
                         config.resourceMode = ZegoStreamResourceMode.ONLY_RTC;
@@ -325,9 +342,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                             String userName = username;
                             String image1 = image;
 //                        String image = ZEGOLiveAudioRoomManager.getInstance().generateUserStreamID("","");
-//                        String image = ZEGOLiveAudioRoomManager.getInstance().getHostUser();
+//                        String image = String.valueOf(ZEGOLiveAudioRoomManager.getInstance().getAudioRoomSeatList().stream());
 
                             new AddStreamInfo().addStreamInfo(roomID,uid1,userId, userName, image1);
+//                            new AddStreamInfo().deleteStreamInfo(roomID,userId);
                         } catch (Exception e) {
                             // Handle exception
                         }
@@ -403,6 +421,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         mAdapter1 = new ViewersListAdapter(mQuery, new ViewersListAdapter.OnActiveUserSelectedListener() {
             @Override
             public void onActiveUserSelected(DocumentSnapshot user) {
+                CustomDialog customDialog = new CustomDialog(LiveAudioRoomActivity.this);
+                customDialog.show();
 
             }
         }) {
@@ -502,10 +522,15 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         RecyclerView rv_gift_user = bottomSheetDialog.findViewById(R.id.rv_gift_user);
         Spinner spinner = bottomSheetDialog.findViewById(R.id.spinner);
         MaterialButton button_hot = bottomSheetDialog.findViewById(R.id.button_hot);
+        MaterialCardView btn_close = bottomSheetDialog.findViewById(R.id.btn_close);
         MaterialButton send = bottomSheetDialog.findViewById(R.id.materialButtonSend);
         TextView txt_beans = bottomSheetDialog.findViewById(R.id.txt_beans);
 
         MaterialButtonToggleGroup toggleGroup = bottomSheetDialog.findViewById(R.id.toggleGroup);
+
+        btn_close.setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+        });
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -539,6 +564,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 return;
             }
             if (Integer.parseInt(totalBeans) >= Integer.parseInt(Objects.requireNonNull(documentSnapshot.getString("price")))){
+                if (Objects.equals(userIdForReceiveGift, "")){
+                    Toast.makeText(this, "Select room user first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 sendGift(documentSnapshot,bottomSheetDialog,giftCount);
             }else {
                 Toast.makeText(this, "Insufficient balance, please recharge first", Toast.LENGTH_SHORT).show();
@@ -599,6 +628,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         giftViewUserAdapter = new GiftViewUserAdapter(mQuery2, new GiftViewUserAdapter.OnActiveUserSelectedListener() {
             @Override
             public void onActiveUserSelected(DocumentSnapshot user) {
+                userIdForReceiveGift=user.getString("userID");
+//                Toast.makeText(LiveAudioRoomActivity.this, ""+user.getString("userID"), Toast.LENGTH_SHORT).show();
 
             }
         }) {
@@ -664,6 +695,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         data.put("senderId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         data.put("diamond", giftModel.getString("price"));
         data.put("receiverId", otherUserId);
+//        data.put("receiverId", userIdForReceiveGift);
         data.put("giftId", giftModel.getString("giftId"));
         data.put("fileName", giftModel.getString("fileName"));
         data.put("liveId", roomID);
@@ -685,8 +717,9 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 //                sendCustomeMessage("Sends you gift", detail.getImage());
                 updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
 
-                updateGiftReceiverCoins(otherUserId,userDetails.getCoins(),giftModel.getString("price"));
+                updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
 
+                userIdForReceiveGift="";
 
                 bottomSheetDialog.dismiss();
 
@@ -746,7 +779,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     String documentId = document.getId();
                     Long totalCoin = Long.parseLong(totalCoins) + Long.parseLong(currentPrice);
                     Map<String, Object> updateDetails = new HashMap<>();
-                    updateDetails.put("coins", String.valueOf(totalCoin));
+                    updateDetails.put("diamond", String.valueOf(totalCoin));
                     // Update the liveType field from 0 to 1
                     detailsRef.document(documentId)
                             .update(updateDetails)
@@ -840,7 +873,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     binding.txtUsername.setText(userDetails.getUsername());
                     binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
                     binding.txtLevel.setText("Lv"+userDetails.getLevel());
-                    binding.txtCoin.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getCoins())));
+                    binding.txtCoin.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getDiamond())));
                 }
             });
         }catch (Exception e){
@@ -1125,10 +1158,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                             if (endDate != null) {
                                 // Compare the endDate with the current date
                                 if (isGiftExpired(endDate)) {
-                                    Toast.makeText(this, "Gift has expired", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(this, "Gift has expired", Toast.LENGTH_SHORT).show();
                                     // Gift has expired, handle accordingly (e.g., show an expired message)
                                 } else {
-                                    Toast.makeText(this, "Gift is still valid", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(this, "Gift is still valid", Toast.LENGTH_SHORT).show();
 
                                     sendVipGiftEntry(purchageGiftModel);
 

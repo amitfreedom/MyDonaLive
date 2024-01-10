@@ -3,14 +3,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/_5dp"
     tools:ignore="MissingDefaultResource">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_viewer"
         android:layout_width="@dimen/_26dp"
         android:layout_height="@dimen/_26dp"
-        android:layout_marginRight="@dimen/_8dp"
         android:src="@drawable/beauty_filter_gray_monet"/>
+
+    <RelativeLayout
+        android:elevation="@dimen/_10dp"
+        android:id="@+id/selectedView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_centerInParent="true"
+            android:id="@+id/iv_viewer1"
+            android:layout_width="@dimen/_26dp"
+            android:layout_height="@dimen/_26dp"
+            android:src="@drawable/bg_circle_dark"/>
+
+        <ImageView
+            android:layout_centerInParent="true"
+            android:id="@+id/iv_viewer2"
+            android:layout_width="@dimen/_15dp"
+            android:layout_height="@dimen/_15dp"
+            android:tint="@color/pink_top"
+            android:src="@drawable/ic_check_white_24"/>
+    </RelativeLayout>
     <TextView
         android:visibility="gone"
         android:layout_toRightOf="@id/iv_viewer"

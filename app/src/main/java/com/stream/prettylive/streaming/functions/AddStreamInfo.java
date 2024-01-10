@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class AddStreamInfo {
     private static final String TAG = "AddStreamInfo";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference streamCollection = db.collection("streams");
     private final CollectionReference usersRef = db.collection(Constant.LOGIN_DETAILS);
 
     public void addStreamInfo(String mainStreamID, String uid ,String userId ,String userName, String image) {
@@ -30,9 +29,6 @@ public class AddStreamInfo {
         streamInfo.put("userID", userId);
         streamInfo.put("userName", userName);
         streamInfo.put("image", image);
-
-        // Add the stream information to Firestore
-//        DocumentReference streamDocRef = streamCollection.document(mainStreamID).collection("current_room_user").add()
         db.collection(Constant.STREAM).document(mainStreamID).collection("current_room_user").document(userId).set(streamInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
@@ -47,6 +43,27 @@ public class AddStreamInfo {
             }
         });
     }
+
+    public void deleteStreamInfo(String mainStreamID, String userId) {
+        db.collection(Constant.STREAM)
+                .document(mainStreamID)
+                .collection("current_room_user")
+                .document(userId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.i("room_users", "onSuccess: DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("room_users", "Error deleting document", e);
+                    }
+                });
+    }
+
 
     private String getUID(String uid) {
         Log.i("test2334", "fetchUserDetails: "+uid);
