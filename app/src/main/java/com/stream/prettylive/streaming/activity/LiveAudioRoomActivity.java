@@ -205,11 +205,28 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
 
             @Override
+            public void onUserEnter(List<ZEGOSDKUser> userList) {
+                super.onUserEnter(userList);
+                for (ZEGOSDKUser zegoUser : userList) {
+                    Log.e("test23345", "onUserEnter : " + zegoUser.userName);
+                }
+            }
+
+            @Override
+            public void onUserLeft(List<ZEGOSDKUser> userList) {
+                super.onUserLeft(userList);
+                for (ZEGOSDKUser zegoUser : userList) {
+                    Log.e("test23345", "onUserEnter : " + zegoUser.userName);
+                }
+            }
+
+            @Override
             public void onReceiveStreamAdd(List<ZEGOSDKUser> userList) {
                 super.onReceiveStreamAdd(userList);
 
                 for (ZEGOSDKUser zegoUser : userList) {
                     try {
+
                         String mainStreamID = zegoUser.getMainStreamID(); // Assuming mainStreamID is accessible from ZEGOSDKUser
                         String uid = zegoUser.userID;
                         String userName = zegoUser.userName;
@@ -246,6 +263,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 super.onReceiveStreamRemove(userList);
                 for(ZEGOSDKUser zegoUser : userList){
                     try {
+
+
                         String uid = zegoUser.userID;
                         usersRef.whereEqualTo("uid", Long.parseLong(uid))
                                 .addSnapshotListener((value, error) -> {
@@ -404,6 +423,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                         Log.i("test2334", "current user name "+userModel.getUsername());
                         Log.i("test2334", "current user uid: "+userModel.getUid());
                         Log.i("test2334", "current user userId: "+userModel.getUsername());
+
+
 //
                     }
                 });
@@ -523,6 +544,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         Spinner spinner = bottomSheetDialog.findViewById(R.id.spinner);
         MaterialButton button_hot = bottomSheetDialog.findViewById(R.id.button_hot);
         MaterialCardView btn_close = bottomSheetDialog.findViewById(R.id.btn_close);
+        MaterialCardView btnSelectAll = bottomSheetDialog.findViewById(R.id.btnSelectAll);
         MaterialButton send = bottomSheetDialog.findViewById(R.id.materialButtonSend);
         TextView txt_beans = bottomSheetDialog.findViewById(R.id.txt_beans);
 
@@ -530,6 +552,9 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
         btn_close.setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
+        });
+        btnSelectAll.setOnClickListener(v -> {
+
         });
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -688,7 +713,6 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
 
     private void sendGift(DocumentSnapshot giftModel, BottomSheetDialog bottomSheetDialog, int giftCount) {
-
 
         long timestamp = System.currentTimeMillis();
         Map<String, Object> data = new HashMap<>();
