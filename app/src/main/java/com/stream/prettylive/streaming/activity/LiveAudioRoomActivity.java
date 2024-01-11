@@ -88,6 +88,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -125,6 +126,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private UserModel userModel;
     private String totalBeans="0";
     private int giftCount=1;
+    private int select =1;
     private PurchageGiftModel purchageGiftModel;
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private final DatabaseReference ref = firebaseDatabase.getReference().child("userInfo");
@@ -552,8 +554,18 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
         btn_close.setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
+            giftViewUserAdapter.clearSelection();
         });
         btnSelectAll.setOnClickListener(v -> {
+            if (select==1){
+                giftViewUserAdapter.selectAll();
+                select =0;
+            }
+            else if (select==0){
+                giftViewUserAdapter.clearSelection();
+                select =1;
+            }
+
 
         });
 
@@ -594,6 +606,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     return;
                 }
                 sendGift(documentSnapshot,bottomSheetDialog,giftCount);
+
             }else {
                 Toast.makeText(this, "Insufficient balance, please recharge first", Toast.LENGTH_SHORT).show();
             }
@@ -656,6 +669,11 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 userIdForReceiveGift=user.getString("userID");
 //                Toast.makeText(LiveAudioRoomActivity.this, ""+user.getString("userID"), Toast.LENGTH_SHORT).show();
 
+            }
+
+            @Override
+            public void SelectedUser(String user) {
+                Toast.makeText(LiveAudioRoomActivity.this, ""+user, Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
