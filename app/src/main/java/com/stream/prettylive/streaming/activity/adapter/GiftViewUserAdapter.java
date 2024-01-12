@@ -44,6 +44,7 @@ public class GiftViewUserAdapter extends FirestoreAdapter<GiftViewUserAdapter.Vi
     @SuppressLint("NotifyDataSetChanged")
     public void clearSelection() {
         selectAll = false;
+        mListener.SelectedUser("0");
         selectedIds.clear(); // Clear the set of selected IDs
         notifyDataSetChanged();
     }

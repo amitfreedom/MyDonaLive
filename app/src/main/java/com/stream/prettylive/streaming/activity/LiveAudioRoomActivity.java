@@ -130,6 +130,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private PurchageGiftModel purchageGiftModel;
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private final DatabaseReference ref = firebaseDatabase.getReference().child("userInfo");
+    List<String>userIds = new ArrayList<>();
 
     String TAG = "LiveAudioRoomActivity";
 
@@ -601,10 +602,11 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 return;
             }
             if (Integer.parseInt(totalBeans) >= Integer.parseInt(Objects.requireNonNull(documentSnapshot.getString("price")))){
-                if (Objects.equals(userIdForReceiveGift, "")){
+                if (Objects.equals(userIdForReceiveGift, "") && userIds.size()==0){
                     Toast.makeText(this, "Select room user first", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 sendGift(documentSnapshot,bottomSheetDialog,giftCount);
 
             }else {
@@ -672,8 +674,33 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             }
 
             @Override
-            public void SelectedUser(String user) {
-                Toast.makeText(LiveAudioRoomActivity.this, ""+user, Toast.LENGTH_SHORT).show();
+            public void SelectedUser(String data) {
+
+                if (Objects.equals(data, "1")){
+                    mQuery2.get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Handle the documents
+                            userIds.clear();
+                            for (DocumentSnapshot document : task.getResult()) {
+                                // Access data from the document
+                                String ids = document.getString("userID");
+                                Log.i("printName123", "SelectedUser: "+ids);
+                                userIds.add(ids);
+                            }
+                        } else {
+                            // Handle errors
+                            Exception exception = task.getException();
+                            if (exception != null) {
+                                Log.i("printName123", "exception: "+exception);
+                                // Handle the exception
+                            }
+                        }
+                    });
+                }
+                else {
+                    userIds.clear();
+                }
+
             }
         }) {
             @Override
@@ -752,16 +779,29 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 data.put("userId", otherUserId);
                 data.put("giftId", giftModel.getString("giftId"));
                 data.put("liveType", liveType);
-                data.put("gift_count", String.valueOf(giftCount));
+                data.put("gift_count", userIds.size()>0?String.valueOf(userIds.size()):String.valueOf(giftCount));
                 data.put("liveId", roomID);
                 String key = ref.push().getKey();
                 ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(data);
-//                sendCustomeMessage("Sends you gift", detail.getImage());
-                updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
 
-                updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
+                if (Objects.equals(userIdForReceiveGift, "")) {
+                    updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
+                    updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
+                }
+                else {
+                    for (String id:userIds){
+                        Log.i("printName123", "print id: "+id);
+                        updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
+                        updateGiftReceiverCoins(id,userDetails.getDiamond(),giftModel.getString("price"));
+                    }
+                }
+
+//                updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
+//
+//                updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
 
                 userIdForReceiveGift="";
+                userIds.clear();
 
                 bottomSheetDialog.dismiss();
 
