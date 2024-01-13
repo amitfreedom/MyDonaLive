@@ -2,8 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/pink_top"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/rounded_dialog_background"
+    android:paddingVertical="@dimen/_20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,8 +23,8 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profile_image"
-                android:layout_width="@dimen/_100dp"
-                android:layout_height="@dimen/_100dp"
+                android:layout_width="@dimen/space70"
+                android:layout_height="@dimen/space70"
                 android:src="@drawable/beauty_background_mosaicing"
                 app:civ_border_width="3dp"
                 app:civ_border_color="@color/app_color2"/>
@@ -89,10 +90,40 @@
 
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/red_color"/>
+            android:paddingHorizontal="@dimen/_10dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kick out"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/bottom_btn_background"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_marginHorizontal="@dimen/_10dp"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set as Admin"
+                android:textColor="@color/black"
+                app:rippleColor="@color/light_gray"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                />
+            <com.google.android.material.button.MaterialButton
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+Following"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/btn_email"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

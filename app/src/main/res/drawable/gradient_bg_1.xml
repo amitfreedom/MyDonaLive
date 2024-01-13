@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+<!--    <gradient-->
+<!--        android:angle="150"-->
+<!--        android:startColor="@color/pink_top"-->
+<!--        android:endColor="@color/light_brown"/>-->
+
+    <!--    <color name="pink_top">#fb4f90</color>-->
+    <!--    <color name="light_brown">#ff8554</color>-->
+    <!--    <color name="center_color1">#ff525c</color>-->
+
+        <gradient
+            android:angle="45"
+            android:startColor="#B2E84242"
+            android:centerColor="#B3E646B1"
+            android:endColor="#7A51C3"/>
+
+</shape>

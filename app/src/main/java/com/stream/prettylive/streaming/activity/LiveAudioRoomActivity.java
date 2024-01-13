@@ -1,10 +1,12 @@
 package com.stream.prettylive.streaming.activity;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -445,8 +447,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         mAdapter1 = new ViewersListAdapter(mQuery, new ViewersListAdapter.OnActiveUserSelectedListener() {
             @Override
             public void onActiveUserSelected(DocumentSnapshot user) {
-                CustomDialog customDialog = new CustomDialog(LiveAudioRoomActivity.this);
-                customDialog.show();
+
+                showCustomDialog();
+//                CustomDialog customDialog = new CustomDialog(LiveAudioRoomActivity.this);
+//                customDialog.show();
 
             }
         }) {
@@ -476,6 +480,20 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
 
         bottomSheetDialog.show();
+    }
+
+    private void showCustomDialog() {
+        Dialog customDialog = new Dialog(this);
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        customDialog.setContentView(R.layout.custom_dialog_layout);
+
+        // Set the width of the dialog window to match the parent
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(customDialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        customDialog.getWindow().setAttributes(layoutParams);
+
+        customDialog.show();
     }
 
     private void setViewersAdapter() {
