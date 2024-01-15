@@ -32,6 +32,7 @@ import java.util.Set;
 public class GiftViewUserAdapter extends FirestoreAdapter<GiftViewUserAdapter.ViewHolder> {
 
     private boolean selectAll = false;
+    private int selectedIndex =-1;
     private List<String> selectedIds = new ArrayList<>();
     @SuppressLint("NotifyDataSetChanged")
     public void selectAll() {
@@ -44,6 +45,7 @@ public class GiftViewUserAdapter extends FirestoreAdapter<GiftViewUserAdapter.Vi
     @SuppressLint("NotifyDataSetChanged")
     public void clearSelection() {
         selectAll = false;
+        selectedIndex=-1;
         mListener.SelectedUser("0");
         selectedIds.clear(); // Clear the set of selected IDs
         notifyDataSetChanged();
@@ -52,7 +54,7 @@ public class GiftViewUserAdapter extends FirestoreAdapter<GiftViewUserAdapter.Vi
 
 
 
-    private int selectedIndex =-1;
+
 
     public interface OnActiveUserSelectedListener {
 
@@ -89,10 +91,6 @@ public class GiftViewUserAdapter extends FirestoreAdapter<GiftViewUserAdapter.Vi
                 String itemId = "1234";
 
                 if (selectAll) {
-
-
-//                    mListener.SelectedUser(selectedIds);
-
                     notifyDataSetChanged();
                 } else {
                     selectedIndex = position;

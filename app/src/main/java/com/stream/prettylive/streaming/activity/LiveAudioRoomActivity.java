@@ -1,18 +1,24 @@
 package com.stream.prettylive.streaming.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,15 +55,13 @@ import com.stream.prettylive.streaming.activity.adapter.ViewersListAdapter;
 import com.stream.prettylive.streaming.activity.model.GiftModel;
 import com.stream.prettylive.streaming.activity.model.PurchageGiftModel;
 import com.stream.prettylive.streaming.activity.model.RoomUsers;
-import com.stream.prettylive.streaming.components.audioroom.ZEGOLiveAudioRoomSeatView;
 import com.stream.prettylive.streaming.functions.AddStreamInfo;
+import com.stream.prettylive.streaming.functions.KickOutInfo;
 import com.stream.prettylive.streaming.gift.GiftHelper;
-import com.stream.prettylive.streaming.global.CustomDialog;
 import com.stream.prettylive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.prettylive.streaming.internal.business.RoomRequestExtendedData;
 import com.stream.prettylive.streaming.internal.business.RoomRequestType;
 import com.stream.prettylive.streaming.internal.business.audioroom.LiveAudioRoomLayoutConfig;
-import com.stream.prettylive.streaming.internal.business.audioroom.LiveAudioRoomSeat;
 import com.stream.prettylive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.prettylive.streaming.internal.sdk.basic.ZEGOSDKCallBack;
 import com.stream.prettylive.streaming.internal.sdk.basic.ZEGOSDKUser;
@@ -70,15 +74,12 @@ import com.stream.prettylive.ui.home.ui.profile.models.UserModel;
 import com.stream.prettylive.ui.utill.Constant;
 import com.stream.prettylive.ui.utill.Convert;
 
-import im.zego.zegoexpress.constants.ZegoRoomState;
-import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason;
 import im.zego.zegoexpress.constants.ZegoScenario;
 import im.zego.zegoexpress.constants.ZegoStreamResourceMode;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.entity.ZegoPlayerConfig;
 import im.zego.zegoexpress.entity.ZegoRoomExtraInfo;
 import im.zego.zegoexpress.entity.ZegoStream;
-import im.zego.zegoexpress.entity.ZegoUser;
 import im.zego.zim.callback.ZIMRoomAttributesOperatedCallback;
 import im.zego.zim.entity.ZIMError;
 
@@ -88,7 +89,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -189,6 +189,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         getUserCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         fetchUserDetails(userId);
         setViewersAdapter();
+
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -408,6 +409,27 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 //                .whereEqualTo("gift_type","1000")
                 .limit(LIMIT);
 
+        if (!isHost){
+            checkKickOut(roomID,ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+        }
+
+    }
+
+    private void checkKickOut(String liveId, String userId) {
+        new KickOutInfo(new KickOutInfo.Select() {
+            @Override
+            public void KickOutStatus(int kickValue) {
+                if (kickValue==1){
+                    ZEGOLiveAudioRoomManager.getInstance().leave();
+                    deleteUserFromViewersCollection(roomID,userModel.getUid());
+                    finish();
+                }else {
+
+                }
+
+            }
+        }).realTimeKickOut(liveId,userId);
+
     }
 
     private void currentUserDetails(String userId) {
@@ -422,13 +444,6 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
                     for (DocumentSnapshot document : value) {
                         userModel = document.toObject(UserModel.class);
-//                        saveRoomUsers(userModel);
-                        Log.i("test2334", "current user name "+userModel.getUsername());
-                        Log.i("test2334", "current user uid: "+userModel.getUid());
-                        Log.i("test2334", "current user userId: "+userModel.getUsername());
-
-
-//
                     }
                 });
 
@@ -445,8 +460,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         mAdapter1 = new ViewersListAdapter(mQuery, new ViewersListAdapter.OnActiveUserSelectedListener() {
             @Override
             public void onActiveUserSelected(DocumentSnapshot user) {
-                CustomDialog customDialog = new CustomDialog(LiveAudioRoomActivity.this);
-                customDialog.show();
+                showCustomAlertDialog(LiveAudioRoomActivity.this,user);
 
             }
         }) {
@@ -476,6 +490,95 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
 
         bottomSheetDialog.show();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showCustomAlertDialog(Context context, DocumentSnapshot user) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        // Inflate the custom layout
+        View view = inflater.inflate(R.layout.custom_dialog_layout, null);
+        // Find the ImageView by its ID in the custom layout
+        ImageView profile_image = view.findViewById(R.id.profile_image);
+        TextView txt_username = view.findViewById(R.id.txt_username);
+        TextView txt_uid = view.findViewById(R.id.txt_uid);
+        MaterialButton btnKickOut = view.findViewById(R.id.btnKickOut);
+        MaterialButton btnSetAdmin = view.findViewById(R.id.btnSetAdmin);
+        MaterialButton btnMute = view.findViewById(R.id.btnMute);
+        MaterialButton btnClose = view.findViewById(R.id.btnClose);
+        LinearLayout ll_firstView1 = view.findViewById(R.id.ll_firstView1);
+        LinearLayout ll_firstView2 = view.findViewById(R.id.ll_firstView2);
+
+        try {
+            Glide.with(context).load(user.getString("image")).into(profile_image);
+            txt_username.setText(user.getString("username"));
+            txt_uid.setText("ID : "+user.getString("uid"));
+
+            ZEGOSDKUser hostUser = ZEGOLiveAudioRoomManager.getInstance().getHostUser();
+            if (hostUser != null) {
+                ll_firstView1.setVisibility(View.VISIBLE);
+                ll_firstView2.setVisibility(View.VISIBLE);
+            }else {
+                ll_firstView1.setVisibility(View.GONE);
+                ll_firstView2.setVisibility(View.GONE);
+            }
+
+        }catch (Exception e){
+
+        }
+        // Set the custom view
+        builder.setView(view);
+        // Create and show the AlertDialog
+        AlertDialog dialog = builder.create();
+        btnClose.setOnClickListener(v -> {
+
+            dialog.dismiss();
+        });
+        btnKickOut.setOnClickListener(v -> {
+            confirmKickOut(user.getString("liveId"),user.getString("uid"),user.getString("userId"),dialog);
+//            dialog.dismiss();
+        });
+        btnMute.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        btnSetAdmin.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+
+        dialog.show();
+    }
+
+    private void confirmKickOut(String liveId, String uid, String userId, AlertDialog dialog1) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(LiveAudioRoomActivity.this);
+
+
+        builder.setMessage("Are you sure want to kickOut this user?");
+
+        // Set a positive button and its click listener
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                new AddStreamInfo().deleteJoinedRoomUser(liveId,userId);
+                new AddStreamInfo().addStreamKickOut(liveId,uid,userId);
+                // Do something when the OK button is clicked
+                dialog.dismiss();
+                dialog1.dismiss();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                dialog1.dismiss();
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
     }
 
     private void setViewersAdapter() {
@@ -669,7 +772,6 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             @Override
             public void onActiveUserSelected(DocumentSnapshot user) {
                 userIdForReceiveGift=user.getString("userID");
-//                Toast.makeText(LiveAudioRoomActivity.this, ""+user.getString("userID"), Toast.LENGTH_SHORT).show();
 
             }
 
@@ -772,6 +874,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         firestore.collection("giftDetails").document(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID)).set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
+                boolean isHost = getIntent().getBooleanExtra("host", true);
                 String liveType="0";
                 Map<String, Object> data = new HashMap<>();
                 data.put("fileName", giftModel.getString("fileName"));
@@ -784,7 +887,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 String key = ref.push().getKey();
                 ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(data);
 
-                if (Objects.equals(userIdForReceiveGift, "")) {
+
+                if (!Objects.equals(userIdForReceiveGift, "")) {
                     updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
                     updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
                 }
@@ -792,7 +896,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     for (String id:userIds){
                         Log.i("printName123", "print id: "+id);
                         updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
-                        updateGiftReceiverCoins(id,userDetails.getDiamond(),giftModel.getString("price"));
+                        updateGiftReceiverCoins(id,userModel.getDiamond(),giftModel.getString("price"));
                     }
                 }
 
@@ -801,6 +905,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 //                updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
 
                 userIdForReceiveGift="";
+                select=0;
                 userIds.clear();
 
                 bottomSheetDialog.dismiss();
@@ -848,6 +953,9 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
     }
     private void updateGiftReceiverCoins(String senderId, String totalCoins, String currentPrice) {
+        Log.i("Coinsup", "Coins  " + senderId);
+        Log.i("Coinsup", "totalCoins " + totalCoins);
+        Log.i("Coinsup", "currentPrice " + currentPrice);
         // Reference to the Firestore collection
         CollectionReference detailsRef = firestore.collection(Constant.LOGIN_DETAILS);
 

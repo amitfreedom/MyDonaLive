@@ -4,12 +4,15 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.ui.utill.Constant;
 
 import java.util.HashMap;
@@ -64,29 +67,67 @@ public class AddStreamInfo {
                 });
     }
 
+    public void deleteJoinedRoomUser(String mainStreamID,String userId) {
+        // Get a reference to the document you want to delete
+        DocumentReference documentRef = FirebaseFirestore.getInstance()
+                .collection(Constant.ROOM_USER)
+                .document(mainStreamID)
+                .collection("viewers")
+                .document(userId);
 
-    private String getUID(String uid) {
-        Log.i("test2334", "fetchUserDetails: "+uid);
-        final String[] userNAme = {""};
-        usersRef.whereEqualTo("uid", Long.parseLong(uid))
-                .addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        // Handle error
-                        Log.e("test2334", "Listen failed: " + error.getMessage());
-                        return;
+// Delete the document
+        documentRef.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.i("room_users", "onSuccess: delete done");
                     }
-
-                    assert value != null;
-
-                    for (DocumentSnapshot document : value) {
-                         userNAme[0] =document.getString("userId");
-
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("room_users", "Exception: delete error" + e);
                     }
-
                 });
-
-        return userNAme[0];
-
-
+//        // Create a Map to hold the stream information
+//        Map<String, Object> streamInfo = new HashMap<>();
+//        streamInfo.put("mainStreamID", mainStreamID);
+//        streamInfo.put("uid", uid);
+//        streamInfo.put("userID", userId);
+//        db.collection(Constant.KICK_OUT).document(mainStreamID).collection("current_room_user").document(userId).set(streamInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//
+//                Log.i("room_users", "onSuccess: done");
+//
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.i("room_users", "Exception: err"+e);
+//            }
+//        });
     }
+    public void addStreamKickOut(String mainStreamID, String uid ,String userId) {
+        // Create a Map to hold the stream information
+        Map<String, Object> streamInfo = new HashMap<>();
+        streamInfo.put("mainStreamID", mainStreamID);
+        streamInfo.put("uid", uid);
+        streamInfo.put("userID", userId);
+        db.collection(Constant.KICK_OUT).document(mainStreamID).collection("current_room_user").document(userId).set(streamInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+                Log.i("room_users", "onSuccess: done");
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.i("room_users", "Exception: err"+e);
+            }
+        });
+    }
+
+
 }

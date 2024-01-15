@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/pink_top"
+    android:background="@drawable/gradient_bg"
     android:padding="16dp">
 
     <LinearLayout
@@ -22,8 +22,8 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profile_image"
-                android:layout_width="@dimen/_100dp"
-                android:layout_height="@dimen/_100dp"
+                android:layout_width="@dimen/dp_75"
+                android:layout_height="@dimen/dp_75"
                 android:src="@drawable/beauty_background_mosaicing"
                 app:civ_border_width="3dp"
                 app:civ_border_color="@color/app_color2"/>
@@ -89,10 +89,63 @@
 
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ll_firstView1"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/red_color"/>
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnKickOut"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Kick out"
+                android:textColor="@color/white"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:backgroundTint="@color/bottom_btn_background"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSetAdmin"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Set as admin"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:layout_marginLeft="@dimen/_10dp"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_firstView2"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMute"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Mute"
+                android:textColor="@color/white"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:backgroundTint="@color/btn_email"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnClose"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Close"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:layout_marginLeft="@dimen/_10dp"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/red_color"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
