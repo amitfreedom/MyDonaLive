@@ -3,6 +3,7 @@ package com.stream.prettylive.streaming.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -56,7 +57,9 @@ import com.stream.prettylive.streaming.activity.model.GiftModel;
 import com.stream.prettylive.streaming.activity.model.PurchageGiftModel;
 import com.stream.prettylive.streaming.activity.model.RoomUsers;
 import com.stream.prettylive.streaming.functions.AddStreamInfo;
+import com.stream.prettylive.streaming.functions.CurrentUserInfo;
 import com.stream.prettylive.streaming.functions.KickOutInfo;
+import com.stream.prettylive.streaming.functions.UserInfo;
 import com.stream.prettylive.streaming.gift.GiftHelper;
 import com.stream.prettylive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.prettylive.streaming.internal.business.RoomRequestExtendedData;
@@ -543,6 +546,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             dialog.dismiss();
         });
         btnSetAdmin.setOnClickListener(v -> {
+            Toast.makeText(context, "coming soon...!", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
 
@@ -653,6 +657,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         MaterialCardView btnSelectAll = bottomSheetDialog.findViewById(R.id.btnSelectAll);
         MaterialButton send = bottomSheetDialog.findViewById(R.id.materialButtonSend);
         TextView txt_beans = bottomSheetDialog.findViewById(R.id.txt_beans);
+        TextView txtAll = bottomSheetDialog.findViewById(R.id.txtAll);
+        ImageView ivSeat = bottomSheetDialog.findViewById(R.id.ivSeat);
 
         MaterialButtonToggleGroup toggleGroup = bottomSheetDialog.findViewById(R.id.toggleGroup);
 
@@ -662,11 +668,17 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         });
         btnSelectAll.setOnClickListener(v -> {
             if (select==1){
+                btnSelectAll.setCardBackgroundColor(getResources().getColor(R.color.pink_top));
+                txtAll.setTextColor(getResources().getColor(R.color.white));
+                ivSeat.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
                 giftViewUserAdapter.selectAll();
                 select =0;
             }
             else if (select==0){
                 giftViewUserAdapter.clearSelection();
+                btnSelectAll.setCardBackgroundColor(getResources().getColor(R.color.white));
+                txtAll.setTextColor(getResources().getColor(R.color.black));
+                ivSeat.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
                 select =1;
             }
 
@@ -887,16 +899,50 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 String key = ref.push().getKey();
                 ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(data);
 
-
                 if (!Objects.equals(userIdForReceiveGift, "")) {
-                    updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
-                    updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
+//                    updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
+//                    updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
+
+                    new CurrentUserInfo(new UserInfo.Select() {
+                        @Override
+                        public void UserDetailsByUserId(UserDetailsModel userInfoById) {
+
+                            updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userInfoById.getCoins(),giftModel.getString("price"));
+
+                        }
+                    }).getUserDetailsByUserId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
+                    new UserInfo(new UserInfo.Select() {
+                        @Override
+                        public void UserDetailsByUserId(UserDetailsModel userInfoById) {
+                            Log.i(TAG, "UserDetailsByUserId: "+userInfoById.getUserId());
+                            Log.i(TAG, "UserDetailsByUserId:userInfoById.getDiamond() "+userInfoById.getDiamond());
+                            updateGiftReceiverCoins(userInfoById.getUserId(),userInfoById.getDiamond(),giftModel.getString("price"));
+                        }
+                    }).getUserDetailsByUserId(userIdForReceiveGift);
+
                 }
                 else {
+
+
+
                     for (String id:userIds){
-                        Log.i("printName123", "print id: "+id);
-                        updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
-                        updateGiftReceiverCoins(id,userModel.getDiamond(),giftModel.getString("price"));
+                        new CurrentUserInfo(new UserInfo.Select() {
+                            @Override
+                            public void UserDetailsByUserId(UserDetailsModel userInfoById) {
+
+                                updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userInfoById.getCoins(),giftModel.getString("price"));
+
+                            }
+                        }).getUserDetailsByUserId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
+                        new UserInfo(new UserInfo.Select() {
+                            @Override
+                            public void UserDetailsByUserId(UserDetailsModel userInfoById) {
+                                updateGiftReceiverCoins(id,userInfoById.getDiamond(),giftModel.getString("price"));
+                            }
+                        }).getUserDetailsByUserId(id);
+
                     }
                 }
 
@@ -1016,7 +1062,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                             updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
                         }
-                        onBackPressed();
+                        finish();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

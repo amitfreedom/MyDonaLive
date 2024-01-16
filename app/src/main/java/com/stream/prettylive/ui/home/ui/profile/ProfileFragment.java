@@ -153,6 +153,7 @@ public class ProfileFragment extends Fragment {
             binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
             binding.txtCountry.setText(userDetails.getCountry_name());
             binding.txtCoin.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getCoins())));
+            binding.txtDiamond.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getDiamond())));
             // Load image
             if (Objects.equals(userDetails.getImage(), "")){
                 Glide.with(getActivity())

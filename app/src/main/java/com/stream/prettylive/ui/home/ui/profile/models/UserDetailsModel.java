@@ -16,6 +16,7 @@ public class UserDetailsModel {
     private String coins="";
     private String level="";
     private String diamond="";
+    private String docId="";
     private String latitude;
     private String longitude;
     private String friends="";
@@ -23,11 +24,10 @@ public class UserDetailsModel {
     private String following="";
     private long loginTime=0;
 
-
     public UserDetailsModel() {
     }
 
-    public UserDetailsModel(String userId, long uid, String username, String email, String phone, String countryCode, String country_name, String loginType, String image, String regId, String deviceId, String beans, String coins, String level, String diamond, String latitude, String longitude, String friends, String followers, String following, long loginTime) {
+    public UserDetailsModel(String userId, long uid, String username, String email, String phone, String countryCode, String country_name, String loginType, String image, String regId, String deviceId, String beans, String coins, String level, String diamond,String docId, String latitude, String longitude, String friends, String followers, String following, long loginTime) {
         this.userId = userId;
         this.uid = uid;
         this.username = username;
@@ -43,12 +43,21 @@ public class UserDetailsModel {
         this.coins = coins;
         this.level = level;
         this.diamond = diamond;
+        this.docId = docId;
         this.latitude = latitude;
         this.longitude = longitude;
         this.friends = friends;
         this.followers = followers;
         this.following = following;
         this.loginTime = loginTime;
+    }
+
+    public String getDocId() {
+        return docId;
+    }
+
+    public void setDocId(String docId) {
+        this.docId = docId;
     }
 
     public String getUserId() {
