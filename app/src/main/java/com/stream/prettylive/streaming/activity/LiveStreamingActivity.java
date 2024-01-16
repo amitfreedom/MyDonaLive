@@ -57,6 +57,8 @@ import com.stream.prettylive.streaming.activity.adapter.ViewUserAdapter;
 import com.stream.prettylive.streaming.activity.adapter.ViewersListAdapter;
 import com.stream.prettylive.streaming.activity.model.PurchageGiftModel;
 import com.stream.prettylive.streaming.activity.model.RoomUsers;
+import com.stream.prettylive.streaming.functions.AddStreamInfo;
+import com.stream.prettylive.streaming.functions.EndLiveStatus;
 import com.stream.prettylive.streaming.gift.GiftHelper;
 import com.stream.prettylive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.prettylive.streaming.internal.ZEGOLiveStreamingManager;
@@ -229,6 +231,10 @@ public class LiveStreamingActivity extends AppCompatActivity{
             ZEGOSDKManager.getInstance().expressService.openMicrophone(false);
             binding.previewStart.setVisibility(View.GONE);
             loginRoom();
+            realTimeLiveEnd(liveID,otherUserId);
+
+
+
         }
 
         mQuery = firestore.collection("room_users").document(liveID).collection("viewers")
@@ -263,6 +269,24 @@ public class LiveStreamingActivity extends AppCompatActivity{
 //            }
 //        });
 
+    }
+
+    private void realTimeLiveEnd(String roomID, String userId) {
+        new EndLiveStatus(new EndLiveStatus.Select() {
+            @Override
+            public void LiveEndStatus(int endStatus) {
+                try {
+                    if (endStatus==1){
+                        ZEGOLiveStreamingManager.getInstance().leave();
+                        finish();
+                    }else {
+
+                    }
+                }catch (Exception e){
+
+                }
+            }
+        }).realTimeLiveEnd(roomID,userId);
     }
 
     private void getUserCoins(String userId) {
@@ -794,6 +818,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     // save live data
                     if (isHost){
                         saveLiveData(userId,uid,username,true,liveID,"0",country,image);
+                        new AddStreamInfo().roomActive(liveID, String.valueOf(uid),userId);
                     }
 
                 }
@@ -956,8 +981,35 @@ public class LiveStreamingActivity extends AppCompatActivity{
             boolean isHost = getIntent().getBooleanExtra("host", true);
             if (isHost){
                 updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+                updateRoomStatus(otherUserId,liveID);
             }
         }
+    }
+
+    private void updateRoomStatus(String userId,String mainStreamID) {
+        // Reference to the Firestore collection
+
+        Map<String, Object> updatedStreamInfo = new HashMap<>();
+        updatedStreamInfo.put("active", "no");
+
+        // Update the document with the new information
+        firestore.collection(Constant.ROOM_STATUS)
+                .document(mainStreamID)
+                .collection("current_room_user")
+                .document(userId)
+                .update(updatedStreamInfo)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.i("room_users", "onSuccess: Update successful");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("room_users", "onFailure: Update failed: " + e.getMessage());
+                    }
+                });
     }
 
 

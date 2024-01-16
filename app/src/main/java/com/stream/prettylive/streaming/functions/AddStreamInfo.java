@@ -128,6 +128,27 @@ public class AddStreamInfo {
             }
         });
     }
+    public void roomActive(String mainStreamID, String uid ,String userId) {
+        // Create a Map to hold the stream information
+        Map<String, Object> streamInfo = new HashMap<>();
+        streamInfo.put("mainStreamID", mainStreamID);
+        streamInfo.put("uid", uid);
+        streamInfo.put("userID", userId);
+        streamInfo.put("active", "yes");
+        db.collection(Constant.ROOM_STATUS).document(mainStreamID).collection("current_room_user").document(userId).set(streamInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+                Log.i("room_users", "onSuccess: done");
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.i("room_users", "Exception: err"+e);
+            }
+        });
+    }
 
 
 }

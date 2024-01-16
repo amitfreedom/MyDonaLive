@@ -10,6 +10,7 @@ public class Constant {
     public  static final String STREAM  = "streams";
     public  static final String ROOM_USER  = "room_users";
     public  static final String KICK_OUT  = "kick_out";
+    public  static final String ROOM_STATUS  = "room_status";
     public  static final String LIVE_DETAILS  = "live_details";
     public  static final String MESSAGE  = "messages";
     public  static final String VIP  = "vip";

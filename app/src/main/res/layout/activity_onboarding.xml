@@ -73,7 +73,7 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:visibility="gone"
+            android:visibility="visible"
             android:id="@+id/btn_email"
             android:layout_width="match_parent"
             android:layout_height="45dp"

@@ -242,6 +242,7 @@ tools:context=".streaming.activity.LiveStreamingActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_max="380dp"
+        android:layout_marginBottom="@dimen/dp_75"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -58,6 +58,7 @@ import com.stream.prettylive.streaming.activity.model.PurchageGiftModel;
 import com.stream.prettylive.streaming.activity.model.RoomUsers;
 import com.stream.prettylive.streaming.functions.AddStreamInfo;
 import com.stream.prettylive.streaming.functions.CurrentUserInfo;
+import com.stream.prettylive.streaming.functions.EndLiveStatus;
 import com.stream.prettylive.streaming.functions.KickOutInfo;
 import com.stream.prettylive.streaming.functions.UserInfo;
 import com.stream.prettylive.streaming.gift.GiftHelper;
@@ -350,7 +351,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                         binding.giftButton1.setVisibility(View.VISIBLE);
                         // save live data
                         saveLiveData(userId,uid,username,true,roomID,"1",country,image);
-
+                        new AddStreamInfo().roomActive(roomID, String.valueOf(uid),userId);
                         ZEGOLiveAudioRoomManager.getInstance().setHostAndLockSeat();
                         ZEGOLiveAudioRoomManager.getInstance().takeSeat(0, new ZIMRoomAttributesOperatedCallback() {
                             @Override
@@ -414,8 +415,24 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
         if (!isHost){
             checkKickOut(roomID,ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+            realTimeLiveEnd(roomID,otherUserId);
         }
 
+    }
+
+    private void realTimeLiveEnd(String roomID, String userId) {
+        new EndLiveStatus(new EndLiveStatus.Select() {
+            @Override
+            public void LiveEndStatus(int endStatus) {
+                if (endStatus==1){
+                    ZEGOLiveAudioRoomManager.getInstance().leave();
+                    deleteUserFromViewersCollection(roomID,userModel.getUid());
+                    finish();
+                }else {
+
+                }
+            }
+        }).realTimeLiveEnd(roomID,userId);
     }
 
     private void checkKickOut(String liveId, String userId) {
@@ -1060,7 +1077,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                         boolean isHost = getIntent().getBooleanExtra("host", true);
                         if (isHost){
                             updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
-
+                            updateRoomStatus(otherUserId,roomID);
                         }
                         finish();
                     }
@@ -1187,6 +1204,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             boolean isHost = getIntent().getBooleanExtra("host", true);
             if (isHost){
                 updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+                updateRoomStatus(otherUserId,roomID);
 
             }else {
                 deleteUserFromViewersCollection(roomID,userModel.getUid());
@@ -1363,6 +1381,31 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 Log.e("UpdateLiveType", "Error getting documents: ", task.getException());
             }
         });
+    }
+    private void updateRoomStatus(String userId,String mainStreamID) {
+        // Reference to the Firestore collection
+
+        Map<String, Object> updatedStreamInfo = new HashMap<>();
+        updatedStreamInfo.put("active", "no");
+
+        // Update the document with the new information
+        firestore.collection(Constant.ROOM_STATUS)
+                .document(mainStreamID)
+                .collection("current_room_user")
+                .document(userId)
+                .update(updatedStreamInfo)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.i("room_users", "onSuccess: Update successful");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("room_users", "onFailure: Update failed: " + e.getMessage());
+                    }
+                });
     }
 
     @Override
