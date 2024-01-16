@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -32,6 +33,7 @@ import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.streaming.activity.LiveAudioRoomActivity;
 import com.stream.prettylive.streaming.activity.LiveStreamingActivity;
+import com.stream.prettylive.streaming.functions.KickOutInfo;
 import com.stream.prettylive.streaming.internal.ZEGOCallInvitationManager;
 import com.stream.prettylive.streaming.internal.ZEGOLiveStreamingManager;
 import com.stream.prettylive.ui.home.ui.explore.adapter.CountryAdapter;
@@ -135,7 +137,67 @@ public class ExploreFragment extends Fragment implements ExploreAdapter.OnActive
 
     }
 
+    private void checkKickOut(String liveId, String userId,DocumentSnapshot user) {
+        new KickOutInfo(new KickOutInfo.Select() {
+            @Override
+            public void KickOutStatus(int kickValue) {
+                if (kickValue==1){
+                    Toast.makeText(getActivity(), "The host has kicked out you for this live. You can not enter this live, ", Toast.LENGTH_SHORT).show();
+                }else {
 
+                    goToLive(user);
+
+                }
+
+            }
+        }).checkKickOut(liveId,userId);
+
+    }
+
+    private void goToLive(DocumentSnapshot user) {
+        String liveType= (String) user.get("liveType");
+        String liveID= (String) user.get("liveID");
+        String userId= (String) user.get("userId");
+        String username= (String) user.get("username");
+        long uid= (long) user.get("uid");
+        if (TextUtils.isEmpty(liveID)) {
+            return;
+        }
+
+        List<String> permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
+        requestPermissionIfNeeded(permissions, new RequestCallback() {
+            @Override
+            public void onResult(boolean allGranted, @NonNull List<String> grantedList,
+                                 @NonNull List<String> deniedList) {
+                if (allGranted) {
+                    Intent intent;
+                    if (Objects.equals(liveType, "0")){
+                        intent = new Intent(getActivity().getApplication(), LiveStreamingActivity.class);
+                        intent.putExtra("host", false);
+                        intent.putExtra("liveID", liveID);
+                        intent.putExtra("userId", userId);
+                        intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+                        intent.putExtra("username", username);
+                        intent.putExtra("uid", uid);
+                        intent.putExtra("country_name", "");
+                        startActivity(intent);
+                    }else {
+                        intent = new Intent(getActivity().getApplication(), LiveAudioRoomActivity.class);
+                        intent.putExtra("host", false);
+                        intent.putExtra("liveID", liveID);
+                        intent.putExtra("userId", userId);
+                        intent.putExtra("username", username);
+                        intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+                        intent.putExtra("uid", uid);
+                        intent.putExtra("country_name", "");
+                        startActivity(intent);
+
+                    }
+                }
+            }
+        });
+
+    }
 
 
     private void showBottomSheetDialog() {
@@ -226,40 +288,42 @@ public class ExploreFragment extends Fragment implements ExploreAdapter.OnActive
             return;
         }
 
+        checkKickOut(liveID,ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),user);
 
 
-        List<String> permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
-        requestPermissionIfNeeded(permissions, new RequestCallback() {
-            @Override
-            public void onResult(boolean allGranted, @NonNull List<String> grantedList,
-                                 @NonNull List<String> deniedList) {
-                if (allGranted) {
-                    Intent intent;
-                    if (Objects.equals(liveType, "0")){
-                        intent = new Intent(getActivity().getApplication(), LiveStreamingActivity.class);
-                        intent.putExtra("host", false);
-                        intent.putExtra("liveID", liveID);
-                        intent.putExtra("userId", userId);
-                        intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
-                        intent.putExtra("username", username);
-                        intent.putExtra("uid", uid);
-                        intent.putExtra("country_name", "");
-                        startActivity(intent);
-                    }else {
-                        intent = new Intent(getActivity().getApplication(), LiveAudioRoomActivity.class);
-                        intent.putExtra("host", false);
-                        intent.putExtra("liveID", liveID);
-                        intent.putExtra("userId", userId);
-                        intent.putExtra("username", username);
-                        intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
-                        intent.putExtra("uid", uid);
-                        intent.putExtra("country_name", "");
-                        startActivity(intent);
 
-                    }
-                }
-            }
-        });
+//        List<String> permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
+//        requestPermissionIfNeeded(permissions, new RequestCallback() {
+//            @Override
+//            public void onResult(boolean allGranted, @NonNull List<String> grantedList,
+//                                 @NonNull List<String> deniedList) {
+//                if (allGranted) {
+//                    Intent intent;
+//                    if (Objects.equals(liveType, "0")){
+//                        intent = new Intent(getActivity().getApplication(), LiveStreamingActivity.class);
+//                        intent.putExtra("host", false);
+//                        intent.putExtra("liveID", liveID);
+//                        intent.putExtra("userId", userId);
+//                        intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+//                        intent.putExtra("username", username);
+//                        intent.putExtra("uid", uid);
+//                        intent.putExtra("country_name", "");
+//                        startActivity(intent);
+//                    }else {
+//                        intent = new Intent(getActivity().getApplication(), LiveAudioRoomActivity.class);
+//                        intent.putExtra("host", false);
+//                        intent.putExtra("liveID", liveID);
+//                        intent.putExtra("userId", userId);
+//                        intent.putExtra("username", username);
+//                        intent.putExtra("audienceId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+//                        intent.putExtra("uid", uid);
+//                        intent.putExtra("country_name", "");
+//                        startActivity(intent);
+//
+//                    }
+//                }
+//            }
+//        });
 
 
 

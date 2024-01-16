@@ -299,6 +299,7 @@ public class OnboardingActivity extends AppCompatActivity {
             loginDetails.put("coins", "0");
             loginDetails.put("level", "1");
             loginDetails.put("diamond", "0");
+            loginDetails.put("docId", "");
             loginDetails.put("latitude", "0");
             loginDetails.put("longitude", "0");
             loginDetails.put("friends", "0");

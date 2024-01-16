@@ -264,18 +264,46 @@ public class VIPActivity extends AppCompatActivity implements VipGiftAdapter.OnV
     }
 
     public void addList(View view) {
-        AddVip();
+//        AddVip();
     }
 
+    private void AddVip1() {
+        long timestamp = System.currentTimeMillis();
+        Map<String, Object> vipMap = new HashMap<>();
+        vipMap.put("vipId", "09");
+        vipMap.put("title", "Yacht");
+        vipMap.put("image", "https://firebasestorage.googleapis.com/v0/b/prettydemo-48691.appspot.com/o/images%2Fyacht.png?alt=media&token=6f3212c9-ce9a-40e5-a39a-f6d184c8be36");
+        vipMap.put("beans", "310000");
+        vipMap.put("fileName", "yacht.svga");
+
+        db.collection("vip")
+                .add(vipMap)
+                .addOnSuccessListener(documentReference -> {
+                    // Login details added successfully
+                    Toast.makeText(VIPActivity.this, "added",
+                            Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(VIPActivity.this, "Error failed"+e,Toast.LENGTH_SHORT).show();
+                    // Handle failure
+                    Log.e("MainActivity", "Error adding failed", e);
+                });
+
+
+    }
     private void AddVip() {
         long timestamp = System.currentTimeMillis();
         Map<String, Object> vipMap = new HashMap<>();
-        vipMap.put("vipId", "");
-        vipMap.put("title", "");
-        vipMap.put("image", "");
-        vipMap.put("beans", "");
 
-        db.collection("vip")
+        vipMap.put("giftId", "1000");
+        vipMap.put("giftName", "Race car");
+        vipMap.put("gift_type", "1000");
+        vipMap.put("image", "https://firebasestorage.googleapis.com/v0/b/prettydemo-48691.appspot.com/o/images%2Fracecar.png?alt=media&token=d6edbfae-590a-4d1a-9b47-40566f9d566b");
+        vipMap.put("price", "5800000");
+        vipMap.put("fileName", "racecar.svga");
+        vipMap.put("timestamp", 1);
+
+        db.collection("gifts")
                 .add(vipMap)
                 .addOnSuccessListener(documentReference -> {
                     // Login details added successfully

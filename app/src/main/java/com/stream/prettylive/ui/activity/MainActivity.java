@@ -45,6 +45,8 @@ import com.stream.prettylive.streaming.internal.sdk.basic.ZEGOSDKUser;
 import com.stream.prettylive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.prettylive.ui.utill.Constant;
 
+import im.zego.zegoexpress.ZegoExpressEngine;
+import im.zego.zegoexpress.entity.ZegoCanvas;
 import im.zego.zim.callback.ZIMCallInvitationSentCallback;
 import im.zego.zim.entity.ZIMCallInvitationSentInfo;
 import im.zego.zim.entity.ZIMError;
@@ -79,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        startPreview();
 
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -117,18 +121,6 @@ public class MainActivity extends AppCompatActivity {
             });
         });
 
-        binding.watchLiveStreaming.setOnClickListener(v -> {
-            String liveID = binding.liveIdStreaming.getEditText().getText().toString();
-            if (TextUtils.isEmpty(liveID)) {
-                binding.liveIdStreaming.setError("please input liveID");
-                return;
-            }
-            Intent intent = new Intent(MainActivity.this, LiveStreamingActivity.class);
-            intent.putExtra("host", false);
-            intent.putExtra("liveID", liveID);
-            startActivity(intent);
-        });
-
         binding.startLiveAudioroom.setOnClickListener(v -> {
 //            String liveID = binding.liveIdAudioRoom.getEditText().getText().toString();
 //            if (TextUtils.isEmpty(liveID)) {
@@ -156,87 +148,6 @@ public class MainActivity extends AppCompatActivity {
             });
         });
 
-        binding.watchLiveAudioroom.setOnClickListener(v -> {
-            String liveID = binding.liveIdAudioRoom.getEditText().getText().toString();
-            if (TextUtils.isEmpty(liveID)) {
-                binding.liveIdAudioRoom.setError("please input liveID");
-                return;
-            }
-            Intent intent = new Intent(MainActivity.this, LiveAudioRoomActivity.class);
-            intent.putExtra("host", false);
-            intent.putExtra("liveID", liveID);
-            startActivity(intent);
-        });
-
-        binding.callUserVideo.setOnClickListener(v -> {
-            String targetUserID = binding.callUserId.getEditText().getText().toString();
-            if (TextUtils.isEmpty(targetUserID)) {
-                binding.callUserId.setError("please input targetUserID");
-                return;
-            }
-            List<String> permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
-            requestPermissionIfNeeded(permissions, new RequestCallback() {
-                @Override
-                public void onResult(boolean allGranted, @NonNull List<String> grantedList,
-                                     @NonNull List<String> deniedList) {
-                    if (allGranted) {
-                        ZEGOCallInvitationManager.getInstance()
-                                .sendVideoCall(targetUserID, new ZIMCallInvitationSentCallback() {
-                                    @Override
-                                    public void onCallInvitationSent(String requestID, ZIMCallInvitationSentInfo info,
-                                                                     ZIMError errorInfo) {
-                                        if (errorInfo.code.value() == 0) {
-                                            ZEGOSDKUser localUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
-                                            FullCallInfo fullCallInfo = new FullCallInfo();
-                                            fullCallInfo.callID = requestID;
-                                            fullCallInfo.callType = CallExtendedData.VIDEO_CALL;
-                                            fullCallInfo.callerUserID = localUser.userID;
-                                            fullCallInfo.callerUserName = localUser.userName;
-                                            fullCallInfo.calleeUserID = targetUserID;
-                                            fullCallInfo.isOutgoingCall = true;
-                                            CallWaitActivity.startActivity(MainActivity.this, fullCallInfo);
-                                        }
-                                    }
-                                });
-                    }
-                }
-            });
-        });
-
-        binding.callUserAudio.setOnClickListener(v -> {
-            String targetUserID = binding.callUserId.getEditText().getText().toString();
-            if (TextUtils.isEmpty(targetUserID)) {
-                binding.callUserId.setError("please input targetUserID");
-                return;
-            }
-            List<String> permissions = Collections.singletonList(Manifest.permission.RECORD_AUDIO);
-            requestPermissionIfNeeded(permissions, new RequestCallback() {
-                @Override
-                public void onResult(boolean allGranted, @NonNull List<String> grantedList,
-                                     @NonNull List<String> deniedList) {
-                    if (allGranted) {
-                        ZEGOCallInvitationManager.getInstance()
-                                .sendVoiceCall(targetUserID, new ZIMCallInvitationSentCallback() {
-                                    @Override
-                                    public void onCallInvitationSent(String requestID, ZIMCallInvitationSentInfo info,
-                                                                     ZIMError errorInfo) {
-                                        if (errorInfo.code.value() == 0) {
-                                            ZEGOSDKUser localUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
-                                            FullCallInfo fullCallInfo = new FullCallInfo();
-                                            fullCallInfo.callID = requestID;
-                                            fullCallInfo.callType = CallExtendedData.VOICE_CALL;
-                                            fullCallInfo.callerUserID = localUser.userID;
-                                            fullCallInfo.callerUserName = localUser.userName;
-                                            fullCallInfo.calleeUserID = targetUserID;
-                                            fullCallInfo.isOutgoingCall = true;
-                                            CallWaitActivity.startActivity(MainActivity.this, fullCallInfo);
-                                        }
-                                    }
-                                });
-                    }
-                }
-            });
-        });
 
         // if LiveStreaming,init after user login,may receive pk request.
         ZEGOLiveStreamingManager.getInstance().init();
@@ -251,46 +162,55 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        binding.subscribeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String deviceToken = "fB3hNLrZQbOfqHEeoigQAX:APA91bEXpEnclLTkl05Hj1pxfg2NPpQwQ0nc_591-agntE0EjRw3-m4HT3ATjp6SarqVbas3_J3VnoxvtvE3vyL18alqJ_Zk21u_TzORgfEA8xvp9AkmDO9TqMaOt_Yv-KcdkqeoscHn";
-                String title = "Notification Title";
-                String body = "Notification Body";
-
-//                // Call the FCMNotificationSender's sendNotification method
-                FCMNotificationSender.sendNotificationToDevice(deviceToken, title, body);
-            }
-        });
-
-        binding.logTokenButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get token
-                // [START log_reg_token]
-                FirebaseMessaging.getInstance().getToken()
-                        .addOnCompleteListener(new OnCompleteListener<String>() {
-                            @Override
-                            public void onComplete(@NonNull Task<String> task) {
-                                if (!task.isSuccessful()) {
-                                    Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                                    return;
-                                }
-
-                                // Get new FCM registration token
-                                String token = task.getResult();
-
-                                // Log and toast
-                                String msg = getString(R.string.msg_token_fmt, token);
-                                Log.d(TAG, msg);
-                                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                // [END log_reg_token]
-            }
-        });
+//        binding.subscribeButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String deviceToken = "fB3hNLrZQbOfqHEeoigQAX:APA91bEXpEnclLTkl05Hj1pxfg2NPpQwQ0nc_591-agntE0EjRw3-m4HT3ATjp6SarqVbas3_J3VnoxvtvE3vyL18alqJ_Zk21u_TzORgfEA8xvp9AkmDO9TqMaOt_Yv-KcdkqeoscHn";
+//                String title = "Notification Title";
+//                String body = "Notification Body";
+//
+////                // Call the FCMNotificationSender's sendNotification method
+//                FCMNotificationSender.sendNotificationToDevice(deviceToken, title, body);
+//            }
+//        });
+//
+//        binding.logTokenButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Get token
+//                // [START log_reg_token]
+//                FirebaseMessaging.getInstance().getToken()
+//                        .addOnCompleteListener(new OnCompleteListener<String>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<String> task) {
+//                                if (!task.isSuccessful()) {
+//                                    Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+//                                    return;
+//                                }
+//
+//                                // Get new FCM registration token
+//                                String token = task.getResult();
+//
+//                                // Log and toast
+//                                String msg = getString(R.string.msg_token_fmt, token);
+//                                Log.d(TAG, msg);
+//                                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+//                // [END log_reg_token]
+//            }
+//        });
 
         askNotificationPermission();
+    }
+
+    void startPreview() {
+//        ZegoCanvas previewCanvas = new ZegoCanvas(findViewById(R.id.hostView));
+//        ZegoExpressEngine.getEngine().startPreview(previewCanvas);
+    }
+
+    void stopPreview() {
+//        ZegoExpressEngine.getEngine().stopPreview();
     }
 
     private void askNotificationPermission() {
@@ -306,7 +226,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isFinishing()) {
+            stopPreview();
+        }
+    }
 
 
 
@@ -361,6 +287,7 @@ public class MainActivity extends AppCompatActivity {
             ZEGOSDKManager.getInstance().disconnectUser();
             ZEGOLiveStreamingManager.getInstance().removeUserData();
             ZEGOLiveStreamingManager.getInstance().removeUserListeners();
+//            stopPreview();
             // if Call invitation,init after user login,may receive call request.
 //            ZEGOCallInvitationManager.getInstance().removeUserData();
 //            ZEGOCallInvitationManager.getInstance().removeUserListeners();
