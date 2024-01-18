@@ -819,6 +819,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     if (isHost){
                         saveLiveData(userId,uid,username,true,liveID,"0",country,image);
                         new AddStreamInfo().roomActive(liveID, String.valueOf(uid),userId);
+                        new AddStreamInfo().addStreamInfo(liveID, String.valueOf(uid),userId, username, image);
                     }
 
                 }
@@ -1133,6 +1134,29 @@ public class LiveStreamingActivity extends AppCompatActivity{
                         if (ZEGOLiveStreamingManager.getInstance().getPKInfo() == null) {
                             coHostUserList.add(zegosdkUser);
                         }
+                        try {
+                            String uid = zegosdkUser.userID;
+                            String userName = zegosdkUser.userName;
+                            usersRef.whereEqualTo("uid", Long.parseLong(uid))
+                                    .addSnapshotListener((value, error) -> {
+                                        if (error != null) {
+                                            // Handle error
+                                            Log.e("test2334", "Listen failed: " + error.getMessage());
+                                            return;
+                                        }
+
+                                        assert value != null;
+
+                                        for (DocumentSnapshot document : value) {
+                                            String userId =document.getString("userId");
+                                            String image1 =document.getString("image");
+                                            new AddStreamInfo().addStreamInfo(liveID,uid,userId, userName, image1);
+                                        }
+
+                                    });
+                        } catch (Exception e) {
+                            // Handle exception
+                        }
                     }
                 }
                 if (ZEGOLiveStreamingManager.getInstance().getPKInfo() == null) {
@@ -1153,6 +1177,30 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
                     } else {
                         coHostUserList.add(ZEGOSDKUser);
+                    }
+                    try {
+
+
+                        String uid = ZEGOSDKUser.userID;
+                        usersRef.whereEqualTo("uid", Long.parseLong(uid))
+                                .addSnapshotListener((value, error) -> {
+                                    if (error != null) {
+                                        // Handle error
+                                        Log.e("test2334", "Listen failed: " + error.getMessage());
+                                        return;
+                                    }
+
+                                    assert value != null;
+
+                                    for (DocumentSnapshot document : value) {
+                                        String userId =document.getString("userId");
+                                        new AddStreamInfo().deleteStreamInfo(liveID,userId);
+                                    }
+
+                                });
+
+                    }catch (Exception e){
+
                     }
                 }
                 binding.liveCohostView.removeUser(coHostUserList);
