@@ -1,12 +1,16 @@
 package com.stream.prettylive.streaming.activity;
 
 import android.Manifest.permission;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -15,6 +19,8 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +39,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -53,12 +60,16 @@ import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.notification.FCMNotificationSender;
 import com.stream.prettylive.streaming.ZEGOSDKKeyCenter;
 import com.stream.prettylive.streaming.activity.adapter.GiftAdapter;
+import com.stream.prettylive.streaming.activity.adapter.GiftViewUserAdapter;
 import com.stream.prettylive.streaming.activity.adapter.ViewUserAdapter;
 import com.stream.prettylive.streaming.activity.adapter.ViewersListAdapter;
 import com.stream.prettylive.streaming.activity.model.PurchageGiftModel;
 import com.stream.prettylive.streaming.activity.model.RoomUsers;
 import com.stream.prettylive.streaming.functions.AddStreamInfo;
+import com.stream.prettylive.streaming.functions.CurrentUserInfo;
 import com.stream.prettylive.streaming.functions.EndLiveStatus;
+import com.stream.prettylive.streaming.functions.KickOutInfo;
+import com.stream.prettylive.streaming.functions.UserInfo;
 import com.stream.prettylive.streaming.gift.GiftHelper;
 import com.stream.prettylive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.prettylive.streaming.internal.ZEGOLiveStreamingManager;
@@ -127,11 +138,15 @@ public class LiveStreamingActivity extends AppCompatActivity{
     private UserModel userModel;
     private ViewersListAdapter mAdapter1;
     private ViewUserAdapter mAdapter;
-    private Query mQuery,mQuery1;
+    private Query mQuery,mQuery1,mQuery2;
     Animation topAnimantion,bottomAnimation,rightToLeft;
     View giftButton;
     private GiftAdapter giftAdapter;
     private DocumentSnapshot documentSnapshot;
+    private GiftViewUserAdapter giftViewUserAdapter;
+    List<String>userIds = new ArrayList<>();
+    private String userIdForReceiveGift="";
+    private int select =1;
     private String totalBeans="0";
     private String hostTotalCoins="0";
     private int giftCount=1;
@@ -231,6 +246,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
             ZEGOSDKManager.getInstance().expressService.openMicrophone(false);
             binding.previewStart.setVisibility(View.GONE);
             loginRoom();
+            checkKickOut(liveID,ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
             realTimeLiveEnd(liveID,otherUserId);
 
 
@@ -244,6 +260,11 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
         mQuery1 = firestore.collection(Constant.GIFTS)
                 .orderBy("price", Query.Direction.ASCENDING)
+//                .whereEqualTo("gift_type","1000")
+                .limit(LIMIT);
+
+        mQuery2 = firestore.collection(Constant.STREAM).document(liveID).collection("current_room_user")
+//                .orderBy(Query.Direction.ASCENDING)
 //                .whereEqualTo("gift_type","1000")
                 .limit(LIMIT);
 
@@ -268,6 +289,23 @@ public class LiveStreamingActivity extends AppCompatActivity{
 //                giftButton.performClick();
 //            }
 //        });
+
+    }
+
+    private void checkKickOut(String liveId, String userId) {
+        new KickOutInfo(new KickOutInfo.Select() {
+            @Override
+            public void KickOutStatus(int kickValue) {
+                if (kickValue==1){
+                    ZEGOLiveAudioRoomManager.getInstance().leave();
+//                    deleteUserFromViewersCollection(liveId,userModel.getUid());
+                    finish();
+                }else {
+
+                }
+
+            }
+        }).realTimeKickOut(liveId,userId);
 
     }
 
@@ -332,12 +370,40 @@ public class LiveStreamingActivity extends AppCompatActivity{
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout_gift);
 
         RecyclerView recyclerView = bottomSheetDialog.findViewById(R.id.recycler_gift);
+        RecyclerView rv_gift_user = bottomSheetDialog.findViewById(R.id.rv_gift_user);
         Spinner spinner = bottomSheetDialog.findViewById(R.id.spinner);
         MaterialButton button_hot = bottomSheetDialog.findViewById(R.id.button_hot);
+        MaterialCardView btn_close = bottomSheetDialog.findViewById(R.id.btn_close);
+        MaterialCardView btnSelectAll = bottomSheetDialog.findViewById(R.id.btnSelectAll);
         MaterialButton send = bottomSheetDialog.findViewById(R.id.materialButtonSend);
         TextView txt_beans = bottomSheetDialog.findViewById(R.id.txt_beans);
+        TextView txtAll = bottomSheetDialog.findViewById(R.id.txtAll);
+        ImageView ivSeat = bottomSheetDialog.findViewById(R.id.ivSeat);
 
         MaterialButtonToggleGroup toggleGroup = bottomSheetDialog.findViewById(R.id.toggleGroup);
+
+        btn_close.setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+            giftViewUserAdapter.clearSelection();
+        });
+        btnSelectAll.setOnClickListener(v -> {
+            if (select==1){
+                btnSelectAll.setCardBackgroundColor(getResources().getColor(R.color.pink_top));
+                txtAll.setTextColor(getResources().getColor(R.color.white));
+                ivSeat.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
+                giftViewUserAdapter.selectAll();
+                select =0;
+            }
+            else if (select==0){
+                giftViewUserAdapter.clearSelection();
+                btnSelectAll.setCardBackgroundColor(getResources().getColor(R.color.white));
+                txtAll.setTextColor(getResources().getColor(R.color.black));
+                ivSeat.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
+                select =1;
+            }
+
+
+        });
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -371,7 +437,13 @@ public class LiveStreamingActivity extends AppCompatActivity{
                 return;
             }
             if (Integer.parseInt(totalBeans) >= Integer.parseInt(Objects.requireNonNull(documentSnapshot.getString("price")))){
+                if (Objects.equals(userIdForReceiveGift, "") && userIds.size()==0){
+                    Toast.makeText(this, "Select room user first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 sendGift(documentSnapshot,bottomSheetDialog,giftCount);
+
             }else {
                 Toast.makeText(this, "Insufficient balance, please recharge first", Toast.LENGTH_SHORT).show();
             }
@@ -427,6 +499,71 @@ public class LiveStreamingActivity extends AppCompatActivity{
                 }
             }
         });
+
+        giftViewUserAdapter = new GiftViewUserAdapter(mQuery2, new GiftViewUserAdapter.OnActiveUserSelectedListener() {
+            @Override
+            public void onActiveUserSelected(DocumentSnapshot user) {
+                userIdForReceiveGift=user.getString("userID");
+
+            }
+
+            @Override
+            public void SelectedUser(String data) {
+
+                if (Objects.equals(data, "1")){
+                    mQuery2.get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Handle the documents
+                            userIds.clear();
+                            for (DocumentSnapshot document : task.getResult()) {
+                                // Access data from the document
+                                String ids = document.getString("userID");
+                                Log.i("printName123", "SelectedUser: "+ids);
+                                userIds.add(ids);
+                            }
+                        } else {
+                            // Handle errors
+                            Exception exception = task.getException();
+                            if (exception != null) {
+                                Log.i("printName123", "exception: "+exception);
+                                // Handle the exception
+                            }
+                        }
+                    });
+                }
+                else {
+                    userIds.clear();
+                }
+
+            }
+        }) {
+            @Override
+            protected void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                try {
+                    if (getItemCount() == 0) {
+                        binding.rvViewers.setVisibility(View.GONE);
+                        binding.txtUserCount.setText("0");
+
+                    } else {
+                        binding.rvViewers.setVisibility(View.VISIBLE);
+                        binding.txtUserCount.setText(String.valueOf(getItemCount()));
+
+                    }
+                }catch (Exception e){
+
+                }
+            }
+
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                Log.e("FirebaseFirestoreException", "onError: "+e );
+            }
+
+
+        };
+        rv_gift_user.setAdapter(giftViewUserAdapter);
+        giftViewUserAdapter.setQuery(mQuery2);
         giftAdapter = new GiftAdapter(mQuery1, new GiftAdapter.OnGiftSelectedListener() {
             @Override
             public void onGiftSelected(DocumentSnapshot user) {
@@ -461,12 +598,12 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
     private void sendGift(DocumentSnapshot giftModel, BottomSheetDialog bottomSheetDialog, int giftCount) {
 
-
         long timestamp = System.currentTimeMillis();
         Map<String, Object> data = new HashMap<>();
         data.put("senderId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         data.put("diamond", giftModel.getString("price"));
         data.put("receiverId", otherUserId);
+//        data.put("receiverId", userIdForReceiveGift);
         data.put("giftId", giftModel.getString("giftId"));
         data.put("fileName", giftModel.getString("fileName"));
         data.put("liveId", liveID);
@@ -474,6 +611,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
         firestore.collection("giftDetails").document(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID)).set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
+                boolean isHost = getIntent().getBooleanExtra("host", true);
                 String liveType="1";
                 Map<String, Object> data = new HashMap<>();
                 data.put("fileName", giftModel.getString("fileName"));
@@ -481,18 +619,63 @@ public class LiveStreamingActivity extends AppCompatActivity{
                 data.put("userId", otherUserId);
                 data.put("giftId", giftModel.getString("giftId"));
                 data.put("liveType", liveType);
-                data.put("gift_count", String.valueOf(giftCount));
+                data.put("gift_count", userIds.size()>0?String.valueOf(userIds.size()):String.valueOf(giftCount));
                 data.put("liveId", liveID);
                 String key = ref.push().getKey();
                 ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(data);
 
-                updateGiftSenderCoins(audienceId,totalBeans,giftModel.getString("price"));
+                if (!Objects.equals(userIdForReceiveGift, "")) {
+                    new CurrentUserInfo(new UserInfo.Select() {
+                        @Override
+                        public void UserDetailsByUserId(UserDetailsModel userInfoById) {
 
-                updateGiftReceiverCoins(otherUserId,userDetails.getCoins(),giftModel.getString("price"));
+                            updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userInfoById.getCoins(),giftModel.getString("price"));
+
+                        }
+                    }).getUserDetailsByUserId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
+                    new UserInfo(new UserInfo.Select() {
+                        @Override
+                        public void UserDetailsByUserId(UserDetailsModel userInfoById) {
+//                            Log.i(TAG, "UserDetailsByUserId: "+userInfoById.getUserId());
+//                            Log.i(TAG, "UserDetailsByUserId:userInfoById.getDiamond() "+userInfoById.getDiamond());
+                            updateGiftReceiverCoins(userInfoById.getUserId(),userInfoById.getDiamond(),giftModel.getString("price"));
+                        }
+                    }).getUserDetailsByUserId(userIdForReceiveGift);
+
+                }
+                else {
+
+
+
+                    for (String id:userIds){
+                        new CurrentUserInfo(new UserInfo.Select() {
+                            @Override
+                            public void UserDetailsByUserId(UserDetailsModel userInfoById) {
+
+                                updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userInfoById.getCoins(),giftModel.getString("price"));
+
+                            }
+                        }).getUserDetailsByUserId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+
+                        new UserInfo(new UserInfo.Select() {
+                            @Override
+                            public void UserDetailsByUserId(UserDetailsModel userInfoById) {
+                                updateGiftReceiverCoins(id,userInfoById.getDiamond(),giftModel.getString("price"));
+                            }
+                        }).getUserDetailsByUserId(id);
+
+                    }
+                }
+
+//                updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
 //
-                ZEGOSDKManager.getInstance().expressService.sendBarrageMessage("Sent a gift", (errorCode, messageID) -> {
+//                updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
 
-                });
+                userIdForReceiveGift="";
+                select=0;
+                userIds.clear();
+
                 bottomSheetDialog.dismiss();
 
             }
@@ -538,6 +721,9 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
     }
     private void updateGiftReceiverCoins(String senderId, String totalCoins, String currentPrice) {
+        Log.i("Coinsup", "Coins  " + senderId);
+        Log.i("Coinsup", "totalCoins " + totalCoins);
+        Log.i("Coinsup", "currentPrice " + currentPrice);
         // Reference to the Firestore collection
         CollectionReference detailsRef = firestore.collection(Constant.LOGIN_DETAILS);
 
@@ -551,7 +737,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     String documentId = document.getId();
                     Long totalCoin = Long.parseLong(totalCoins) + Long.parseLong(currentPrice);
                     Map<String, Object> updateDetails = new HashMap<>();
-                    updateDetails.put("coins", String.valueOf(totalCoin));
+                    updateDetails.put("diamond", String.valueOf(totalCoin));
                     // Update the liveType field from 0 to 1
                     detailsRef.document(documentId)
                             .update(updateDetails)
@@ -722,7 +908,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     binding.txtUsername.setText(userDetails.getUsername());
                     binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
                     binding.txtLevel.setText("Lv"+userDetails.getLevel());
-                    binding.txtCoin.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getCoins())));
+//                    binding.txtCoin.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getCoins())));
+                    binding.txtCoin.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getDiamond())));
                 }
             });
         }catch (Exception e){
@@ -773,7 +960,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
         mAdapter1 = new ViewersListAdapter(mQuery, new ViewersListAdapter.OnActiveUserSelectedListener() {
             @Override
             public void onActiveUserSelected(DocumentSnapshot user) {
-
+                showCustomAlertDialog(LiveStreamingActivity.this,user);
             }
         }) {
             @Override
@@ -802,6 +989,95 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
 
         bottomSheetDialog.show();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showCustomAlertDialog(Context context, DocumentSnapshot user) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        // Inflate the custom layout
+        View view = inflater.inflate(R.layout.custom_dialog_layout, null);
+        // Find the ImageView by its ID in the custom layout
+        ImageView profile_image = view.findViewById(R.id.profile_image);
+        TextView txt_username = view.findViewById(R.id.txt_username);
+        TextView txt_uid = view.findViewById(R.id.txt_uid);
+        MaterialButton btnKickOut = view.findViewById(R.id.btnKickOut);
+        MaterialButton btnSetAdmin = view.findViewById(R.id.btnSetAdmin);
+        MaterialButton btnMute = view.findViewById(R.id.btnMute);
+        MaterialButton btnClose = view.findViewById(R.id.btnClose);
+        LinearLayout ll_firstView1 = view.findViewById(R.id.ll_firstView1);
+        LinearLayout ll_firstView2 = view.findViewById(R.id.ll_firstView2);
+
+        try {
+            Glide.with(context).load(user.getString("image")).into(profile_image);
+            txt_username.setText(user.getString("username"));
+            txt_uid.setText("ID : "+user.getString("uid"));
+
+            ZEGOSDKUser hostUser= ZEGOLiveStreamingManager.getInstance().getHostUser();
+            if (hostUser != null) {
+                ll_firstView1.setVisibility(View.VISIBLE);
+                ll_firstView2.setVisibility(View.VISIBLE);
+            }else {
+                ll_firstView1.setVisibility(View.GONE);
+                ll_firstView2.setVisibility(View.GONE);
+            }
+
+        }catch (Exception e){
+
+        }
+        // Set the custom view
+        builder.setView(view);
+        // Create and show the AlertDialog
+        AlertDialog dialog = builder.create();
+        btnClose.setOnClickListener(v -> {
+
+            dialog.dismiss();
+        });
+        btnKickOut.setOnClickListener(v -> {
+            confirmKickOut(user.getString("liveId"),user.getString("uid"),user.getString("userId"),dialog);
+//            dialog.dismiss();
+        });
+        btnMute.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        btnSetAdmin.setOnClickListener(v -> {
+            Toast.makeText(context, "coming soon...!", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
+
+
+        dialog.show();
+    }
+    private void confirmKickOut(String liveId, String uid, String userId, AlertDialog dialog1) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(LiveStreamingActivity.this);
+
+
+        builder.setMessage("Are you sure want to kickOut this user?");
+
+        // Set a positive button and its click listener
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                new AddStreamInfo().deleteJoinedRoomUser(liveId,userId);
+                new AddStreamInfo().addStreamKickOut(liveId,uid,userId);
+                // Do something when the OK button is clicked
+                dialog.dismiss();
+                dialog1.dismiss();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                dialog1.dismiss();
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
     }
 
     private void loginRoom() {
@@ -840,12 +1116,12 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
 
         startMarqueeAnimation1();
-        giftButton.post(new Runnable() {
-            @Override
-            public void run() {
-                giftButton.performClick();
-            }
-        });
+//        giftButton.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                giftButton.performClick();
+//            }
+//        });
 
 
         boolean isHost = getIntent().getBooleanExtra("host", true);
@@ -853,7 +1129,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
             ZEGOLiveStreamingManager.getInstance().startPublishingStream();
             // Call the FCMNotificationSender's sendNotification method
             FCMNotificationSender.sendNotificationToDevice("deviceToken", "PrettyLive",""+username+"!!"+" started videoLive" );
-            binding.giftButton.setVisibility(View.GONE);
+            binding.giftButton.setVisibility(View.VISIBLE);
         }else {
             binding.giftButton.setVisibility(View.VISIBLE);
         }
