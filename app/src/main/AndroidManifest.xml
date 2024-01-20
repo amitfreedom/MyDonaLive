@@ -149,7 +149,13 @@
         <service
             android:name=".streaming.components.call.CallBackgroundService"
             android:enabled="true"
-            android:exported="true" /> <!-- <service -->
+            android:exported="true" />
+
+        <service
+            android:name=".notification.MyService"
+            android:enabled="true"
+            android:exported="false" />
+        <!-- <service -->
         <!-- android:name=".ui.services.MyDownloadService" -->
         <!-- android:exported="false"/> -->
         <!-- <service -->

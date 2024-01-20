@@ -1,5 +1,6 @@
 package com.stream.prettylive.ui.home.ui.profile;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,12 +12,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.stream.prettylive.R;
 import com.stream.prettylive.databinding.FragmentHomeBinding;
 import com.stream.prettylive.databinding.FragmentProfileBinding;
@@ -34,7 +39,9 @@ import com.stream.prettylive.ui.utill.Constant;
 import com.stream.prettylive.ui.utill.Convert;
 import com.stream.prettylive.ui.vip.VIPActivity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -69,7 +76,7 @@ public class ProfileFragment extends Fragment {
         fetchFollowersUserList();
         fetchUserDetails(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
-
+//        updateLevel(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),50000,1);
 
     }
 
@@ -147,12 +154,15 @@ public class ProfileFragment extends Fragment {
                 });
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateUI(UserDetailsModel userDetails) {
         try {
             binding.txtUsername.setText(userDetails.getUsername());
             binding.txtUid.setText("ID : "+String.valueOf(userDetails.getUid()));
             binding.txtCountry.setText(userDetails.getCountry_name());
+            binding.txtLevel.setText("Lv"+userDetails.getLevel());
             binding.txtCoin.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getCoins())));
+//            binding.txtCoin.setText(new Convert().prettyCount(Integer.parseInt("150000")));
             binding.txtDiamond.setText(new Convert().prettyCount(Integer.parseInt(userDetails.getDiamond())));
             // Load image
             if (Objects.equals(userDetails.getImage(), "")){
@@ -171,6 +181,8 @@ public class ProfileFragment extends Fragment {
 
                 });
             }
+
+            updateLevel(userDetails.getUserId(),Long.parseLong(userDetails.getDiamond()),Integer.parseInt(userDetails.getLevel()));
         }catch (Exception e){
             Log.i(TAG, "updateUI: "+e);
         }
@@ -221,5 +233,47 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void updateLevel(String userId,long currentCoins,int currentLevel) {
+        if (currentCoins >= calculateCoinsForNextLevel(currentLevel)) {
+            int newLevel = currentLevel + 1;
+        try {
+            db = FirebaseFirestore.getInstance();
+            CollectionReference liveDetailsRef = db.collection(Constant.LOGIN_DETAILS);
+
+            // Create a query to find the document with the given userId
+            Query query = liveDetailsRef.whereEqualTo("userId", userId);
+
+            query.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        // Get the document ID for the matched document
+                        String documentId = document.getId();
+
+                        Map<String, Object> updateDetails = new HashMap<>();
+                        updateDetails.put("level", String.valueOf(newLevel));
+
+                        // Update the liveType field from 0 to 1
+                        liveDetailsRef.document(documentId)
+                                .update(updateDetails)
+                                .addOnSuccessListener(aVoid -> {
+                                })
+                                .addOnFailureListener(e -> {
+                                });
+                    }
+                } else {
+                    Log.e("UpdateLiveType", "Error getting documents: ", task.getException());
+                }
+            });
+
+        }catch (Exception e){
+
+        }
+        }
+    }
+    private long calculateCoinsForNextLevel(int currentLevel) {
+        // Customize this method based on your level-up logic
+        return (currentLevel + 1) * 300000; // Example: 150,000 coins per level
     }
 }

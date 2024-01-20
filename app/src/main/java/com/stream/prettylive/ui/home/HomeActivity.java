@@ -1,5 +1,6 @@
 package com.stream.prettylive.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
@@ -20,11 +21,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.stream.prettylive.R;
 import com.stream.prettylive.databinding.ActivityHomeBinding;
 import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
+import com.stream.prettylive.notification.MyService;
 import com.stream.prettylive.streaming.ZEGOSDKKeyCenter;
 import com.stream.prettylive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.prettylive.streaming.internal.sdk.basic.ZEGOSDKCallBack;
@@ -77,6 +81,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 });
 
+        startMyService();
 //        initZEGOSDK();
     }
 
@@ -116,6 +121,12 @@ public class HomeActivity extends AppCompatActivity {
         ZEGOSDKManager.getInstance().initSDK(getApplication(), ZEGOSDKKeyCenter.appID, ZEGOSDKKeyCenter.appSign);
         ZEGOSDKManager.getInstance().enableZEGOEffects(true);
     }
+    private void startMyService() {
+        Intent serviceIntent = new Intent(this, MyService.class);
+        startService(serviceIntent);
+    }
+
+
 
 
     @Override
@@ -144,12 +155,11 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-//        saveData();
         super.onDestroy();
-        Log.i("checkmethod", "onDestroy:======== ");
-
-        // Create a new user data map
-
+        if (isFinishing()) {
+            // App is being terminated
+            Log.d("jhgsdjfghsdfsd", "onDestroy: =========");
+        }
 
     }
 

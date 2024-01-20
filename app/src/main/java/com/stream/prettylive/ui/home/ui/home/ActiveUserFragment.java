@@ -233,10 +233,6 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
                     String documentId = document.getId();
                     String liveStatus = document.getString("liveStatus");
 
-//                    if (Objects.equals(liveStatus, "offline")){
-//                        return;
-//                    }
-
                     long timestamp = System.currentTimeMillis();
                     Map<String, Object> updateDetails = new HashMap<>();
                     updateDetails.put("liveStatus", "offline");
