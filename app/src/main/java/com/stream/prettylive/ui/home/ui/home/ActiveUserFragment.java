@@ -218,7 +218,6 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
         });
 
     }
-
     private void updateLiveStatus(String userId) {
         // Reference to the Firestore collection
         CollectionReference liveDetailsRef = FirebaseFirestore.getInstance().collection(Constant.LIVE_DETAILS);

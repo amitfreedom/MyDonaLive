@@ -31,6 +31,7 @@ import com.stream.prettylive.streaming.internal.ZEGOLiveAudioRoomManager;
 import com.stream.prettylive.ui.follow.activity.FollowFollowingActivity;
 import com.stream.prettylive.ui.follow.methods.FirestoreHelper;
 import com.stream.prettylive.ui.home.ui.profile.activity.HostRegistrationFormActivity;
+import com.stream.prettylive.ui.home.ui.profile.activity.LevelActivity;
 import com.stream.prettylive.ui.home.ui.profile.activity.LiveHistoryActivity;
 import com.stream.prettylive.ui.home.ui.profile.activity.UpdateUserDetailsActivity;
 import com.stream.prettylive.ui.home.ui.profile.models.UserDetailsModel;
@@ -132,6 +133,13 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 Intent mainIntent = new Intent(getActivity(), FollowFollowingActivity.class);
                 mainIntent.putExtra("type","follow");
+                startActivity(mainIntent);
+            }
+        });
+        binding.btnLevel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getActivity(), LevelActivity.class);
                 startActivity(mainIntent);
             }
         });
