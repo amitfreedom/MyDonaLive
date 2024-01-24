@@ -30,8 +30,12 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Level level = levels.get(position);
-        holder.levelTextView.setText(String.valueOf(level.getLevelNumber()));
+
+            Level level = levels.get(position);
+            holder.levelTextView.setText("Level"+level.getCoin());
+            holder.levelCoin.setText(String.valueOf(level.getLevelNumber()));
+
+
     }
 
     @Override
@@ -40,11 +44,12 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView levelTextView;
+        TextView levelTextView,levelCoin;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             levelTextView = itemView.findViewById(R.id.levelTextView);
+            levelCoin = itemView.findViewById(R.id.levelCoin);
         }
     }
 }

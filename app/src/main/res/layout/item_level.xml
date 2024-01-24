@@ -1,7 +1,37 @@
-<!-- res/layout/item_level.xml -->
-<TextView
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/levelTextView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"/>
+    android:layout_margin="@dimen/_5dp">
+
+    <LinearLayout
+        android:paddingVertical="@dimen/_20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/levelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Level1"
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_marginTop="@dimen/_5dp"
+            android:id="@+id/levelCoin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_5dp"
+            android:paddingVertical="2dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:background="@drawable/level_bg_1"
+            android:text="500"/>
+    </LinearLayout>
+
+
+
+</com.google.android.material.card.MaterialCardView>

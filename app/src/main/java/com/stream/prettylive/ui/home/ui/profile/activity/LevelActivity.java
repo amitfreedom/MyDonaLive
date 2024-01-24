@@ -38,7 +38,7 @@ public class LevelActivity extends AppCompatActivity {
         for (int i = 1; i <= 100; i++) {
             // Calculate the price based on the value of i
             int price = basePrice + ((i - 1) * 300000);
-            levels.add(new Level(price,"200"));
+            levels.add(new Level(price,String.valueOf(i)));
         }
         return levels;
     }
