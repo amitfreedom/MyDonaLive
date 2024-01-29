@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.stream.prettylive.databinding.FragmentHomeBinding;
 import com.stream.prettylive.ui.home.ui.home.adapter.MyPagerAdapter;
 import com.stream.prettylive.ui.search.activity.SearchUserActivity;
+import com.stream.prettylive.ui.toplist.TopListActivity;
 
 public class HomeFragment extends Fragment {
 
@@ -47,7 +48,14 @@ public class HomeFragment extends Fragment {
             binding.rightIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    deleteUserFromViewersCollection("20k7E32T6T9iE606dA0i_1000001_main_host", "1233");
+//                    deleteUserFromViewersCollection("20k7E32T6T9iE606dA0i_1000001_main_host", "1233");
+                }
+            });
+            binding.leftIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity().getApplication(), TopListActivity.class);
+                    startActivity(intent);
                 }
             });
 

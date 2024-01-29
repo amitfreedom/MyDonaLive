@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginVertical="@dimen/_5dp"
+    android:layout_marginHorizontal="@dimen/_10dp"
+    app:cardCornerRadius="3dp">
+
+    <RelativeLayout
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/txt_sn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_14sp"
+            android:textStyle="bold"
+            android:textColor="@color/gray"
+            android:padding="@dimen/_10dp"
+            android:layout_marginRight="@dimen/space2"
+            android:text=""/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_toRightOf="@id/txt_sn"
+            android:id="@+id/iv_profile_image"
+            android:layout_width="@dimen/_40dp"
+            android:layout_height="@dimen/_40dp"
+            android:src="@drawable/ic_launcher_background"/>
+
+        <LinearLayout
+            android:paddingRight="@dimen/_15dp"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/iv_profile_image"
+            android:layout_toLeftOf="@+id/rightView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_14sp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textColor="@color/black"
+                android:text="Name"/>
+            <TextView
+                android:id="@+id/txt_userUid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_12sp"
+                android:textColor="@color/gray"
+                android:text="id"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rightView"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_15dp"
+                android:layout_height="@dimen/space15"
+                android:src="@drawable/coin"
+                android:layout_marginRight="@dimen/_3dp"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/txtTotalCoin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/s12"
+                android:textStyle="bold"
+                android:textColor="@color/pink_top"
+                android:text="1000"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

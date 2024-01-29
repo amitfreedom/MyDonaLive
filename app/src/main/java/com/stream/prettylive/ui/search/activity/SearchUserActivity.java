@@ -44,10 +44,7 @@ public class SearchUserActivity extends AppCompatActivity implements SearchUserA
         firestore = FirebaseFirestore.getInstance();
 
         // Enable Firestore logging
-        FirebaseFirestore.setLoggingEnabled(true);
-
-        // Firestore
-        firestore = FirebaseFirestore.getInstance();
+//        FirebaseFirestore.setLoggingEnabled(true);
 
         int searchLetter= 1;
 

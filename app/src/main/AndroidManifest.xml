@@ -38,6 +38,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.toplist.activity.TopUsersSendReceiveCoinsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.toplist.TopListActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.home.ui.profile.activity.LevelActivity"
             android:exported="false" />
 

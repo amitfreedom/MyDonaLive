@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/left_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/_26dp"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:src="@drawable/trophy" />
 

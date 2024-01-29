@@ -337,5 +337,10 @@
     <string name="no_user_found">No user found</string>
     <string name="Video">Video</string>
     <string name="level">Level</string>
+    <string name="top_sender">Top Sender</string>
+    <string name="toplist">TopList</string>
+    <string name="top_agency">Top Agency</string>
+    <string name="top_receivers">Top Receivers</string>
+    <string name="top_gamer">Top Game</string>
 
 </resources>

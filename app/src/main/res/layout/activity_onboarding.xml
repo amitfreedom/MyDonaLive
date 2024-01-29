@@ -40,6 +40,14 @@
         android:textFontWeight="700"
         android:textColor="@color/white"
         android:textSize="35sp"/>
+<!--    <com.airbnb.lottie.LottieAnimationView-->
+<!--        android:layout_below="@id/logo"-->
+<!--        android:id="@+id/animationView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="@dimen/dp_250"-->
+<!--        app:lottie_rawRes="@raw/crown1"-->
+<!--        app:lottie_autoPlay="true"-->
+<!--        app:lottie_loop="true"/>-->
 
 <!--    <com.airbnb.lottie.LottieAnimationView-->
 <!--        android:layout_below="@id/logo"-->
