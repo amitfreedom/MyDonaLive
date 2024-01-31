@@ -738,6 +738,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     Long totalCoin = Long.parseLong(totalCoins) + Long.parseLong(currentPrice);
                     Map<String, Object> updateDetails = new HashMap<>();
                     updateDetails.put("diamond", String.valueOf(totalCoin));
+                    updateDetails.put("receiveCoin", totalCoin);
                     // Update the liveType field from 0 to 1
                     detailsRef.document(documentId)
                             .update(updateDetails)

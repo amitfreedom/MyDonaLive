@@ -15,6 +15,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.stream.prettylive.R;
 import com.stream.prettylive.databinding.ActivityTopUsersSendReceiveCoinsBinding;
 import com.stream.prettylive.global.AppConstants;
@@ -41,9 +43,10 @@ public class TopUsersSendReceiveCoinsActivity extends AppCompatActivity implemen
         setContentView(binding.getRoot());
 
         firestore = FirebaseFirestore.getInstance();
+        FirebaseFirestore.setLoggingEnabled(true);
 
         mQuery = firestore.collection("login_details")
-                .orderBy("diamond", Query.Direction.DESCENDING)
+                .orderBy("receiveCoin", Query.Direction.DESCENDING)
                 .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
                 .limit(LIMIT);
 
@@ -74,8 +77,48 @@ public class TopUsersSendReceiveCoinsActivity extends AppCompatActivity implemen
         binding.recyclerUser.setAdapter(mAdapter);
 
 //        mAdapter.setQuery(mQuery);
+
+        getDada();
     }
 
+    private void getDada() {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+// Query to get user list sorted by "diamond" in descending order
+        firestore.collection("login_details")
+                .orderBy("receiveCoin", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null) {
+                            for (QueryDocumentSnapshot document : querySnapshot) {
+                                // Access data from the document
+                                String diamond = document.getString("diamond");
+                                String userId = document.getString("userId");
+                                String username = document.getString("username");
+                                String email = document.getString("email");
+                                // ... (other fields)
+
+                                Log.i("kjhdfjkhjkhdf", "Username: "+username+"\n"+"diamond :"+diamond);
+//                                // Example: Print user details
+//                                System.out.println("User ID: " + userId);
+//                                System.out.println("Username: " + username);
+//                                System.out.println("Email: " + email);
+                                // ... (print other fields)
+                            }
+                        } else {
+                            // Handle the case where the query snapshot is null
+                        }
+                    } else {
+                        // Handle the error
+                        Exception exception = task.getException();
+                        if (exception != null) {
+                            exception.printStackTrace();
+                        }
+                    }
+                });
+    }
 
 
     @Override

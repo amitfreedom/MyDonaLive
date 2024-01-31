@@ -16,6 +16,7 @@ import com.stream.prettylive.ui.home.ui.home.adapter.FirestoreAdapter;
 import com.stream.prettylive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.prettylive.ui.utill.Constant;
 
+import java.text.DecimalFormat;
 import java.util.Objects;
 
 public class TopUserAdapter extends FirestoreAdapter<TopUserAdapter.ViewHolder> {
@@ -79,7 +80,8 @@ public class TopUserAdapter extends FirestoreAdapter<TopUserAdapter.ViewHolder> 
                binding.txtSn.setText(String.valueOf(position+1));
                binding.txtUserName.setText(userDetailsModel.getUsername());
                binding.txtUserUid.setText("Lv "+userDetailsModel.getLevel());
-               binding.txtTotalCoin.setText(userDetailsModel.getDiamond());
+               binding.txtTotalCoin.setText(prettyCount(Long.parseLong(userDetailsModel.getDiamond())));
+//               binding.txtTotalCoin.setText(userDetailsModel.getDiamond());
 //               binding.txtUserUid.setText("ID : "+userDetailsModel.getUid()+"receive coin :"+userDetailsModel.getDiamond());
 
 
@@ -96,5 +98,17 @@ public class TopUserAdapter extends FirestoreAdapter<TopUserAdapter.ViewHolder> 
            }
         }
 
+    }
+
+    public static String prettyCount(Number number) {
+        char[] suffix = {' ', 'k', 'M', 'B', 'T', 'P', 'E'};
+        long numValue = number.longValue();
+        int value = (int) Math.floor(Math.log10(numValue));
+        int base = value / 3;
+        if (value >= 3 && base < suffix.length) {
+            return new DecimalFormat("#0.00").format(numValue / Math.pow(10, base * 3)) + suffix[base];
+        } else {
+            return new DecimalFormat().format(numValue);
+        }
     }
 }
