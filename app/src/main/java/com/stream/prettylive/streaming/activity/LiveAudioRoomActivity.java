@@ -924,7 +924,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                         @Override
                         public void UserDetailsByUserId(UserDetailsModel userInfoById) {
 
-                            updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userInfoById.getCoins(),giftModel.getString("price"));
+                            updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userInfoById.getCoins(),userInfoById.getSenderCoin(),giftModel.getString("price"));
 
                         }
                     }).getUserDetailsByUserId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
@@ -948,7 +948,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                             @Override
                             public void UserDetailsByUserId(UserDetailsModel userInfoById) {
 
-                                updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userInfoById.getCoins(),giftModel.getString("price"));
+                                updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),userInfoById.getCoins(),userInfoById.getSenderCoin(),giftModel.getString("price"));
 
                             }
                         }).getUserDetailsByUserId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
@@ -984,7 +984,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 //        Toast.makeText(this, ""+giftModel.getString("giftName"), Toast.LENGTH_SHORT).show();
     }
 
-    private void updateGiftSenderCoins(String senderId, String totalCoins, String currentPrice) {
+    private void updateGiftSenderCoins(String senderId, String totalCoins,long senderCoin, String currentPrice) {
         // Reference to the Firestore collection
         CollectionReference detailsRef = firestore.collection(Constant.LOGIN_DETAILS);
 
@@ -997,8 +997,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     // Get the document ID for the matched document
                     String documentId = document.getId();
                     Long totalCoin = Long.parseLong(totalCoins) - Long.parseLong(currentPrice);
+                    Long totalSenderCoin = senderCoin + Long.parseLong(currentPrice);
                     Map<String, Object> updateDetails = new HashMap<>();
                     updateDetails.put("coins", String.valueOf(totalCoin));
+                    updateDetails.put("senderCoin", totalSenderCoin);
                     // Update the liveType field from 0 to 1
                     detailsRef.document(documentId)
                             .update(updateDetails)

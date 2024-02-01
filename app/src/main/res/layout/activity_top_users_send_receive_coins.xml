@@ -41,6 +41,19 @@
 
     </RelativeLayout>
 
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/topUserView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
+
+<!--        <androidx.appcompat.widget.AppCompatImageView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="@dimen/space250"-->
+<!--            app:srcCompat="@drawable/top_stand"/>-->
+
+
+<!--    </RelativeLayout>-->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerUser"
         android:layout_width="match_parent"
@@ -48,6 +61,12 @@
         android:background="@android:color/white"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_login_user" />
+
+    <ProgressBar
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress_circular"/>
 
 
 </LinearLayout>

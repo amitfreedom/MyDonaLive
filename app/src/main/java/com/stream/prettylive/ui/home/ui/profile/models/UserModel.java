@@ -4,6 +4,7 @@ public class UserModel {
     private String userId="";
     private long uid=0;
     private long receiveCoin=0;
+    private long senderCoin=0;
     private String username="";
     private String email="";
     private String phone="";
@@ -28,9 +29,12 @@ public class UserModel {
     public UserModel() {
     }
 
-    public UserModel(String userId, long uid,long receiveCoin, String username, String email, String phone, String countryCode, String country_name, String loginType, String image, String regId, String deviceId, String beans, String coins, String level, String diamond, String latitude, String longitude, String friends, String followers, String following, long loginTime) {
+    public UserModel(String userId, long uid, long receiveCoin, long senderCoin, String username, String email, String phone, String countryCode, String country_name, String loginType, String image, String regId, String deviceId, String beans, String coins, String level, String diamond, String latitude, String longitude, String friends, String followers, String following, long loginTime) {
+
         this.userId = userId;
         this.uid = uid;
+        this.receiveCoin = receiveCoin;
+        this.senderCoin = senderCoin;
         this.username = username;
         this.email = email;
         this.phone = phone;
@@ -52,13 +56,7 @@ public class UserModel {
         this.loginTime = loginTime;
     }
 
-    public long getReceiveCoin() {
-        return receiveCoin;
-    }
 
-    public void setReceiveCoin(long receiveCoin) {
-        this.receiveCoin = receiveCoin;
-    }
     public String getUserId() {
         return userId;
     }
@@ -73,6 +71,22 @@ public class UserModel {
 
     public void setUid(long uid) {
         this.uid = uid;
+    }
+
+    public long getReceiveCoin() {
+        return receiveCoin;
+    }
+
+    public void setReceiveCoin(long receiveCoin) {
+        this.receiveCoin = receiveCoin;
+    }
+
+    public long getSenderCoin() {
+        return senderCoin;
+    }
+
+    public void setSenderCoin(long senderCoin) {
+        this.senderCoin = senderCoin;
     }
 
     public String getUsername() {

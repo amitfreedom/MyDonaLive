@@ -3,6 +3,7 @@ package com.stream.prettylive.ui.home.ui.home;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -51,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Executor;
 
 
 public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.OnActiveUserSelectedListener {
@@ -74,8 +77,6 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentActiveUserBinding.inflate(inflater, container, false);
-//        bottomAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.top_animantion);
-//        binding.recyclerRestaurants.setAnimation(bottomAnimation);
 
         return binding.getRoot();
     }
@@ -111,8 +112,6 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
             public void onPageScrollStateChanged(int state) {
             }
         });
-
-
 
         // RecyclerView
         mAdapter = new ActiveUserAdapter(mQuery, this) {
@@ -156,6 +155,30 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
 
         updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
+        if (requireActivity().getIntent()!=null){
+
+            handleDynamicLink(requireActivity().getIntent());
+        }
+
+
+    }
+
+
+    private void handleDynamicLink(Intent intent) {
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(intent)
+                .addOnSuccessListener(getActivity(), pendingDynamicLinkData -> {
+                    // Handle the deep link data
+                    if (pendingDynamicLinkData != null) {
+                        Uri deepLink = pendingDynamicLinkData.getLink();
+                        Log.i("gtUri123", "handleDynamicLink: "+deepLink);
+                        // Process the deep link, extract data, and perform necessary actions
+                        // For example, you can extract parameters from the deep link using deepLink.getQueryParameter("parameterKey")
+                    }
+                })
+                .addOnFailureListener(getActivity(), e -> {
+                    // Handle any errors that occurred while retrieving the dynamic link
+                });
     }
 
     private void checkKickOut(String liveId, String userId,DocumentSnapshot user) {

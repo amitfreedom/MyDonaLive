@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -35,6 +36,7 @@ public class TopUsersSendReceiveCoinsActivity extends AppCompatActivity implemen
     private UserDetailsModel userDetails;
     private Query mQuery;
     private TopUserAdapter mAdapter;
+    private String type="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +47,14 @@ public class TopUsersSendReceiveCoinsActivity extends AppCompatActivity implemen
         firestore = FirebaseFirestore.getInstance();
         FirebaseFirestore.setLoggingEnabled(true);
 
+        if (getIntent()!=null){
+            type = getIntent().getStringExtra("listType");
+        }else {
+            type="";
+        }
+
         mQuery = firestore.collection("login_details")
-                .orderBy("receiveCoin", Query.Direction.DESCENDING)
+                .orderBy(type, Query.Direction.DESCENDING)
                 .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
                 .limit(LIMIT);
 
@@ -56,11 +64,12 @@ public class TopUsersSendReceiveCoinsActivity extends AppCompatActivity implemen
             protected void onDataChanged() {
                 // Show/hide content if the query returns empty.
                 if (getItemCount() == 0) {
-                    binding.recyclerUser.setVisibility(View.VISIBLE);
-//                    binding.viewEmpty.setVisibility(View.VISIBLE);
+                    binding.recyclerUser.setVisibility(View.GONE);
+                    binding.progressCircular.setVisibility(View.VISIBLE);
                 } else {
                     binding.recyclerUser.setVisibility(View.VISIBLE);
-//                    binding.viewEmpty.setVisibility(View.GONE);
+                    binding.progressCircular.setVisibility(View.GONE);
+
                 }
             }
 
@@ -76,9 +85,13 @@ public class TopUsersSendReceiveCoinsActivity extends AppCompatActivity implemen
         };
         binding.recyclerUser.setAdapter(mAdapter);
 
+        binding.imgBack.setOnClickListener(v -> {
+            onBackPressed();
+        });
+
 //        mAdapter.setQuery(mQuery);
 
-        getDada();
+//        getDada();
     }
 
     private void getDada() {
@@ -86,7 +99,7 @@ public class TopUsersSendReceiveCoinsActivity extends AppCompatActivity implemen
 
 // Query to get user list sorted by "diamond" in descending order
         firestore.collection("login_details")
-                .orderBy("receiveCoin", Query.Direction.DESCENDING)
+                .orderBy("senderCoin", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

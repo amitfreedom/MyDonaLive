@@ -1,18 +1,25 @@
 package com.stream.prettylive.ui.home.ui.home;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.stream.prettylive.databinding.FragmentHomeBinding;
 import com.stream.prettylive.ui.home.ui.home.adapter.MyPagerAdapter;
@@ -23,12 +30,15 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private FirebaseFirestore firestore;
+    private String link="";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        link = generateDeepLink("2345");
 
         firestore = FirebaseFirestore.getInstance();
 
@@ -48,6 +58,8 @@ public class HomeFragment extends Fragment {
             binding.rightIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+//                    shareLiveStream();
+                    shareDeepLink(link);
 //                    deleteUserFromViewersCollection("20k7E32T6T9iE606dA0i_1000001_main_host", "1233");
                 }
             });
@@ -62,6 +74,24 @@ public class HomeFragment extends Fragment {
 
 
         return root;
+    }
+
+    public void shareDeepLink(String deepLink) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "Join the live event: " + deepLink);
+        sendIntent.setType("text/plain");
+
+        startActivity(sendIntent);
+    }
+    public String generateDeepLink(String eventId) {
+        DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(Uri.parse("https://www.mylive.live/"))
+                .setDomainUriPrefix("https://prettylive.page.link")
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                .buildDynamicLink();
+
+        return dynamicLink.getUri().toString();
     }
 
     private void deleteUserFromViewersCollection(String streamId, String userId) {

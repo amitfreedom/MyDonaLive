@@ -96,6 +96,7 @@
                         android:orientation="horizontal">
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/senderImage1"
                             android:layout_width="@dimen/space35"
                             android:layout_height="@dimen/space35"
                             app:civ_border_width="@dimen/_1dp"
@@ -103,6 +104,7 @@
                             android:src="@drawable/beauty_background_mosaicing"/>
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/senderImage2"
                             android:layout_marginLeft="-15dp"
                             android:layout_width="@dimen/space35"
                             android:layout_height="@dimen/space35"
@@ -111,6 +113,7 @@
                             android:src="@drawable/beauty_background_mosaicing"/>
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/senderImage3"
                             android:layout_marginLeft="-15dp"
                             android:layout_width="@dimen/space35"
                             android:layout_height="@dimen/space35"
@@ -182,6 +185,7 @@
                         android:orientation="horizontal">
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/receiverImage1"
                             android:layout_width="@dimen/space35"
                             android:layout_height="@dimen/space35"
                             app:civ_border_width="@dimen/_1dp"
@@ -189,6 +193,7 @@
                             android:src="@drawable/beauty_background_mosaicing"/>
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/receiverImage2"
                             android:layout_marginLeft="-15dp"
                             android:layout_width="@dimen/space35"
                             android:layout_height="@dimen/space35"
@@ -197,6 +202,7 @@
                             android:src="@drawable/beauty_background_mosaicing"/>
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/receiverImage3"
                             android:layout_marginLeft="-15dp"
                             android:layout_width="@dimen/space35"
                             android:layout_height="@dimen/space35"
