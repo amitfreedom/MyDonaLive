@@ -225,6 +225,13 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 super.onUserLeft(userList);
                 for (ZEGOSDKUser zegoUser : userList) {
                     Log.e("test23345", "onUserEnter : " + zegoUser.userName);
+                    try {
+                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegoUser.userName + " left the room", (errorCode, messageID) -> {
+
+                        });
+                    }catch (Exception e){
+
+                    }
                 }
             }
 
@@ -258,6 +265,15 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
                                 });
 
+                            try {
+                                ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegoUser.userName + " joined the room", (errorCode, messageID) -> {
+
+                                });
+                            }catch (Exception e){
+
+                            }
+
+
 
                         Log.i("onRoomStreamUpdate123", "onReceiveStreamAdd: " + zegoUser.userName);
                     } catch (Exception e) {
@@ -271,7 +287,6 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 super.onReceiveStreamRemove(userList);
                 for(ZEGOSDKUser zegoUser : userList){
                     try {
-
 
                         String uid = zegoUser.userID;
                         usersRef.whereEqualTo("uid", Long.parseLong(uid))
@@ -290,6 +305,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                                     }
 
                                 });
+
 
                     }catch (Exception e){
 
@@ -1210,7 +1226,12 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 updateRoomStatus(otherUserId,roomID);
 
             }else {
+//                ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(userModel.getUsername() + " left the room", (errorCode, messageID) -> {
+//                    Toast.makeText(this, "okkkkk"+errorCode, Toast.LENGTH_SHORT).show();
+//                });
                 deleteUserFromViewersCollection(roomID,userModel.getUid());
+                Toast.makeText(this, "okkkkk", Toast.LENGTH_SHORT).show();
+
             }
         }
     }
@@ -1259,6 +1280,13 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
+                                    try {
+                                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(" left the room", (errorCode, messageID) -> {
+
+                                        });
+                                    }catch (Exception e){
+
+                                    }
                                     Log.i("delete_user", "User deleted from viewers collection successfully");
                                 }
                             })

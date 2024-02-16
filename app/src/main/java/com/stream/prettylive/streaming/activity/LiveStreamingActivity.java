@@ -90,11 +90,13 @@ import com.stream.prettylive.ui.home.ui.profile.models.UserModel;
 import com.stream.prettylive.ui.utill.Constant;
 import com.stream.prettylive.ui.utill.Convert;
 
+import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zegoexpress.callback.IZegoMixerStartCallback;
 import im.zego.zegoexpress.callback.IZegoRoomLoginCallback;
 import im.zego.zegoexpress.constants.ZegoPublisherState;
 import im.zego.zegoexpress.constants.ZegoRoomStateChangedReason;
 import im.zego.zegoexpress.constants.ZegoScenario;
+import im.zego.zegoexpress.entity.ZegoEffectsBeautyParam;
 import im.zego.zim.ZIM;
 import im.zego.zim.callback.ZIMLoggedInCallback;
 import im.zego.zim.callback.ZIMRoomEnteredCallback;
@@ -281,6 +283,9 @@ public class LiveStreamingActivity extends AppCompatActivity{
         binding.giftButton.setOnClickListener(v -> {
             showGiftBottomSheetDialog();
         });
+
+//        ZegoExpressEngine.getEngine().enableEffectsBeauty(true);
+//        ZegoExpressEngine.getEngine().setEffectsBeautyParam(new ZegoEffectsBeautyParam());
 
         // Simulate a click on the giftButton
 //        giftButton.post(new Runnable() {
@@ -687,6 +692,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
         });
 //        sendCustomeMessage("Sends you gift", detail.getImage());
 //        Toast.makeText(this, ""+giftModel.getString("giftName"), Toast.LENGTH_SHORT).show();
+
+
     }
 
     private void updateGiftSenderCoins(String senderId, String totalCoins,long senderCoin, String currentPrice) {
