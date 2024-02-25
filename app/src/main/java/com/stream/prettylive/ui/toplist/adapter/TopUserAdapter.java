@@ -25,11 +25,13 @@ public class TopUserAdapter extends FirestoreAdapter<TopUserAdapter.ViewHolder> 
     }
 
     private TopUserAdapter.OnUserSelectedListener mListener;
+    String listType;
 
 
-    public TopUserAdapter(Query query, TopUserAdapter.OnUserSelectedListener listener) {
+    public TopUserAdapter(Query query, OnUserSelectedListener listener, String type) {
         super(query);
         mListener = listener;
+        this.listType = type;
     }
 
 
@@ -44,7 +46,7 @@ public class TopUserAdapter extends FirestoreAdapter<TopUserAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(TopUserAdapter.ViewHolder holder, int position) {
-        holder.bind(getSnapshot(position), mListener,position);
+        holder.bind(getSnapshot(position), mListener,position,listType);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -62,7 +64,7 @@ public class TopUserAdapter extends FirestoreAdapter<TopUserAdapter.ViewHolder> 
 
         @SuppressLint("SetTextI18n")
         public void bind(final DocumentSnapshot snapshot,
-                         final OnUserSelectedListener listener, int position) {
+                         final OnUserSelectedListener listener, int position, String listType) {
 
            try{
                UserDetailsModel userDetailsModel = snapshot.toObject(UserDetailsModel.class);
@@ -80,9 +82,14 @@ public class TopUserAdapter extends FirestoreAdapter<TopUserAdapter.ViewHolder> 
                binding.txtSn.setText(String.valueOf(position+1));
                binding.txtUserName.setText(userDetailsModel.getUsername());
                binding.txtUserUid.setText("Lv "+userDetailsModel.getLevel());
-               binding.txtTotalCoin.setText(prettyCount(Long.parseLong(userDetailsModel.getDiamond())));
-//               binding.txtTotalCoin.setText(userDetailsModel.getDiamond());
-//               binding.txtUserUid.setText("ID : "+userDetailsModel.getUid()+"receive coin :"+userDetailsModel.getDiamond());
+               if (Objects.equals(listType, "receiveCoin")){
+                   binding.txtTotalCoin.setText(prettyCount(userDetailsModel.getReceiveCoin()));
+               }
+               if (Objects.equals(listType, "senderCoin")){
+                   binding.txtTotalCoin.setText(prettyCount(userDetailsModel.getSenderCoin()));
+               }if (Objects.equals(listType, "receiveGameCoin")){
+                   binding.txtTotalCoin.setText(prettyCount(userDetailsModel.getReceiveGameCoin()));
+               }
 
 
                itemView.setOnClickListener(new View.OnClickListener() {

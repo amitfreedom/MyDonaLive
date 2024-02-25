@@ -315,6 +315,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnTopGamer"
                 android:layout_marginTop="@dimen/_15dp"
                 android:layout_marginBottom="@dimen/dp_2"
                 android:layout_marginRight="@dimen/dp_2"
@@ -360,6 +361,7 @@
                         android:orientation="horizontal">
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/ivGamer1"
                             android:layout_width="@dimen/space35"
                             android:layout_height="@dimen/space35"
                             app:civ_border_width="@dimen/_1dp"
@@ -367,6 +369,7 @@
                             android:src="@drawable/beauty_background_mosaicing"/>
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/ivGamer2"
                             android:layout_marginLeft="-15dp"
                             android:layout_width="@dimen/space35"
                             android:layout_height="@dimen/space35"
@@ -375,6 +378,7 @@
                             android:src="@drawable/beauty_background_mosaicing"/>
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/ivGamer3"
                             android:layout_marginLeft="-15dp"
                             android:layout_width="@dimen/space35"
                             android:layout_height="@dimen/space35"

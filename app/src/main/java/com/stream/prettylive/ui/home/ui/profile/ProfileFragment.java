@@ -15,9 +15,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -25,6 +28,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.stream.prettylive.R;
 import com.stream.prettylive.databinding.FragmentHomeBinding;
 import com.stream.prettylive.databinding.FragmentProfileBinding;
+import com.stream.prettylive.game.teenpatty.BottomSheetGameFragment;
+import com.stream.prettylive.game.teenpatty.history.GameListFragment;
+import com.stream.prettylive.game.teenpatty.models.GameList;
 import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.streaming.internal.ZEGOLiveAudioRoomManager;
@@ -81,7 +87,67 @@ public class ProfileFragment extends Fragment {
 
     }
 
+    // In your activity or fragment
+    public void gameListPopup() {
+        GameListFragment bottomSheetDialogFragment = new GameListFragment(new GameListFragment.OnGameSelectedListener() {
+            @Override
+            public void onGameSelected(GameList game) {
+                if (Objects.equals(game.getTitle(), "Teen Patty")) {
+                    showBottomSheetDialog();
+                }
+                else if (Objects.equals(game.getTitle(), "Fruits loops")) {
+                    Toast.makeText(requireActivity(), "coming soon...", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        bottomSheetDialogFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+    }
+    public void showBottomSheetDialog() {
+        BottomSheetGameFragment bottomSheetDialogFragment = new BottomSheetGameFragment();
+        bottomSheetDialogFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+    }
+
+    private void addUser(UserDetailsModel detailsModel) {
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection("game_users").document(detailsModel.getUserId());
+        Map<String, Object> TestData1 = new HashMap<>();
+        TestData1.put("MyPotA", 0);
+        TestData1.put("MyPotB", 0);
+        TestData1.put("MyPotC", 0);
+        TestData1.put("LOG", false);
+        TestData1.put("YourWager", 0);
+        TestData1.put("Coins", Long.parseLong(detailsModel.getCoins()));
+        TestData1.put("receiveCoin", detailsModel.getReceiveGameCoin());
+        TestData1.put("userName", detailsModel.getUsername());
+        TestData1.put("image", detailsModel.getImage());
+        TestData1.put("uid", detailsModel.getUid());
+        TestData1.put("userId", detailsModel.getUserId());
+        docRef.set(TestData1).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+//                Toast.makeText(requireActivity(), "user  created", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireActivity(), "game user failed to create", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void init() {
+        binding.btnSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                showBottomSheetDialog();
+//                gameListPopup();
+            }
+        });
+        binding.btnGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameListPopup();
+            }
+        });
         binding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,6 +224,7 @@ public class ProfileFragment extends Fragment {
                     for (DocumentSnapshot document : value) {
                         userDetails = document.toObject(UserDetailsModel.class);
                         updateUI(userDetails);
+
                     }
                 });
     }
@@ -191,6 +258,7 @@ public class ProfileFragment extends Fragment {
             }
 
             updateLevel(userDetails.getUserId(),Long.parseLong(userDetails.getDiamond()),Integer.parseInt(userDetails.getLevel()));
+            addUser(userDetails);
         }catch (Exception e){
             Log.i(TAG, "updateUI: "+e);
         }

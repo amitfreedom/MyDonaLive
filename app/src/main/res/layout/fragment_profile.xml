@@ -330,6 +330,23 @@
             android:background="@color/very_light"/>
 
         <TextView
+            android:id="@+id/btn_game"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Game"
+            android:drawableLeft="@drawable/baseline_games_24"
+            android:drawablePadding="10dp"
+            style="@style/NormalTextStyle"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_marginVertical="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/very_light"/>
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Wallet"

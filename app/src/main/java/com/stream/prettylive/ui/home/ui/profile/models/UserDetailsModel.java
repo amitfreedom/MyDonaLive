@@ -5,6 +5,7 @@ public class UserDetailsModel {
     private long uid=0;
     private long receiveCoin=0;
     private long senderCoin=0;
+    private long receiveGameCoin=0;
     private String username="";
     private String email="";
     private String phone="";
@@ -29,11 +30,12 @@ public class UserDetailsModel {
     public UserDetailsModel() {
     }
 
-    public UserDetailsModel(String userId, long uid, long receiveCoin, long senderCoin, String username, String email, String phone, String countryCode, String country_name, String loginType, String image, String regId, String deviceId, String beans, String coins, String level, String diamond, String docId, String latitude, String longitude, String friends, String followers, String following, long loginTime) {
+    public UserDetailsModel(String userId, long uid, long receiveCoin, long senderCoin,long receiveGameCoin, String username, String email, String phone, String countryCode, String country_name, String loginType, String image, String regId, String deviceId, String beans, String coins, String level, String diamond, String docId, String latitude, String longitude, String friends, String followers, String following, long loginTime) {
         this.userId = userId;
         this.uid = uid;
         this.receiveCoin = receiveCoin;
         this.senderCoin = senderCoin;
+        this.receiveGameCoin = receiveGameCoin;
         this.username = username;
         this.email = email;
         this.phone = phone;
@@ -54,6 +56,14 @@ public class UserDetailsModel {
         this.followers = followers;
         this.following = following;
         this.loginTime = loginTime;
+    }
+
+    public long getReceiveGameCoin() {
+        return receiveGameCoin;
+    }
+
+    public void setReceiveGameCoin(long receiveGameCoin) {
+        this.receiveGameCoin = receiveGameCoin;
     }
 
     public String getUserId() {

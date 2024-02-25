@@ -22,6 +22,7 @@ public class TopListActivity extends AppCompatActivity {
     private ActivityTopListBinding binding;
     private List<UserDetailsModel>topReceiver= new ArrayList();
     private List<UserDetailsModel>topSender= new ArrayList();
+    private List<UserDetailsModel>topGamer= new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class TopListActivity extends AppCompatActivity {
 
         topSenderList();
         topReceiverList();
+        topGamerList();
 
         binding.imgBack.setOnClickListener(v -> {
             onBackPressed();
@@ -43,6 +45,11 @@ public class TopListActivity extends AppCompatActivity {
         binding.btnTopSender.setOnClickListener(v -> {
             Intent intent = new Intent(this, TopUsersSendReceiveCoinsActivity.class);
             intent.putExtra("listType","senderCoin");
+            startActivity(intent);
+        });
+        binding.btnTopGamer.setOnClickListener(v -> {
+            Intent intent = new Intent(this, TopUsersSendReceiveCoinsActivity.class);
+            intent.putExtra("listType","receiveGameCoin");
             startActivity(intent);
         });
 
@@ -66,6 +73,53 @@ public class TopListActivity extends AppCompatActivity {
 
     }
 
+    private void receiverGamerUser(List<UserDetailsModel> topGamer) {
+        try {
+            if (topGamer.size()>0){
+                Glide.with(this).load(topGamer.get(0).getImage()).into(binding.ivGamer1);
+                Glide.with(this).load(topGamer.get(1).getImage()).into(binding.ivGamer2);
+                Glide.with(this).load(topGamer.get(2).getImage()).into(binding.ivGamer3);
+            }
+
+
+        }catch (Exception e){
+
+        }
+
+    }
+
+    private void topGamerList() {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.collection("login_details")
+                .orderBy("receiveGameCoin", Query.Direction.DESCENDING)
+                .limit(3)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null) {
+                            for (QueryDocumentSnapshot document : querySnapshot) {
+                                // Access data from the document
+                                String diamond = document.getString("diamond");
+                                String username = document.getString("username");
+
+                                UserDetailsModel userDetailsModel = document.toObject(UserDetailsModel.class);
+                                topGamer.add(userDetailsModel);
+                                receiverGamerUser(topGamer);
+                                Log.i("kjhdfjkhjkhdf", "Username: "+username+"\n"+"diamond :"+diamond);
+                            }
+                        } else {
+                            // Handle the case where the query snapshot is null
+                        }
+                    } else {
+                        // Handle the error
+                        Exception exception = task.getException();
+                        if (exception != null) {
+                            exception.printStackTrace();
+                        }
+                    }
+                });
+    }
     private void topReceiverList() {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         firestore.collection("login_details")

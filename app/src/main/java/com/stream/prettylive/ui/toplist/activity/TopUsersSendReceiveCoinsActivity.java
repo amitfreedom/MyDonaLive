@@ -53,13 +53,14 @@ public class TopUsersSendReceiveCoinsActivity extends AppCompatActivity implemen
             type="";
         }
 
+
         mQuery = firestore.collection("login_details")
                 .orderBy(type, Query.Direction.DESCENDING)
-                .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
+//                .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
                 .limit(LIMIT);
 
 
-        mAdapter = new TopUserAdapter(mQuery, this) {
+        mAdapter = new TopUserAdapter(mQuery, this,type) {
             @Override
             protected void onDataChanged() {
                 // Show/hide content if the query returns empty.
