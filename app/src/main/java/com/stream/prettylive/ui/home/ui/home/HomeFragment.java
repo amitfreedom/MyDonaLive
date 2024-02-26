@@ -120,6 +120,7 @@ public class HomeFragment extends Fragment {
         adapter.addFragment(new ActiveUserFragment(), "Popular");
         adapter.addFragment(new ActiveUserFragment(), "Live");
         adapter.addFragment(new ActiveUserFragment(), "Audio live");
+        adapter.addFragment(new GamesFragment(), "Games");
 //        adapter.addFragment(new PopulerFragment(), "Pk battle");
         // Add more fragments as needed
         viewPager.setAdapter(adapter);

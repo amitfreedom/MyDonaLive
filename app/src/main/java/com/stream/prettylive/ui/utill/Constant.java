@@ -12,6 +12,7 @@ public class Constant {
     public  static final String KICK_OUT  = "kick_out";
     public  static final String ROOM_STATUS  = "room_status";
     public  static final String LIVE_DETAILS  = "live_details";
+    public  static final String GAME_ALL_LIST  = "game_list";
     public  static final String MESSAGE  = "messages";
     public  static final String VIP  = "vip";
     public  static final String LOGIN_DETAILS  = "login_details";

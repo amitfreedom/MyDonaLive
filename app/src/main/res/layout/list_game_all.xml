@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/btnTopSender"
+    android:layout_marginHorizontal="@dimen/_8dp"
+    android:layout_marginTop="@dimen/_10dp"
+    android:layout_width="match_parent"
+    app:cardBackgroundColor="@color/center_color1"
+    android:layout_height="135dp">
+
+    <ImageView
+        android:id="@+id/ivImage"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</com.google.android.material.card.MaterialCardView>
