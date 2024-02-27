@@ -455,6 +455,7 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
     }
 
     private void checkStartTimer() {
+        BetStoped(0);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("SpinnerTimerBools").document("TeenPatti");
 
@@ -469,56 +470,40 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
             if (documentSnapshot != null && documentSnapshot.exists()) {
                 Boolean timerStart = documentSnapshot.getBoolean("timerstart");
                 Boolean betAllowed = documentSnapshot.getBoolean("BetAllowed");
+                Boolean isWaiting = documentSnapshot.getBoolean("isWait");
                 Long timer123 = documentSnapshot.getLong("timer");
                 Log.d("FirestoreData", "timer123: " + timer123);
+
+
+                if (timer123 == 20) {
+                    binding.timerView.setVisibility(View.VISIBLE);
+                    GenCards();
+                }
+                if (timer123 == 9) {
+                    binding.timerView.setVisibility(View.INVISIBLE);
+                    GenCards();
+                }
+                if (timer123 == 1) {
+                    SetResults();
+                }
+                if (timer123 == 0) {
+                    binding.timerView.setVisibility(View.INVISIBLE);
+                }
+                if (isWaiting) {
+                    binding.waitingView.setVisibility(View.VISIBLE);
+
+                }
+                if (!isWaiting) {
+                    binding.waitingView.setVisibility(View.INVISIBLE);
+
+                }
+
+
             } else {
                 // Document does not exist or is null
                 Log.d("FirestoreData", "Document does not exist or is null");
             }
         });
-
-//        if (snapshot.get("timer") != null) {
-//            Long number = snapshot.getLong("timer");
-//            boolean startTimer = Boolean.TRUE.equals(snapshot.getBoolean("timerstart"));
-//            if (number != null) {
-//                int nm = Math.toIntExact(number);
-//                //amit
-//                if (!startTimer && nm==0) {
-//
-//                    try {
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-////                                            FirebaseFirestore Db;
-////                                            Db = FirebaseFirestore.getInstance();
-////                                            DocumentReference Coll = Db.collection("SpinnerTimerBools").document("TeenPatti");
-////
-////                                            Map<String, Object> TestData = new HashMap<>();
-////                                            TestData.put("BetAllowed", false);
-////                                            TestData.put("timerstart", false);
-////                                            TestData.put("timer", 0);
-////                                            Coll.update(TestData);
-//                                Log.i("dfgdg", "run: fghjkh");
-//
-//////                                            binding.startTimer.performClick();
-//                                binding.soundUp.setVisibility(View.VISIBLE);
-//                                binding.soundOff.setVisibility(View.INVISIBLE);
-//                                binding.timerView.setVisibility(View.VISIBLE);
-//                                StartTimer(binding.startTimer,binding.soundOff,binding.soundUp);
-//
-//                            }
-//                        },5000);
-//                    }catch (Exception e) {
-//                        Log.i("jhg", "onEvent: " + e);
-//                    }
-//                }
-//            } else {
-//                // Handle the case where the value is null
-//            }
-//
-//
-//
-//        }
 
     }
 
@@ -884,12 +869,14 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
                                     if (AA == 1) {
                                         Map<String, Object> TestData = new HashMap<>();
                                         TestData.put("show", false);
+//                                        TestData.put("isWait", true);
                                         Coll.update(TestData);
                                         SetPotValuesDefault(1);
                                     }
 //
                                 }
                             }, 1000 * a);
+//                            Log.i("jkhgdgdfgdfgdfgg", "onComplete: "+1000 * a);
                         }
 
 
@@ -1688,6 +1675,7 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
                         } else {
                             BetAllow = false;
                         }
+
                         if (TimerStart) {
                             TimerDisplay = true;
                             TimerDisplayCheck();
@@ -1760,9 +1748,11 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
 
     void TimerDisplayCheck() {
         if (!TimerDisplay) {
+//            binding.timerView.setVisibility(View.INVISIBLE);
             binding.Timerboard.setVisibility(View.INVISIBLE);
             binding.TimerText.setVisibility(View.INVISIBLE);
         } else {
+//            binding.timerView.setVisibility(View.VISIBLE);
             binding.Timerboard.setVisibility(View.VISIBLE);
             binding.TimerText.setVisibility(View.VISIBLE);
         }

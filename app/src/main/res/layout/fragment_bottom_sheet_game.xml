@@ -966,6 +966,37 @@
 
         </RelativeLayout>
         <RelativeLayout
+            android:id="@+id/waitingView"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/show_cards_banner"
+            android:layout_alignStart="@+id/simpleImageView"
+            android:layout_alignLeft="@+id/simpleImageView"
+            android:layout_alignTop="@+id/simpleImageView"
+            android:layout_alignEnd="@+id/simpleImageView"
+            android:layout_alignRight="@+id/simpleImageView"
+            android:layout_marginTop="10dp"
+            >
+            <ImageView
+                android:id="@+id/WaitBetsBanner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/show_cards_banner"
+                />
+            <TextView
+                android:id="@+id/waitBannerText"
+                android:text="Wait for next round...."
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:layout_alignTop="@+id/WaitBetsBanner"
+                android:layout_width="match_parent"
+                android:textSize="20dp"
+                android:layout_height="50dp"
+                />
+
+        </RelativeLayout>
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/roundDoneScreen"
