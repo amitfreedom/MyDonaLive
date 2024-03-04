@@ -1,14 +1,10 @@
 package com.stream.prettylive.game.teenpatty;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
 import android.util.Log;
@@ -50,7 +46,6 @@ import com.stream.prettylive.game.teenpatty.models.UserData;
 import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.ui.utill.Constant;
-import com.tencent.qgame.animplayer.AudioPlayer;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -867,11 +862,13 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
                                 @Override
                                 public void run() {
                                     if (AA == 1) {
-                                        Map<String, Object> TestData = new HashMap<>();
-                                        TestData.put("show", false);
-//                                        TestData.put("isWait", true);
-                                        Coll.update(TestData);
+//                                        Map<String, Object> TestData = new HashMap<>();
+//                                        TestData.put("show", false);
+////                                        TestData.put("isWait", true);
+//                                        Coll.update(TestData);
                                         SetPotValuesDefault(1);
+
+                                        setFalseShow(Coll);
                                     }
 //
                                 }
@@ -886,6 +883,17 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
                 }
             }
         });
+    }
+
+    private void setFalseShow(DocumentReference coll) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, Object> TestData = new HashMap<>();
+                TestData.put("show", false);
+                coll.update(TestData);
+            }
+        },2000);
     }
 
 
