@@ -20,6 +20,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.CountryCodePicker;
 import com.stream.prettylive.R;
 import com.stream.prettylive.databinding.ActivityRegisterBinding;
+import com.stream.prettylive.global.AppConstants;
+import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.ui.common.BaseActivity;
 import com.stream.prettylive.ui.common.GenerateUserId;
 import com.stream.prettylive.ui.home.HomeActivity;
@@ -95,6 +97,7 @@ public class RegisterActivity extends BaseActivity {
 //                    Toast.makeText(RegisterActivity.this, "I have logged in successfully",
 //                            Toast.LENGTH_SHORT).show();
                     FirebaseUser user = mAuth.getCurrentUser();
+                    ApplicationClass.getSharedpref().saveString(AppConstants.USER_ID, user.getUid());
                     checkUserExistenceInFirestore(user);
                 } else {
                     String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();

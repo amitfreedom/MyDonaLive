@@ -35,7 +35,7 @@ public class MyService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "Service destroyed");
+        Log.d(TAG, "Service destroyed"+ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
     }
 
@@ -76,11 +76,11 @@ public class MyService extends Service {
                        liveDetailsRef.document(documentId)
                                .update(updateDetails)
                                .addOnSuccessListener(aVoid -> {
+                                   Log.i(TAG, "liveType updated successfully for user with ID: " + userId);
                                    stopSelf();
-                                   Log.i("UpdateLiveType", "liveType updated successfully for user with ID: " + userId);
                                })
                                .addOnFailureListener(e -> {
-                                   Log.e("UpdateLiveType", "Error updating liveType for user with ID: " + userId, e);
+                                   Log.e(TAG, "Error updating liveType for user with ID: " + userId, e);
                                });
                    }
                }catch (Exception e){

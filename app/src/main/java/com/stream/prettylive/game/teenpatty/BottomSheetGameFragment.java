@@ -181,12 +181,15 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
 
     CoinValues CV = CoinValues.None;
 
+    String UID="";
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout using view binding
         binding = FragmentBottomSheetGameBinding.inflate(inflater, container, false);
+        UID = ApplicationClass.getSharedpref().getString(AppConstants.USER_ID);
         return binding.getRoot();
     }
 
@@ -1480,41 +1483,42 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
     }
 
     void CheckForTimer() {
-        BetStoped(0);
-        FirebaseFirestore db;
-        db = FirebaseFirestore.getInstance();
-        final DocumentReference docRef = db.collection("SpinnerTimerBools").document("TeenPatti");
-        final DocumentReference UserdocRef = db.collection("game_users").document(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
-        Map<String, Object> TestDat = new HashMap<>();
-        TestDat.put("LOG", true);
-        UserdocRef.update(TestDat);
+        try {
+            BetStoped(0);
+            FirebaseFirestore db;
+            db = FirebaseFirestore.getInstance();
+            DocumentReference docRef = db.collection("SpinnerTimerBools").document("TeenPatti");
+            DocumentReference UserdocRef = db.collection("game_users").document(UID);
+            Map<String, Object> TestDat = new HashMap<>();
+            TestDat.put("LOG", true);
+            UserdocRef.update(TestDat);
 
 
 
-        listenerUserReg = UserdocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.w("TAGError", String.valueOf(error));
-                    return;
+            listenerUserReg = UserdocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                    if (error != null) {
+                        Log.w("TAGError", String.valueOf(error));
+                        return;
 
-                }
-                if (snapshot != null && snapshot.exists()) {
-
-                    PreviousCoins = 0L; // Initialize with 0
-
-                    if (snapshot.contains("receiveCoin")) {
-                        Long receivedCoins = snapshot.getLong("receiveCoin");
-                        if (receivedCoins != null) {
-                            PreviousCoins = receivedCoins;
-                        } else {
-                            // Handle the case where "receiveCoin" exists but its value is null
-                            Log.i("Firestore", "Received coins field exists but is null");
-                        }
-                    } else {
-                        // Handle the case where "receiveCoin" doesn't exist in the document
-                        Log.i("Firestore", "Received coins field does not exist");
                     }
+                    if (snapshot != null && snapshot.exists()) {
+
+                        PreviousCoins = 0L; // Initialize with 0
+
+                        if (snapshot.contains("receiveCoin")) {
+                            Long receivedCoins = snapshot.getLong("receiveCoin");
+                            if (receivedCoins != null) {
+                                PreviousCoins = receivedCoins;
+                            } else {
+                                // Handle the case where "receiveCoin" exists but its value is null
+                                Log.i("Firestore", "Received coins field exists but is null");
+                            }
+                        } else {
+                            // Handle the case where "receiveCoin" doesn't exist in the document
+                            Log.i("Firestore", "Received coins field does not exist");
+                        }
 
 
 //                    if (snapshot.getLong("receiveCoin") != null) {
@@ -1531,112 +1535,112 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
 //                        PreviousCoins = 0;
 //                    }
 
-                    if (snapshot.get("Coins") != null) {
+                        if (snapshot.get("Coins") != null) {
 
 
-                        try {
-                            UserCoins = snapshot.getLong("Coins");
-                            binding.CoinsText.setText(prettyCount(UserCoins));
+                            try {
+                                UserCoins = snapshot.getLong("Coins");
+                                binding.CoinsText.setText(prettyCount(UserCoins));
 //                            updateCoins(UserCoins);
-                        } catch (Exception e) {
-                            Log.i("error", "error =====>" + e.getMessage());
+                            } catch (Exception e) {
+                                Log.i("error", "error =====>" + e.getMessage());
+                            }
+
+
+                        } else {
+                            UserCoins = 0;
                         }
 
+                        if (snapshot.get("YourWager") != null) {
+                            YourWager = snapshot.getLong("YourWager");
+                        } else {
+                            YourWager = 0;
+                        }
 
+                        if (snapshot.getLong("MyPotA") != null && snapshot.getLong("MyPotB") != null && snapshot.getLong("MyPotC") != null) {
+                            Long PotA = snapshot.getLong("MyPotA");
+                            Long PotB = snapshot.getLong("MyPotB");
+                            Long PotC = snapshot.getLong("MyPotC");
+                            String PotAString;
+                            String PotBString;
+                            String PotCString;
+                            if (MyPotA != 0) {
+                                PotAString = "You: " + prettyCount(MyPotA);
+
+                            } else {
+                                PotAString = "You: " + prettyCount(PotA);
+                            }
+                            if (MyPotB != 0) {
+
+                                PotBString = "You: " + prettyCount(MyPotB);
+
+                            } else {
+                                PotBString = "You: " + prettyCount(PotB);
+                            }
+                            if (MyPotC != 0) {
+
+                                PotCString = "You: " + prettyCount(MyPotC);
+
+                            } else {
+                                PotCString = "You: " + prettyCount(PotC);
+                            }
+
+
+                            binding.PotAText.setText(PotAString);
+                            binding.PotBText.setText(PotBString);
+                            binding.PotCText.setText(PotCString);
+                        }
                     } else {
-                        UserCoins = 0;
+                        Log.d("TagNull", "Current data: null");
                     }
-
-                    if (snapshot.get("YourWager") != null) {
-                        YourWager = snapshot.getLong("YourWager");
-                    } else {
-                        YourWager = 0;
-                    }
-
-                    if (snapshot.getLong("MyPotA") != null && snapshot.getLong("MyPotB") != null && snapshot.getLong("MyPotC") != null) {
-                        Long PotA = snapshot.getLong("MyPotA");
-                        Long PotB = snapshot.getLong("MyPotB");
-                        Long PotC = snapshot.getLong("MyPotC");
-                        String PotAString;
-                        String PotBString;
-                        String PotCString;
-                        if (MyPotA != 0) {
-                            PotAString = "You: " + prettyCount(MyPotA);
-
-                        } else {
-                            PotAString = "You: " + prettyCount(PotA);
-                        }
-                        if (MyPotB != 0) {
-
-                            PotBString = "You: " + prettyCount(MyPotB);
-
-                        } else {
-                            PotBString = "You: " + prettyCount(PotB);
-                        }
-                        if (MyPotC != 0) {
-
-                            PotCString = "You: " + prettyCount(MyPotC);
-
-                        } else {
-                            PotCString = "You: " + prettyCount(PotC);
-                        }
-
-
-                        binding.PotAText.setText(PotAString);
-                        binding.PotBText.setText(PotBString);
-                        binding.PotCText.setText(PotCString);
-                    }
-                } else {
-                    Log.d("TagNull", "Current data: null");
                 }
-            }
-        });
+            });
 
 
-        listenerRegdoc = docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.w("TAGError", String.valueOf(error));
-                    return;
-                }
+            listenerRegdoc = docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                    if (error != null) {
+                        Log.w("TAGError", String.valueOf(error));
+                        return;
+                    }
 
-                try {
-                    if (snapshot != null && snapshot.exists()) {
-                        boolean TimerStart = (boolean) snapshot.get("timerstart");
-                        String Tim = snapshot.get("timer").toString();
-                        binding.TimerText.setText(Tim);
-                        boolean RoundAlowed = (Boolean) snapshot.get("BetAllowed");
+                    try {
+                        if (snapshot != null && snapshot.exists()) {
+                            boolean TimerStart = (boolean) snapshot.get("timerstart");
+                            String Tim = snapshot.get("timer").toString();
+                            binding.TimerText.setText(Tim);
+                            boolean RoundAlowed = (Boolean) snapshot.get("BetAllowed");
 
-                        if (snapshot.get("RoundNum") != null) {
-                            long number = snapshot.getLong("RoundNum");
-                            int nm = (int) number;
+                            if (snapshot.get("RoundNum") != null) {
+                                long number = snapshot.getLong("RoundNum");
+                                int nm = (int) number;
 
-                            RoundNum = nm;
+                                RoundNum = nm;
 
-                            Log.i("onSuccess: ========", "roundNum main=" + RoundNum);
+                                Log.i("onSuccess: ========", "roundNum main=" + RoundNum);
 
 //                        showTopWiner(RoundNum);
-                        }
-                        if (DeviceCoins != 0) {
-                            binding.CoinsText.setText(prettyCount(UserCoins - DeviceCoins));
-                            try {
+                            }
+                            if (DeviceCoins != 0) {
+                                binding.CoinsText.setText(prettyCount(UserCoins - DeviceCoins));
+                                try {
 //                            updateCoins(UserCoins - DeviceCoins);
-                            } catch (Exception e) {
-                                Log.i("error", "error =====>" + e.getMessage());
-                            }
-                        } else {
+                                } catch (Exception e) {
+                                    Log.i("error", "error =====>" + e.getMessage());
+                                }
+                            } else {
 //                            Toast.makeText(requireActivity(), "three call", Toast.LENGTH_SHORT).show();
-                            binding.CoinsText.setText(prettyCount(UserCoins));
+                                binding.CoinsText.setText(prettyCount(UserCoins));
 
-                            try {
+                                try {
 //                            updateCoins(UserCoins);
-                            } catch (Exception e) {
-                                Log.i("error", "error =====>" + e.getMessage());
+                                } catch (Exception e) {
+                                    Log.i("error", "error =====>" + e.getMessage());
+                                }
                             }
-                        }
 
-                        if (snapshot.get("PotA") != null && snapshot.get("PotB") != null && snapshot.get("PotC") != null) {
+                            if (snapshot.get("PotA") != null && snapshot.get("PotB") != null && snapshot.get("PotC") != null) {
 //                        TextView PA=requireActivity().findViewById(R.id.AText);
 //                        TextView PB=requireActivity().findViewById(R.id.BText);
 //                        TextView PC=requireActivity().findViewById(R.id.CText);
@@ -1646,74 +1650,77 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
 //                        PA.setText("Pot:"+prettyCount(PAlong));
 //                        PB.setText("Pot:"+prettyCount(PBlong));
 //                        PC.setText("Pot:"+prettyCount(PClong));
-                        }
+                            }
 
-                        if (snapshot.get("timer") != null) {
-                            long number = snapshot.getLong("timer");
-                            int nm = (int) number;
-                            if (nm <= 0) {
-                                SendCoins = false;
-                                //Log.d("CoinsStop","Cons Bets can be sent now");
-                            }
-                            if (!SendCoins) {
-                                if (nm == 6) {
-                                    DeviceCoins = 0;
+                            if (snapshot.get("timer") != null) {
+                                long number = snapshot.getLong("timer");
+                                int nm = (int) number;
+                                if (nm <= 0) {
+                                    SendCoins = false;
+                                    //Log.d("CoinsStop","Cons Bets can be sent now");
                                 }
-                                if (nm == 7) {
-                                    Log.d("Coins", "Cons Bets sent ");
-                                    SendCoins = true;
-                                    FinalBets();
+                                if (!SendCoins) {
+                                    if (nm == 6) {
+                                        DeviceCoins = 0;
+                                    }
+                                    if (nm == 7) {
+                                        Log.d("Coins", "Cons Bets sent ");
+                                        SendCoins = true;
+                                        FinalBets();
+                                    }
                                 }
+                                if (nm > 0 && nm < 10) {
+                                    BetStoped(1);
+                                    BetOnGoing = true;
+                                } else {
+
+                                    BetStoped(0);
+                                }
+
+
+
+
                             }
-                            if (nm > 0 && nm < 10) {
-                                BetStoped(1);
-                                BetOnGoing = true;
+                            if (RoundAlowed) {
+                                BetAllow = true;
+                                SetRandomPots();
                             } else {
+                                BetAllow = false;
+                            }
 
-                                BetStoped(0);
+                            if (TimerStart) {
+                                TimerDisplay = true;
+                                TimerDisplayCheck();
+                            } else {
+                                TimerDisplay = false;
+                                TimerDisplayCheck();
+
+                            }
+                            boolean ShowBannerCards = (Boolean) snapshot.get("show");
+                            if (ShowBannerCards) {
+                                ShowBanner();
+                                ShowCardsBanner = true;
+
+                                CardsBannerDisplayCheck();
+                            } else {
+                                ShowCardsBanner = false;
+                                CardsBannerDisplayCheck();
                             }
 
 
 
 
-                        }
-                        if (RoundAlowed) {
-                            BetAllow = true;
-                            SetRandomPots();
                         } else {
-                            BetAllow = false;
+                            Log.d("TagNull", "Current data: null");
                         }
-
-                        if (TimerStart) {
-                            TimerDisplay = true;
-                            TimerDisplayCheck();
-                        } else {
-                            TimerDisplay = false;
-                            TimerDisplayCheck();
-
-                        }
-                        boolean ShowBannerCards = (Boolean) snapshot.get("show");
-                        if (ShowBannerCards) {
-                            ShowBanner();
-                            ShowCardsBanner = true;
-
-                            CardsBannerDisplayCheck();
-                        } else {
-                            ShowCardsBanner = false;
-                            CardsBannerDisplayCheck();
-                        }
-
-
-
-
-                    } else {
-                        Log.d("TagNull", "Current data: null");
+                    }catch (Exception e){
+                        Log.i("error", "onEvent: "+e);
                     }
-                }catch (Exception e){
-                    Log.i("error", "onEvent: "+e);
                 }
-            }
-        });
+            });
+        }catch (Exception e){
+
+        }
 
     }
 

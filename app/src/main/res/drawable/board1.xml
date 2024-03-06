@@ -3,6 +3,9 @@
     android:shape="oval">
     <size android:width="@dimen/dp_30"
         android:height="@dimen/dp_30" />
-    <gradient android:startColor="#E88F0B" android:endColor="#CC3636"/>
+    <gradient
+        android:angle="90"
+        android:type="linear"
+        android:startColor="#E88F0B" android:endColor="#CC3636"/>
     <stroke android:width="@dimen/dp_1" android:color="@color/white"/>
 </shape>
