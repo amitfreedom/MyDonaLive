@@ -10,12 +10,15 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +42,7 @@ import com.stream.prettylive.streaming.internal.ZEGOLiveStreamingManager;
 import com.stream.prettylive.ui.home.ui.explore.adapter.CountryAdapter;
 import com.stream.prettylive.ui.home.ui.explore.adapter.ExploreAdapter;
 import com.stream.prettylive.ui.home.ui.explore.models.CountryModel;
+import com.stream.prettylive.ui.home.ui.home.adapter.ImageSliderAdapter;
 import com.stream.prettylive.ui.search.activity.SearchUserActivity;
 import com.stream.prettylive.ui.utill.Constant;
 
@@ -59,6 +63,8 @@ public class ExploreFragment extends Fragment implements ExploreAdapter.OnActive
 
     private String countryNme="Global";
     private String countryImage="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt6PpzPvDn1dMtgc-FQ-l89Rst-nJIy08iOg&usqp=CAU";
+    private ImageSliderAdapter imageSliderAdapter;
+    private String[] images = {"https://restream.io/blog/content/images/size/w2000/2023/06/how-to-stream-live-video-on-your-website.JPG","https://kingscourtbrampton.org/wp-content/uploads/2022/08/istockphoto-1306922705-612x612-1.jpg","https://wave.video/blog/wp-content/uploads/2021/10/Instagram-Live-Streaming-for-Business-How-to-Get-Started-1.jpg"}; // Replace with your image resource IDs
 
 
     @Override
@@ -79,6 +85,25 @@ public class ExploreFragment extends Fragment implements ExploreAdapter.OnActive
         super.onViewCreated(view, savedInstanceState);
 
         FirebaseFirestore.setLoggingEnabled(true);
+
+        imageSliderAdapter = new ImageSliderAdapter(getActivity(), images);
+        binding.viewPager.setAdapter(imageSliderAdapter);
+
+        addDotsIndicator(0);
+        binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                addDotsIndicator(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
 
         // Firestore
         mFirestore = FirebaseFirestore.getInstance();
@@ -135,6 +160,26 @@ public class ExploreFragment extends Fragment implements ExploreAdapter.OnActive
             }
         });
 
+    }
+
+    private void addDotsIndicator(int position) {
+        ImageView[] dots = new ImageView[images.length];
+        binding.dotsLayout.removeAllViews();
+
+        for (int i = 0; i < dots.length; i++) {
+            dots[i] = new ImageView(getActivity());
+            dots[i].setImageDrawable(getResources().getDrawable(
+                    i == position ? R.drawable.dot_selected : R.drawable.dot_unselected
+            ));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+
+            params.setMargins(8, 0, 8, 0);
+            binding.dotsLayout.addView(dots[i], params);
+        }
     }
 
     private void checkKickOut(String liveId, String userId,DocumentSnapshot user) {

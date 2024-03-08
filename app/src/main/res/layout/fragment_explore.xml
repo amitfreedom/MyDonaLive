@@ -8,9 +8,10 @@
     tools:context=".ui.home.ui.explore.ExploreFragment">
 
     <RelativeLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/top_color">
+        android:background="@color/pink_top">
 
         <ImageButton
             android:id="@+id/search_view"
@@ -43,6 +44,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -90,12 +92,91 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_marginBottom="@dimen/_10dp">
+
+            <androidx.viewpager.widget.ViewPager
+                android:layout_above="@+id/dotsLayout"
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"/>
+
+            <LinearLayout
+                android:id="@+id/dotsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="@dimen/_10dp"
+                android:gravity="center"
+                android:orientation="horizontal"/>
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_marginRight="@dimen/_5dp"
+                android:background="@drawable/top_ranking_bg"
+                android:layout_height="@dimen/space70">
+
+                <ImageView
+                    android:padding="@dimen/_10dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="@dimen/space90"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/top_ranking"
+                    android:scaleType="fitCenter"/>
+
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Top\nRank"
+                    style="@style/HeaderTextStyle"/>
+
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_marginLeft="@dimen/_5dp"
+                android:background="@drawable/game_bg"
+                android:layout_height="@dimen/space70">
+
+                <ImageView
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="@dimen/space90"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/game_boy"
+                    android:scaleType="centerCrop"/>
+
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Games"
+                    style="@style/HeaderTextStyle"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-
 
 
             <androidx.recyclerview.widget.RecyclerView
