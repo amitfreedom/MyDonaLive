@@ -201,7 +201,7 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
         audioPlayer = new AudioPlayerClass();
         firebaseAuth = FirebaseAuth.getInstance();
         CheckForTimer();
-        checkStartTimer();
+//        checkStartTimer();
 
         topUserList();
         row1 = new ImageView[]{binding.card01, binding.card02, binding.card03};
@@ -1953,6 +1953,7 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
         TestData.put("PotC", 0);
         TestData.put("BetAllowed", false);
         docRef.update(TestData);
+        GPotA = GPotB = GPotC = 0;
     }
 
     void SetPotValuesDefault(int i) {

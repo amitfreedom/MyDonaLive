@@ -312,6 +312,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void updateLevel(String userId,long currentCoins,int currentLevel) {
+        Log.i("jhgjhghjg", "updateLevel: ");
+
         if (currentCoins >= calculateCoinsForNextLevel(currentLevel)) {
             int newLevel = currentLevel + 1;
         try {
@@ -334,8 +336,10 @@ public class ProfileFragment extends Fragment {
                         liveDetailsRef.document(documentId)
                                 .update(updateDetails)
                                 .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(requireActivity(), "okk", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> {
+                                    Toast.makeText(requireActivity(), "eeeee", Toast.LENGTH_SHORT).show();
                                 });
                     }
                 } else {
@@ -346,6 +350,8 @@ public class ProfileFragment extends Fragment {
         }catch (Exception e){
 
         }
+        }else {
+            Toast.makeText(requireActivity(), "else", Toast.LENGTH_SHORT).show();
         }
     }
     private long calculateCoinsForNextLevel(int currentLevel) {
