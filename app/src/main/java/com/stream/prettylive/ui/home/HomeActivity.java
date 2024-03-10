@@ -96,8 +96,13 @@ public class HomeActivity extends AppCompatActivity {
                     }
 
                     for (DocumentSnapshot document : value) {
-                        userDetails = document.toObject(UserDetailsModel.class);
-                        updateUI(userDetails);
+                        try {
+                            userDetails = document.toObject(UserDetailsModel.class);
+                            assert userDetails != null;
+                            updateUI(userDetails);
+                        }catch (Exception e){
+
+                        }
                     }
                 });
 

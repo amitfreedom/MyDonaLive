@@ -189,13 +189,14 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout using view binding
         binding = FragmentBottomSheetGameBinding.inflate(inflater, container, false);
-        UID = ApplicationClass.getSharedpref().getString(AppConstants.USER_ID);
+
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        UID = ApplicationClass.getSharedpref().getString(AppConstants.USER_ID);
 //        setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetDialog);
         Objects.requireNonNull(getDialog()).setCanceledOnTouchOutside(false);
         audioPlayer = new AudioPlayerClass();
@@ -1279,7 +1280,7 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            updateReceiverCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),receiveTotal);
+                            updateReceiverCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),receiveTotal,C);
                             Map<String, Object> TestData1 = new HashMap<>();
                             TestData1.put("MyPotA", 0);
                             TestData1.put("MyPotB", 0);
@@ -1328,7 +1329,7 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
 
     }
 
-    private void updateReceiverCoins(String senderId, Long totalCoins) {
+    private void updateReceiverCoins(String senderId, long totalCoins, long c) {
         CollectionReference detailsRef = FirebaseFirestore.getInstance().collection(Constant.LOGIN_DETAILS);
 
         // Create a query to find the document with the given userId
@@ -1336,20 +1337,25 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
 
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    // Get the document ID for the matched document
-                    String documentId = document.getId();
-                    Map<String, Object> updateDetails = new HashMap<>();
-                    updateDetails.put("receiveGameCoin", totalCoins);
-                    // Update the liveType field from 0 to 1
-                    detailsRef.document(documentId)
-                            .update(updateDetails)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.i("Coinsup", "Coins updated successfully for user with ID: " + senderId);
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e("UpdateLiveType", "Error updating liveType for user with ID: " + userId, e);
-                            });
+                try {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        // Get the document ID for the matched document
+                        String documentId = document.getId();
+                        Map<String, Object> updateDetails = new HashMap<>();
+                        updateDetails.put("coins", String.valueOf(c));
+                        updateDetails.put("receiveGameCoin", totalCoins);
+                        // Update the liveType field from 0 to 1
+                        detailsRef.document(documentId)
+                                .update(updateDetails)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.i("Coinsup", "Coins updated successfully for user with ID: " + senderId);
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("UpdateLiveType", "Error updating liveType for user with ID: " + userId, e);
+                                });
+                    }
+                }catch (Exception e){
+                    Log.i("error", "updateReceiverCoins: ");
                 }
             } else {
                 Log.e("UpdateLiveType", "Error getting documents: ", task.getException());

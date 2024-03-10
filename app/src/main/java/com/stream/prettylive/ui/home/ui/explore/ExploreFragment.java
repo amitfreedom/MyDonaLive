@@ -32,6 +32,9 @@ import com.permissionx.guolindev.callback.RequestCallback;
 import com.stream.prettylive.R;
 import com.stream.prettylive.databinding.FragmentExploreBinding;
 import com.stream.prettylive.databinding.FragmentLiveBinding;
+import com.stream.prettylive.game.teenpatty.BottomSheetGameFragment;
+import com.stream.prettylive.game.teenpatty.history.GameListFragment;
+import com.stream.prettylive.game.teenpatty.models.GameList;
 import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.streaming.activity.LiveAudioRoomActivity;
@@ -44,6 +47,7 @@ import com.stream.prettylive.ui.home.ui.explore.adapter.ExploreAdapter;
 import com.stream.prettylive.ui.home.ui.explore.models.CountryModel;
 import com.stream.prettylive.ui.home.ui.home.adapter.ImageSliderAdapter;
 import com.stream.prettylive.ui.search.activity.SearchUserActivity;
+import com.stream.prettylive.ui.toplist.TopListActivity;
 import com.stream.prettylive.ui.utill.Constant;
 
 import java.util.ArrayList;
@@ -144,6 +148,19 @@ public class ExploreFragment extends Fragment implements ExploreAdapter.OnActive
 
         Glide.with(getActivity()).load(countryImage).into(binding.ivFlag);
         binding.txtCountryTitle.setText(countryNme);
+        binding.topRank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireActivity(), TopListActivity.class);
+                startActivity(intent);
+            }
+        });
+        binding.gameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameListPopup();
+            }
+        });
         binding.icFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,6 +177,25 @@ public class ExploreFragment extends Fragment implements ExploreAdapter.OnActive
             }
         });
 
+    }
+
+    public void gameListPopup() {
+        GameListFragment bottomSheetDialogFragment = new GameListFragment(new GameListFragment.OnGameSelectedListener() {
+            @Override
+            public void onGameSelected(GameList game) {
+                if (Objects.equals(game.getTitle(), "Teen Patty")) {
+                    showBottomSheetGameDialog();
+                }
+                else if (Objects.equals(game.getTitle(), "Fruits loops")) {
+                    Toast.makeText(requireActivity(), "coming soon...", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        bottomSheetDialogFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+    }
+    public void showBottomSheetGameDialog() {
+        BottomSheetGameFragment bottomSheetDialogFragment = new BottomSheetGameFragment();
+        bottomSheetDialogFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
     }
 
     private void addDotsIndicator(int position) {
