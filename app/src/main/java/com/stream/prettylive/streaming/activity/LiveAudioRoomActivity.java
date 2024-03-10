@@ -32,8 +32,11 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -49,10 +52,12 @@ import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.notification.FCMNotificationSender;
 import com.stream.prettylive.streaming.ZEGOSDKKeyCenter;
+import com.stream.prettylive.streaming.activity.adapter.CommentAdapter;
 import com.stream.prettylive.streaming.activity.adapter.GiftAdapter;
 import com.stream.prettylive.streaming.activity.adapter.GiftViewUserAdapter;
 import com.stream.prettylive.streaming.activity.adapter.ViewUserAdapter;
 import com.stream.prettylive.streaming.activity.adapter.ViewersListAdapter;
+import com.stream.prettylive.streaming.activity.model.ChatMessageModel;
 import com.stream.prettylive.streaming.activity.model.GiftModel;
 import com.stream.prettylive.streaming.activity.model.PurchageGiftModel;
 import com.stream.prettylive.streaming.activity.model.RoomUsers;
@@ -94,6 +99,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 public class LiveAudioRoomActivity extends AppCompatActivity {
@@ -135,6 +141,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private final DatabaseReference ref = firebaseDatabase.getReference().child("userInfo");
     List<String>userIds = new ArrayList<>();
+    private CommentAdapter commentAdapter;
+    private final List<ChatMessageModel> chatMessages = new ArrayList<>();
 
     String TAG = "LiveAudioRoomActivity";
 
@@ -189,10 +197,13 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 //                .orderBy("uid", Query.Direction.DESCENDING)
                 .whereNotEqualTo("userId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID))
                 .limit(LIMIT);
-
+        getCommentChatMessageFirebase();
         getUserCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         fetchUserDetails(userId);
         setViewersAdapter();
+
+        commentAdapter = new CommentAdapter(this, chatMessages);
+        binding.recyclerAllMessage.setAdapter(commentAdapter);
 
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -420,7 +431,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         });
 
         binding.giftButton1.setOnClickListener(v -> {
-            showBottomSheetDialog();
+            sendCustomeMessage("","");
+//            showBottomSheetDialog();
         });
 
 
@@ -586,6 +598,46 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
+    private void sendCustomeMessage(String message, String gift) {
+        ChatMessageModel chatMessageModel = new ChatMessageModel();
+        chatMessageModel.setGift("");
+        chatMessageModel.setImage("");
+        chatMessageModel.setKey(ref.push().getKey());
+        chatMessageModel.setMessage("test2345 message");
+        chatMessageModel.setName("Test NAme");
+        chatMessageModel.setUserId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+        sendMessage(chatMessageModel, chatMessageModel.getKey());
+    }
+
+    private void sendMessage(ChatMessageModel chatMessageModel, String key) {
+        ref.child(roomID).child("audio").child(roomID).child("chat_comments").child(key).setValue(chatMessageModel);
+
+    }
+
+    private void getCommentChatMessageFirebase() {
+        ref.child(roomID).child("audio").child(roomID).child("chat_comments").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    chatMessages.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        ChatMessageModel chatMessageModel = dataSnapshot.getValue(ChatMessageModel.class);
+                        chatMessages.add(chatMessageModel);
+                    }
+
+                    commentAdapter.notifyDataSetChanged();
+                    binding.recyclerAllMessage.scrollToPosition(chatMessages.size() - 1);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     private void confirmKickOut(String liveId, String uid, String userId, AlertDialog dialog1) {
 
