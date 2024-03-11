@@ -473,28 +473,28 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
                 Log.d("FirestoreData", "timer123: " + timer123);
 
 
-                if (timer123 == 20) {
-                    binding.timerView.setVisibility(View.VISIBLE);
-                    GenCards();
-                }
-                if (timer123 == 9) {
-                    binding.timerView.setVisibility(View.INVISIBLE);
-                    GenCards();
-                }
-                if (timer123 == 1) {
-                    SetResults();
-                }
-                if (timer123 == 0) {
-                    binding.timerView.setVisibility(View.INVISIBLE);
-                }
-                if (isWaiting) {
-                    binding.waitingView.setVisibility(View.VISIBLE);
-
-                }
-                if (!isWaiting) {
-                    binding.waitingView.setVisibility(View.INVISIBLE);
-
-                }
+//                if (timer123 == 20) {
+//                    binding.timerView.setVisibility(View.VISIBLE);
+////                    GenCards();
+//                }
+//                if (timer123 == 9) {
+//                    binding.timerView.setVisibility(View.INVISIBLE);
+////                    GenCards();
+//                }
+//                if (timer123 == 1) {
+//                    SetResults();
+//                }
+//                if (timer123 == 0) {
+//                    binding.timerView.setVisibility(View.INVISIBLE);
+//                }
+//                if (isWaiting) {
+//                    binding.waitingView.setVisibility(View.VISIBLE);
+//
+//                }
+//                if (!isWaiting) {
+//                    binding.waitingView.setVisibility(View.INVISIBLE);
+//
+//                }
 
 
             } else {
@@ -1655,6 +1655,14 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
                             if (snapshot.get("timer") != null) {
                                 long number = snapshot.getLong("timer");
                                 int nm = (int) number;
+
+                                if (nm==20){
+                                    binding.soundUp.setVisibility(View.VISIBLE);
+                                    binding.soundOff.setVisibility(View.INVISIBLE);
+                                    binding.timerView.setVisibility(View.VISIBLE);
+                                    StartTimer(binding.startTimer,binding.soundOff,binding.soundUp);
+                                }
+
                                 if (nm <= 0) {
                                     SendCoins = false;
                                     //Log.d("CoinsStop","Cons Bets can be sent now");
@@ -1676,10 +1684,6 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
 
                                     BetStoped(0);
                                 }
-
-
-
-
                             }
                             if (RoundAlowed) {
                                 BetAllow = true;
