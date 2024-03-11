@@ -22,10 +22,12 @@ public class SendGlobalMessage {
     private final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("userInfo");
     private String roomId ="";
     private String message ="";
+    private String liveType ="";
 
-    public  SendGlobalMessage(String roomId,String message) {
+    public  SendGlobalMessage(String roomId,String message,String liveType) {
         this.roomId=roomId;
         this.message=message;
+        this.liveType=liveType;
         Log.i(TAG, "sendCustomMessage: 3444555");
         if (mAuth.getCurrentUser() != null) {
             userInfo(mAuth.getCurrentUser().getUid());
@@ -65,7 +67,7 @@ public class SendGlobalMessage {
     }
 
     private void sendMessage(ChatMessageModel chatMessageModel, String key) {
-        ref.child(roomId).child("audio").child(roomId).child("chat_comments").child(key).setValue(chatMessageModel);
+        ref.child(roomId).child(liveType).child(roomId).child("chat_comments").child(key).setValue(chatMessageModel);
 
     }
 

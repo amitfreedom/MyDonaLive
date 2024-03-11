@@ -75,6 +75,7 @@ import com.stream.prettylive.streaming.functions.AddStreamInfo;
 import com.stream.prettylive.streaming.functions.CurrentUserInfo;
 import com.stream.prettylive.streaming.functions.EndLiveStatus;
 import com.stream.prettylive.streaming.functions.KickOutInfo;
+import com.stream.prettylive.streaming.functions.SendGlobalMessage;
 import com.stream.prettylive.streaming.functions.UserInfo;
 import com.stream.prettylive.streaming.gift.GiftHelper;
 import com.stream.prettylive.streaming.internal.ZEGOLiveAudioRoomManager;
@@ -728,6 +729,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
                 select=0;
                 userIds.clear();
 
+                new SendGlobalMessage(liveID,"send a gift","video");
+
                 bottomSheetDialog.dismiss();
 
             }
@@ -1153,6 +1156,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
                         saveLiveData(userId,uid,username,true,liveID,"0",country,image);
                         new AddStreamInfo().roomActive(liveID, String.valueOf(uid),userId);
                         new AddStreamInfo().addStreamInfo(liveID, String.valueOf(uid),userId, username, image);
+                        new SendGlobalMessage(liveID,"welcome to Pretty live","video");
+
                     }
 
                 }
@@ -1573,6 +1578,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
             @Override
             public void onUserLeft(List<ZEGOSDKUser> userList) {
+                new SendGlobalMessage(liveID,"left the room","video");
 
                 Log.i("EnteredUser", "onUserLeft:uid =======" + userList.get(0).userID);
                 if (ZEGOLiveStreamingManager.getInstance().isCurrentUserHost()) {
@@ -1602,10 +1608,11 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     Log.i("EnteredUser", "uid: ----------------" + userModel.getUid());
                     saveRoomUsers(userModel);
                     for (ZEGOSDKUser zegosdkUser : userList) {
+                        new SendGlobalMessage(liveID,"joined the room","video");
 
-                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegosdkUser.userName + " joined the room", (errorCode, messageID) -> {
-
-                        });
+//                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegosdkUser.userName + " joined the room", (errorCode, messageID) -> {
+//
+//                        });
                     }
                 }
 

@@ -251,7 +251,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 for (ZEGOSDKUser zegoUser : userList) {
                     Log.e("test23345", "onUserEnter : " + zegoUser.userName);
                     try {
-                        new SendGlobalMessage(roomID,"left from live");
+                        new SendGlobalMessage(roomID,"left from live","audio");
 //                        userInfo("left from live",mAuth.getUid());
 //                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegoUser.userName + " left the room", (errorCode, messageID) -> {
 //
@@ -416,7 +416,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
                             new AddStreamInfo().addStreamInfo(roomID,uid1,userId, userName, image1);
 //                            new AddStreamInfo().deleteStreamInfo(roomID,userId);
-                            new SendGlobalMessage(roomID,"welcome to PrettyLive");
+                            new SendGlobalMessage(roomID,"welcome to PrettyLive","audio");
 //                            userInfo("welcome to PrettyLive",mAuth.getUid());
                         } catch (Exception e) {
                             // Handle exception
@@ -430,7 +430,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
 //                        userInfo("joined the live",mAuth.getUid());
 //
-                        new SendGlobalMessage(roomID,"joined the live");
+                        new SendGlobalMessage(roomID,"joined the live","audio");
 
                     }
                     if (!Objects.equals(docId, "")){
@@ -1099,7 +1099,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 select=0;
                 userIds.clear();
 //                userInfo("send a gift",mAuth.getUid());
-                new SendGlobalMessage(roomID,"send a gift");
+                new SendGlobalMessage(roomID,"send a gift","audio");
                 bottomSheetDialog.dismiss();
 
             }
@@ -1393,7 +1393,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                                 public void onSuccess(Void unused) {
                                     try {
 //                                        userInfo("left from live",mAuth.getUid());
-                                        new SendGlobalMessage(streamId,"left from live");
+                                        new SendGlobalMessage(streamId,"left from live","audio");
 //                                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(" left the room", (errorCode, messageID) -> {
 //
 //                                        });

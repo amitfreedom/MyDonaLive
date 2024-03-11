@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        startPreview();
 
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         ZEGOSDKManager.getInstance().expressService.openCamera(true);
         ZEGOSDKManager.getInstance().expressService.openMicrophone(true);
-        binding.mainHostVideo.startPreviewOnly();
+//        binding.mainHostVideo.startPreviewOnly();
 
 
 
@@ -214,14 +213,7 @@ public class MainActivity extends AppCompatActivity {
         askNotificationPermission();
     }
 
-    void startPreview() {
-//        ZegoCanvas previewCanvas = new ZegoCanvas(findViewById(R.id.hostView));
-//        ZegoExpressEngine.getEngine().startPreview(previewCanvas);
-    }
 
-    void stopPreview() {
-//        ZegoExpressEngine.getEngine().stopPreview();
-    }
 
     private void askNotificationPermission() {
         // This is only necessary for API Level > 33 (TIRAMISU)
@@ -240,7 +232,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (isFinishing()) {
-            stopPreview();
+//            stopPreview();
+//            binding.mainHostVideo.stopPublishAudioVideo();
         }
     }
 
@@ -252,11 +245,11 @@ public class MainActivity extends AppCompatActivity {
 //        Log.i("logtest", "onStart: ");
 //    }
 //
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        Log.i("logtest", "onResume: ");
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        binding.mainHostVideo.startPreviewOnly();
+    }
 
     protected String getSaltString(String SALTCHARS) {
         StringBuilder salt = new StringBuilder();
