@@ -90,7 +90,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 FirebaseUser user = mAuth.getCurrentUser();
-
+//
 //                if (Objects.equals(work, "0")) {
 //                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
 //                    return;

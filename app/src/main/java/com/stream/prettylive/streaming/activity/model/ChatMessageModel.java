@@ -8,6 +8,15 @@ public class ChatMessageModel {
     String message = "";
     String gift = "";
     String key = "";
+    String level = "";
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
 
     public String getName() {
         return name;

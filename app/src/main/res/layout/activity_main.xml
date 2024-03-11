@@ -1,192 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
     tools:context=".ui.activity.MainActivity">
-<!--    android:background="@drawable/gradient_bg"-->
-<!--    <TextureView-->
-<!--        android:id="@+id/hostView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"/>-->
 
-    <LinearLayout
-
+    <com.stream.prettylive.streaming.internal.sdk.components.express.ZEGOVideoView
+        android:id="@+id/main_host_video"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent" />
 
-        <TextView
-            android:id="@+id/live_userinfo_userid_prefix"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Your UserID :"
-            android:textColor="@color/white" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_margin="8dp"
-            android:id="@+id/live_userinfo_userid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@color/white" />
+        <LinearLayout
 
-        <TextView
-            android:id="@+id/live_userinfo_username_prefix"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Your UserName :"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/live_userinfo_userid_prefix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Your UserID :"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_margin="8dp"
+                android:id="@+id/live_userinfo_userid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/live_userinfo_username_prefix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Your UserName :"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/live_userinfo_userid_prefix" />
+
+            <TextView
+                android:layout_margin="8dp"
+                android:id="@+id/live_userinfo_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@color/white" />
+
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_marginHorizontal="@dimen/_20dp"
+            android:layout_above="@+id/startLiveAudioroom"
+            android:id="@+id/start_live_streaming"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_gravity="center_horizontal"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:backgroundTint="@color/pink_top"
             android:textColor="@color/white"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/live_userinfo_userid_prefix" />
+            android:layout_marginTop="8dp"
+            android:text="Go Video Live" />
 
-        <TextView
-            android:layout_margin="8dp"
-            android:id="@+id/live_userinfo_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@color/white" />
+        <com.google.android.material.button.MaterialButton
+            android:layout_marginHorizontal="@dimen/_20dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/startLiveAudioroom"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_gravity="center_horizontal"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:backgroundTint="@color/btn_email"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp"
+            android:text="Go Audio Live" />
 
-
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/live_layout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:layout_marginTop="64dp"-->
-<!--            android:orientation="vertical">-->
-
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:visibility="gone"-->
-<!--                android:id="@+id/live_id_streaming"-->
-<!--                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-<!--                android:layout_width="275dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                android:layout_marginTop="32dp"-->
-<!--                android:hint="LiveStreaming ID">-->
-
-<!--                <com.google.android.material.textfield.TextInputEditText-->
-
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:ellipsize="middle"-->
-<!--                    android:paddingStart="16dp"-->
-<!--                    android:paddingEnd="16dp"-->
-<!--                    android:singleLine="true"-->
-<!--                    android:text="" />-->
-
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
-
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                android:id="@+id/start_live_streaming"-->
-<!--                android:layout_width="275dp"-->
-<!--                android:layout_height="70dp"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                style="@style/Widget.Material3.Button.OutlinedButton"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:elevation="@dimen/_10dp"-->
-<!--                android:text="Start LiveStreaming" />-->
-
-<!--            <Button-->
-<!--                android:visibility="gone"-->
-<!--                android:id="@+id/watch_live_streaming"-->
-<!--                android:layout_width="275dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:text="Watch LiveStreaming" />-->
-
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:visibility="gone"-->
-<!--                android:id="@+id/live_id_audio_room"-->
-<!--                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-<!--                android:layout_width="275dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:hint="Live Audio Room ID">-->
-
-<!--                <com.google.android.material.textfield.TextInputEditText-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:ellipsize="middle"-->
-<!--                    android:paddingStart="16dp"-->
-<!--                    android:paddingEnd="16dp"-->
-<!--                    android:singleLine="true"-->
-<!--                    android:text="" />-->
-
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
-
-<!--            <Button-->
-
-<!--                android:id="@+id/start_live_audioroom"-->
-<!--                android:layout_width="275dp"-->
-<!--                android:layout_height="75dp"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                android:layout_marginTop="@dimen/_50dp"-->
-<!--                android:text="Start Live Audio Room" />-->
-
-<!--            <Button-->
-<!--                android:visibility="gone"-->
-<!--                android:id="@+id/watch_live_audioroom"-->
-<!--                android:layout_width="275dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:text="Watch Live Audio Room" />-->
-
-<!--            <Button-->
-<!--                android:visibility="gone"-->
-<!--                android:id="@+id/subscribeButton"-->
-<!--                android:layout_width="@dimen/standard_field_width"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:text="@string/subscribe_to_weather" />-->
-
-<!--            <Button-->
-<!--                android:visibility="gone"-->
-<!--                android:id="@+id/logTokenButton"-->
-<!--                android:layout_width="@dimen/standard_field_width"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                android:text="@string/log_token" />-->
-<!--        </LinearLayout>-->
-    </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:layout_marginHorizontal="@dimen/_20dp"
-        android:layout_above="@+id/startLiveAudioroom"
-        android:id="@+id/start_live_streaming"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_gravity="center_horizontal"
-        style="@style/Widget.Material3.Button.ElevatedButton"
-        android:backgroundTint="@color/pink_top"
-        android:textColor="@color/white"
-        android:layout_marginTop="8dp"
-        android:text="Go Video Live" />
-
-    <com.google.android.material.button.MaterialButton
-        android:layout_marginHorizontal="@dimen/_20dp"
-        android:layout_marginBottom="@dimen/_10dp"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/startLiveAudioroom"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_gravity="center_horizontal"
-        style="@style/Widget.Material3.Button.ElevatedButton"
-        android:backgroundTint="@color/btn_email"
-        android:textColor="@color/white"
-        android:layout_marginTop="8dp"
-        android:text="Go Audio Live" />
+    </RelativeLayout>
 
 
 
-</RelativeLayout>
+
+
+</FrameLayout>

@@ -88,6 +88,12 @@ public class MainActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         usersRef = firestore.collection(Constant.LOGIN_DETAILS);
 
+        ZEGOSDKManager.getInstance().expressService.openCamera(true);
+        ZEGOSDKManager.getInstance().expressService.openMicrophone(true);
+        binding.mainHostVideo.startPreviewOnly();
+
+
+
         try {
             ZEGOSDKUser localUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
             if (localUser!=null){
@@ -106,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onResult(boolean allGranted, @NonNull List<String> grantedList,
                                      @NonNull List<String> deniedList) {
                     if (allGranted) {
+                        if (getSaltString(userDetails.getUserId()) != null) {
                         Intent intent = new Intent(MainActivity.this, LiveStreamingActivity.class);
                         intent.putExtra("host", true);
                         intent.putExtra("liveID", getSaltString(userDetails.getUserId()));
@@ -116,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("image", userDetails.getImage());
                         intent.putExtra("level", userDetails.getLevel());
                         startActivity(intent);
+                        }
                     }
                 }
             });
@@ -133,16 +141,18 @@ public class MainActivity extends AppCompatActivity {
                 public void onResult(boolean allGranted, @NonNull List<String> grantedList,
                                      @NonNull List<String> deniedList) {
                     if (allGranted) {
-                        Intent intent = new Intent(MainActivity.this, LiveAudioRoomActivity.class);
-                        intent.putExtra("host", true);
-                        intent.putExtra("liveID", getSaltString(userDetails.getUserId()));
-                        intent.putExtra("userId", userDetails.getUserId());
-                        intent.putExtra("username", userDetails.getUsername());
-                        intent.putExtra("uid", userDetails.getUid());
-                        intent.putExtra("country_name", userDetails.getCountry_name());
-                        intent.putExtra("image", userDetails.getImage());
-                        intent.putExtra("level", userDetails.getLevel());
-                        startActivity(intent);
+                        if (getSaltString(userDetails.getUserId()) != null){
+                            Intent intent = new Intent(MainActivity.this, LiveAudioRoomActivity.class);
+                            intent.putExtra("host", true);
+                            intent.putExtra("liveID", getSaltString(userDetails.getUserId()));
+                            intent.putExtra("userId", userDetails.getUserId());
+                            intent.putExtra("username", userDetails.getUsername());
+                            intent.putExtra("uid", userDetails.getUid());
+                            intent.putExtra("country_name", userDetails.getCountry_name());
+                            intent.putExtra("image", userDetails.getImage());
+                            intent.putExtra("level", userDetails.getLevel());
+                            startActivity(intent);
+                        }
                     }
                 }
             });

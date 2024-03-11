@@ -14,6 +14,7 @@ import com.stream.prettylive.R;
 import com.stream.prettylive.streaming.components.BeautyButton;
 import com.stream.prettylive.streaming.components.RoomRequestListDialog;
 import com.stream.prettylive.streaming.components.message.barrage.BottomInputDialog;
+import com.stream.prettylive.streaming.components.message.barrage.BottomInputDialogMessage;
 import com.stream.prettylive.streaming.internal.ZEGOLiveStreamingManager;
 import com.stream.prettylive.streaming.internal.ZEGOLiveStreamingManager.LiveStreamingListener;
 import com.stream.prettylive.streaming.internal.business.RoomRequestType;
@@ -63,20 +64,21 @@ public class BottomMenuBar extends LinearLayout {
     }
 
     private void initView() {
-        setOrientation(LinearLayout.HORIZONTAL);
-        setLayoutParams(new LayoutParams(-1, -2));
-        setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
-
-        ImageView messageButton = new ImageView(getContext());
-        messageButton.setImageResource(R.drawable.audioroom_icon_im);
-        messageButton.setScaleType(ScaleType.FIT_XY);
-        addView(messageButton, generateChildImageLayoutParams());
-        messageButton.setOnClickListener(v -> {
-            if (getContext() instanceof Activity) {
-                BottomInputDialog bottomInputDialog = new BottomInputDialog(getContext());
-                bottomInputDialog.show();
-            }
-        });
+//        setOrientation(LinearLayout.HORIZONTAL);
+//        setLayoutParams(new LayoutParams(-1, -2));
+//        setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+//
+//        ImageView messageButton = new ImageView(getContext());
+//        messageButton.setImageResource(R.drawable.audioroom_icon_im);
+//        messageButton.setScaleType(ScaleType.FIT_XY);
+//        addView(messageButton, generateChildImageLayoutParams());
+//        messageButton.setOnClickListener(v -> {
+//            if (getContext() instanceof Activity) {
+//                BottomInputDialog bottomInputDialog = new BottomInputDialog(getContext());
+//                bottomInputDialog.show();
+//            }
+//
+//        });
 
         childLinearLayout = new LinearLayout(getContext());
         childLinearLayout.setOrientation(LinearLayout.HORIZONTAL);

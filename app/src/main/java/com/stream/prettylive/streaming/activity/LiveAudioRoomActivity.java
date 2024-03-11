@@ -61,10 +61,13 @@ import com.stream.prettylive.streaming.activity.model.ChatMessageModel;
 import com.stream.prettylive.streaming.activity.model.GiftModel;
 import com.stream.prettylive.streaming.activity.model.PurchageGiftModel;
 import com.stream.prettylive.streaming.activity.model.RoomUsers;
+import com.stream.prettylive.streaming.components.message.barrage.BottomInputDialog;
+import com.stream.prettylive.streaming.components.message.barrage.BottomInputDialogMessage;
 import com.stream.prettylive.streaming.functions.AddStreamInfo;
 import com.stream.prettylive.streaming.functions.CurrentUserInfo;
 import com.stream.prettylive.streaming.functions.EndLiveStatus;
 import com.stream.prettylive.streaming.functions.KickOutInfo;
+import com.stream.prettylive.streaming.functions.SendGlobalMessage;
 import com.stream.prettylive.streaming.functions.UserInfo;
 import com.stream.prettylive.streaming.gift.GiftHelper;
 import com.stream.prettylive.streaming.internal.ZEGOLiveAudioRoomManager;
@@ -213,6 +216,17 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             }
         });
 
+        binding.messageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                BottomInputDialogMessage inputDialog = new BottomInputDialogMessage(LiveAudioRoomActivity.this,roomID,"audio");
+                inputDialog.show();
+            }
+        });
+
+
+
 
         seatLayoutConfig = new LiveAudioRoomLayoutConfig();
         seatLayoutConfig.rowSpacing = Utils.dp2px(8, getResources().getDisplayMetrics());
@@ -237,9 +251,11 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 for (ZEGOSDKUser zegoUser : userList) {
                     Log.e("test23345", "onUserEnter : " + zegoUser.userName);
                     try {
-                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegoUser.userName + " left the room", (errorCode, messageID) -> {
-
-                        });
+                        new SendGlobalMessage(roomID,"left from live");
+//                        userInfo("left from live",mAuth.getUid());
+//                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegoUser.userName + " left the room", (errorCode, messageID) -> {
+//
+//                        });
                     }catch (Exception e){
 
                     }
@@ -277,9 +293,9 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                                 });
 
                             try {
-                                ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegoUser.userName + " joined the room", (errorCode, messageID) -> {
-
-                                });
+//                                ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(zegoUser.userName + " joined the room", (errorCode, messageID) -> {
+//
+//                                });
                             }catch (Exception e){
 
                             }
@@ -400,6 +416,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
                             new AddStreamInfo().addStreamInfo(roomID,uid1,userId, userName, image1);
 //                            new AddStreamInfo().deleteStreamInfo(roomID,userId);
+                            new SendGlobalMessage(roomID,"welcome to PrettyLive");
+//                            userInfo("welcome to PrettyLive",mAuth.getUid());
                         } catch (Exception e) {
                             // Handle exception
                         }
@@ -409,6 +427,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                         if (userModel!=null){
                             saveRoomUsers(userModel);
                         }
+
+//                        userInfo("joined the live",mAuth.getUid());
+//
+                        new SendGlobalMessage(roomID,"joined the live");
 
                     }
                     if (!Objects.equals(docId, "")){
@@ -431,8 +453,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         });
 
         binding.giftButton1.setOnClickListener(v -> {
-            sendCustomeMessage("","");
-//            showBottomSheetDialog();
+            showBottomSheetDialog();
         });
 
 
@@ -599,21 +620,63 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void sendCustomeMessage(String message, String gift) {
+    private void userInfo(String message,String userId) {
+        usersRef.whereEqualTo("userId", userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            if (document.exists()) {
+                                UserDetailsModel userDetails = document.toObject(UserDetailsModel.class);
+                                sendCustomMessage(message, userDetails);
+                            }
+                        }
+                    } else {
+                        Log.e("FirestoreListener", "Error getting documents: ", task.getException());
+                    }
+                });
+//        usersRef.whereEqualTo("userId", userId)
+//                .addSnapshotListener((value, error) -> {
+//                    if (error != null) {
+//                        // Handle error
+//                        Log.e("FirestoreListener", "Listen failed: " + error.getMessage());
+//                        return;
+//                    }
+//
+//                    for (DocumentSnapshot document : value) {
+//                        if (document.exists()) {
+//                            userDetails = document.toObject(UserDetailsModel.class);
+//                            Log.i(TAG, "sendCustomMessage: ");
+//
+//                        }
+//                    }
+//                    if (userDetails != null) {
+//                        sendCustomMessage(message,userDetails);
+//                    }
+//
+//                });
+    }
+
+    public void sendCustomMessage(String message,UserDetailsModel userDetails) {
+        Log.i(TAG, "sendCustomMessage: "+message);
         ChatMessageModel chatMessageModel = new ChatMessageModel();
         chatMessageModel.setGift("");
-        chatMessageModel.setImage("");
+        chatMessageModel.setImage(userDetails.getImage());
         chatMessageModel.setKey(ref.push().getKey());
-        chatMessageModel.setMessage("test2345 message");
-        chatMessageModel.setName("Test NAme");
-        chatMessageModel.setUserId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+        chatMessageModel.setMessage(message);
+        chatMessageModel.setName(userDetails.getUsername());
+        chatMessageModel.setLevel(userDetails.getLevel());
+        chatMessageModel.setUserId(userDetails.getUserId());
         sendMessage(chatMessageModel, chatMessageModel.getKey());
+        Log.i("jnsdhhjdgsfhjdgsfhjdgsfhjf", "sendCustomMessage: hjhjghjdghjgfghjxghjghjxghjghjgfdsfdsfds");
     }
 
     private void sendMessage(ChatMessageModel chatMessageModel, String key) {
         ref.child(roomID).child("audio").child(roomID).child("chat_comments").child(key).setValue(chatMessageModel);
 
     }
+
+
 
     private void getCommentChatMessageFirebase() {
         ref.child(roomID).child("audio").child(roomID).child("chat_comments").addValueEventListener(new ValueEventListener() {
@@ -809,6 +872,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
                 sendGift(documentSnapshot,bottomSheetDialog,giftCount);
 
+
             }else {
                 Toast.makeText(this, "Insufficient balance, please recharge first", Toast.LENGTH_SHORT).show();
             }
@@ -985,8 +1049,6 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 ref.child(otherUserId).child(liveType).child(otherUserId).child("gifts").child(key).setValue(data);
 
                 if (!Objects.equals(userIdForReceiveGift, "")) {
-//                    updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
-//                    updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
 
                     new CurrentUserInfo(new UserInfo.Select() {
                         @Override
@@ -1031,14 +1093,13 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     }
                 }
 
-//                updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
-//
-//                updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
+
 
                 userIdForReceiveGift="";
                 select=0;
                 userIds.clear();
-
+//                userInfo("send a gift",mAuth.getUid());
+                new SendGlobalMessage(roomID,"send a gift");
                 bottomSheetDialog.dismiss();
 
             }
@@ -1048,8 +1109,6 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 Toast.makeText(LiveAudioRoomActivity.this, "Internal server error please try again."+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-//        sendCustomeMessage("Sends you gift", detail.getImage());
-//        Toast.makeText(this, ""+giftModel.getString("giftName"), Toast.LENGTH_SHORT).show();
     }
 
     private void updateGiftSenderCoins(String senderId, String totalCoins,long senderCoin, String currentPrice) {
@@ -1282,7 +1341,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 //                    Toast.makeText(this, "okkkkk"+errorCode, Toast.LENGTH_SHORT).show();
 //                });
                 deleteUserFromViewersCollection(roomID,userModel.getUid());
-                Toast.makeText(this, "okkkkk", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "okkkkk", Toast.LENGTH_SHORT).show();
 
             }
         }
@@ -1333,9 +1392,11 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void unused) {
                                     try {
-                                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(" left the room", (errorCode, messageID) -> {
-
-                                        });
+//                                        userInfo("left from live",mAuth.getUid());
+                                        new SendGlobalMessage(streamId,"left from live");
+//                                        ZEGOSDKManager.getInstance().expressService.sendBarrageMessage(" left the room", (errorCode, messageID) -> {
+//
+//                                        });
                                     }catch (Exception e){
 
                                     }

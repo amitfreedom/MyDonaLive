@@ -8,8 +8,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="6dp"
-        android:background="@drawable/rounded_dialog_background">
+        android:layout_marginVertical="4dp"
+        android:paddingVertical="@dimen/_5dp"
+        android:background="@drawable/message_item_bg">
 
 
         <RelativeLayout
@@ -47,27 +48,64 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgProfile"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_alignParentTop="true"
+                android:layout_width="@dimen/_24dp"
+                android:layout_height="@dimen/_24dp"
                 android:src="@drawable/ic_user1"
                 app:civ_border_color="@color/white"
                 app:civ_border_width="1dp" />
 
+            <com.google.android.material.card.MaterialCardView
+                android:visibility="gone"
+                android:id="@+id/cardViewRoot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/green"
+                android:layout_marginLeft="@dimen/_5dp"
+                android:layout_marginRight="@dimen/_5dp"
+                app:cardCornerRadius="@dimen/space3">
+
+                <TextView
+                    android:id="@+id/txt_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="@dimen/_8dp"
+                    android:paddingVertical="2dp"
+                    android:text="Lv1"
+                    android:textColor="@color/white"
+                    android:textSize="8sp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
 
             <TextView
-                android:id="@+id/txtUserNameAndMessage"
+                android:id="@+id/txtUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="3dp"
                 android:layout_marginRight="7dp"
                 android:text="User Name:"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:lineSpacingExtra="7sp"
+                android:textSize="12dp" />
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/txtUserMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="7dp"
+                android:text="message"
                 android:textColor="@color/white"
+                android:textStyle="bold"
                 android:textSize="12dp" />
 
 

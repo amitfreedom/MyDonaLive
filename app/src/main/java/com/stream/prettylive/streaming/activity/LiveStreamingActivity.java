@@ -42,8 +42,11 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -59,12 +62,15 @@ import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.notification.FCMNotificationSender;
 import com.stream.prettylive.streaming.ZEGOSDKKeyCenter;
+import com.stream.prettylive.streaming.activity.adapter.CommentAdapter;
 import com.stream.prettylive.streaming.activity.adapter.GiftAdapter;
 import com.stream.prettylive.streaming.activity.adapter.GiftViewUserAdapter;
 import com.stream.prettylive.streaming.activity.adapter.ViewUserAdapter;
 import com.stream.prettylive.streaming.activity.adapter.ViewersListAdapter;
+import com.stream.prettylive.streaming.activity.model.ChatMessageModel;
 import com.stream.prettylive.streaming.activity.model.PurchageGiftModel;
 import com.stream.prettylive.streaming.activity.model.RoomUsers;
+import com.stream.prettylive.streaming.components.message.barrage.BottomInputDialogMessage;
 import com.stream.prettylive.streaming.functions.AddStreamInfo;
 import com.stream.prettylive.streaming.functions.CurrentUserInfo;
 import com.stream.prettylive.streaming.functions.EndLiveStatus;
@@ -113,6 +119,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 public class LiveStreamingActivity extends AppCompatActivity{
@@ -156,6 +163,9 @@ public class LiveStreamingActivity extends AppCompatActivity{
     private final DatabaseReference ref = firebaseDatabase.getReference().child("userInfo");
     private PurchageGiftModel purchageGiftModel;
 
+    private CommentAdapter commentAdapter;
+    private final List<ChatMessageModel> chatMessages = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,6 +206,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
         listenSDKEvent();
 
+        getCommentChatMessageFirebase();
+
         binding.previewStart.setOnClickListener(v -> {
             loginRoom();
 
@@ -209,6 +221,18 @@ public class LiveStreamingActivity extends AppCompatActivity{
             public void onClick(View v) {
 
                 exitDialog();
+            }
+        });
+
+        commentAdapter = new CommentAdapter(this, chatMessages);
+        binding.recyclerAllMessage.setAdapter(commentAdapter);
+
+        binding.messageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                BottomInputDialogMessage inputDialog = new BottomInputDialogMessage(LiveStreamingActivity.this,liveID,"video");
+                inputDialog.show();
             }
         });
 
@@ -295,6 +319,29 @@ public class LiveStreamingActivity extends AppCompatActivity{
 //            }
 //        });
 
+    }
+
+    private void getCommentChatMessageFirebase() {
+        ref.child(liveID).child("video").child(liveID).child("chat_comments").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    chatMessages.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        ChatMessageModel chatMessageModel = dataSnapshot.getValue(ChatMessageModel.class);
+                        chatMessages.add(chatMessageModel);
+                    }
+
+                    commentAdapter.notifyDataSetChanged();
+                    binding.recyclerAllMessage.scrollToPosition(chatMessages.size() - 1);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void checkKickOut(String liveId, String userId) {
@@ -1121,6 +1168,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
         binding.topView.setVisibility(View.VISIBLE);
         binding.previewStart.setVisibility(View.GONE);
         binding.previewBeauty.setVisibility(View.GONE);
+        binding.messageBtn.setVisibility(View.VISIBLE);
+        binding.recyclerAllMessage.setVisibility(View.VISIBLE);
         binding.liveBottomMenuBar.setVisibility(View.VISIBLE);
         binding.welcomeText.setVisibility(View.VISIBLE);
 
