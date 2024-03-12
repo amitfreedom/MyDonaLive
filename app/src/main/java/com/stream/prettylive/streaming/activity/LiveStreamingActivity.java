@@ -156,6 +156,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
     private GiftViewUserAdapter giftViewUserAdapter;
     List<String>userIds = new ArrayList<>();
     private String userIdForReceiveGift="";
+    private String receiverUserName="";
+    private String receiverTotalCoins="";
     private int select =1;
     private String totalBeans="0";
     private String hostTotalCoins="0";
@@ -690,16 +692,17 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     new UserInfo(new UserInfo.Select() {
                         @Override
                         public void UserDetailsByUserId(UserDetailsModel userInfoById) {
-//                            Log.i(TAG, "UserDetailsByUserId: "+userInfoById.getUserId());
-//                            Log.i(TAG, "UserDetailsByUserId:userInfoById.getDiamond() "+userInfoById.getDiamond());
                             updateGiftReceiverCoins(userInfoById.getUserId(),userInfoById.getDiamond(),giftModel.getString("price"));
+                            receiverTotalCoins = new Convert().prettyCount(Long.parseLong(Objects.requireNonNull(giftModel.getString("price"))));
+
+                            String fullMsg = "sent gift to "+userInfoById.getUsername()+" "+receiverTotalCoins;
+
+                            new SendGlobalMessage(liveID,fullMsg,"video");
                         }
                     }).getUserDetailsByUserId(userIdForReceiveGift);
 
                 }
                 else {
-
-
 
                     for (String id:userIds){
                         new CurrentUserInfo(new UserInfo.Select() {
@@ -715,21 +718,20 @@ public class LiveStreamingActivity extends AppCompatActivity{
                             @Override
                             public void UserDetailsByUserId(UserDetailsModel userInfoById) {
                                 updateGiftReceiverCoins(id,userInfoById.getDiamond(),giftModel.getString("price"));
+                                receiverTotalCoins = new Convert().prettyCount(Long.parseLong(Objects.requireNonNull(giftModel.getString("price"))));
+
+                                String fullMsg = "sent gift to "+userInfoById.getUsername()+" "+receiverTotalCoins;
+
+                                new SendGlobalMessage(liveID,fullMsg,"video");
                             }
                         }).getUserDetailsByUserId(id);
 
                     }
                 }
 
-//                updateGiftSenderCoins(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID),totalBeans,giftModel.getString("price"));
-//
-//                updateGiftReceiverCoins(userIdForReceiveGift,userDetails.getDiamond(),giftModel.getString("price"));
-
                 userIdForReceiveGift="";
                 select=0;
                 userIds.clear();
-
-                new SendGlobalMessage(liveID,"send a gift","video");
 
                 bottomSheetDialog.dismiss();
 
@@ -1230,13 +1232,11 @@ public class LiveStreamingActivity extends AppCompatActivity{
                             if (endDate != null) {
                                 // Compare the endDate with the current date
                                 if (isGiftExpired(endDate)) {
-                                    Toast.makeText(this, "Gift has expired", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this, "Entry gift has been expired", Toast.LENGTH_SHORT).show();
                                     // Gift has expired, handle accordingly (e.g., show an expired message)
                                 } else {
                                     Toast.makeText(this, "Gift is still valid", Toast.LENGTH_SHORT).show();
-
                                     sendVipGiftEntry(purchageGiftModel);
-
                                 }
                             }
                         } else {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,6 +45,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.opensource.svgaplayer.SVGASoundManager;
 import com.opensource.svgaplayer.utils.log.SVGALogger;
 import com.stream.prettylive.R;
@@ -53,6 +55,7 @@ import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.notification.FCMNotificationSender;
 import com.stream.prettylive.streaming.ZEGOSDKKeyCenter;
 import com.stream.prettylive.streaming.activity.adapter.CommentAdapter;
+import com.stream.prettylive.streaming.activity.adapter.GameViewSwitcherAdapter;
 import com.stream.prettylive.streaming.activity.adapter.GiftAdapter;
 import com.stream.prettylive.streaming.activity.adapter.GiftViewUserAdapter;
 import com.stream.prettylive.streaming.activity.adapter.ViewUserAdapter;
@@ -101,6 +104,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -115,6 +120,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     private String roomID;
     private String userId;
     private String userIdForReceiveGift="";
+    private String receiverTotalCoins="";
     private String otherUserId;
     private String username;
     private String audienceId;
@@ -146,6 +152,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     List<String>userIds = new ArrayList<>();
     private CommentAdapter commentAdapter;
     private final List<ChatMessageModel> chatMessages = new ArrayList<>();
+    private List<UserDetailsModel>topGamer= new ArrayList();
+    private int mCurrentPage = 0;
+    private Timer mTimer;
+    private GameViewSwitcherAdapter gameViewSwitcherAdapter;
 
     String TAG = "LiveAudioRoomActivity";
 
@@ -467,6 +477,47 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             realTimeLiveEnd(roomID,otherUserId);
         }
 
+        setTopGamerView();
+        topGamerList();
+
+
+    }
+
+    private void setTopGamerView() {
+        gameViewSwitcherAdapter = new GameViewSwitcherAdapter(this, topGamer);
+        binding.gameViewPager.setAdapter(gameViewSwitcherAdapter);
+
+        final Handler handler = new Handler();
+        try {
+            final Runnable update = new Runnable() {
+                @Override
+                public void run() {
+                    if (mCurrentPage == topGamer.size() - 1) {
+                        mCurrentPage = 0;
+                    } else {
+                        mCurrentPage++;
+                    }
+                    binding.gameViewPager.setCurrentItem(mCurrentPage, true);
+                }
+            };
+
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(update);
+                }
+            }, 5000, 5000);
+        }catch (Exception e){
+            Log.i(TAG, "setTopGamerView: "+e);
+        }
+
+        binding.gameViewPager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle click event if needed
+            }
+        });
     }
 
     private void realTimeLiveEnd(String roomID, String userId) {
@@ -499,6 +550,35 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             }
         }).realTimeKickOut(liveId,userId);
 
+    }
+
+    private void topGamerList() {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.collection("login_details")
+                .orderBy("receiveGameCoin", Query.Direction.DESCENDING)
+                .limit(3)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null) {
+                            for (QueryDocumentSnapshot document : querySnapshot) {
+
+                                UserDetailsModel userDetailsModel = document.toObject(UserDetailsModel.class);
+                                topGamer.add(userDetailsModel);
+                            }
+                            gameViewSwitcherAdapter.updateData(topGamer);
+                        } else {
+                            // Handle the case where the query snapshot is null
+                        }
+                    } else {
+                        // Handle the error
+                        Exception exception = task.getException();
+                        if (exception != null) {
+                            exception.printStackTrace();
+                        }
+                    }
+                });
     }
 
     private void currentUserDetails(String userId) {
@@ -1062,9 +1142,12 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     new UserInfo(new UserInfo.Select() {
                         @Override
                         public void UserDetailsByUserId(UserDetailsModel userInfoById) {
-                            Log.i(TAG, "UserDetailsByUserId: "+userInfoById.getUserId());
-                            Log.i(TAG, "UserDetailsByUserId:userInfoById.getDiamond() "+userInfoById.getDiamond());
                             updateGiftReceiverCoins(userInfoById.getUserId(),userInfoById.getDiamond(),giftModel.getString("price"));
+                            receiverTotalCoins = new Convert().prettyCount(Long.parseLong(Objects.requireNonNull(giftModel.getString("price"))));
+
+                            String fullMsg = "sent gift to "+userInfoById.getUsername()+" "+receiverTotalCoins;
+
+                            new SendGlobalMessage(roomID,fullMsg,"audio");
                         }
                     }).getUserDetailsByUserId(userIdForReceiveGift);
 
@@ -1087,6 +1170,11 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                             @Override
                             public void UserDetailsByUserId(UserDetailsModel userInfoById) {
                                 updateGiftReceiverCoins(id,userInfoById.getDiamond(),giftModel.getString("price"));
+                                receiverTotalCoins = new Convert().prettyCount(Long.parseLong(Objects.requireNonNull(giftModel.getString("price"))));
+
+                                String fullMsg = "sent gift to "+userInfoById.getUsername()+" "+receiverTotalCoins;
+
+                                new SendGlobalMessage(roomID,fullMsg,"audio");
                             }
                         }).getUserDetailsByUserId(id);
 
@@ -1099,7 +1187,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                 select=0;
                 userIds.clear();
 //                userInfo("send a gift",mAuth.getUid());
-                new SendGlobalMessage(roomID,"send a gift","audio");
+//                new SendGlobalMessage(roomID,"send a gift","audio");
+
+
+
                 bottomSheetDialog.dismiss();
 
             }
