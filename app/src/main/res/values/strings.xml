@@ -343,4 +343,22 @@
     <string name="top_receivers">Top Receivers</string>
     <string name="top_gamer">Top Game</string>
 
+    <!--    lucky-->
+    <string name="dice_roller">Dice Roller</string>
+    <string name="wheels_of_fortune">Wheels of Fortune</string>
+    <string name="truth_or_dare">Truth or Dare</string>
+    <string name="head_or_tails">Head or Tails</string>
+    <string name="random_number">Random Number</string>
+    <string name="slot_machine">Slot Machine</string>
+    <string name="roll">Roll</string>
+    <string name="dice_rolled">Dice Rolled!</string>
+    <string name="heads">Heads</string>
+    <string name="tails">Tails</string>
+    <string name="flip_a_coin">Flip a coin</string>
+    <string name="click_the_coin">Click the coin</string>
+    <string name="refresh">Refresh</string>
+    <string name="result">Result</string>
+    <string name="teen_patti">Teen Patti</string>
+    <string name="fruite_loops">Fruits Loops</string>
+    <string name="game_list">Game List</string>
 </resources>

@@ -23,6 +23,7 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.stream.prettylive.databinding.FragmentHomeBinding;
 import com.stream.prettylive.ui.home.ui.home.adapter.MyPagerAdapter;
+import com.stream.prettylive.ui.lucky_game.GameLuckyActivity;
 import com.stream.prettylive.ui.search.activity.SearchUserActivity;
 import com.stream.prettylive.ui.toplist.TopListActivity;
 
@@ -58,8 +59,12 @@ public class HomeFragment extends Fragment {
             binding.rightIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent intent;
+                    intent = new Intent(getActivity().getApplication(), GameLuckyActivity.class);
+                    startActivity(intent);
+
 //                    shareLiveStream();
-                    shareDeepLink(link);
+//                    shareDeepLink(link);
 //                    deleteUserFromViewersCollection("20k7E32T6T9iE606dA0i_1000001_main_host", "1233");
                 }
             });
@@ -120,7 +125,7 @@ public class HomeFragment extends Fragment {
         adapter.addFragment(new ActiveUserFragment(), "Popular");
         adapter.addFragment(new ActiveUserFragment(), "Live");
         adapter.addFragment(new ActiveUserFragment(), "Audio live");
-        adapter.addFragment(new GamesFragment(), "Games");
+//        adapter.addFragment(new GamesFragment(), "Games");
 //        adapter.addFragment(new PopulerFragment(), "Pk battle");
         // Add more fragments as needed
         viewPager.setAdapter(adapter);

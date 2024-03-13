@@ -54,6 +54,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 import com.stream.prettylive.R;
@@ -63,6 +64,7 @@ import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.notification.FCMNotificationSender;
 import com.stream.prettylive.streaming.ZEGOSDKKeyCenter;
 import com.stream.prettylive.streaming.activity.adapter.CommentAdapter;
+import com.stream.prettylive.streaming.activity.adapter.GameViewSwitcherAdapter;
 import com.stream.prettylive.streaming.activity.adapter.GiftAdapter;
 import com.stream.prettylive.streaming.activity.adapter.GiftViewUserAdapter;
 import com.stream.prettylive.streaming.activity.adapter.ViewUserAdapter;
@@ -119,6 +121,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -168,6 +172,10 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
     private CommentAdapter commentAdapter;
     private final List<ChatMessageModel> chatMessages = new ArrayList<>();
+    private List<UserDetailsModel>topGamer= new ArrayList();
+    private int mCurrentPage = 0;
+    private Timer mTimer;
+    private GameViewSwitcherAdapter gameViewSwitcherAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -311,6 +319,9 @@ public class LiveStreamingActivity extends AppCompatActivity{
             showGiftBottomSheetDialog();
         });
 
+        setTopGamerView();
+        topGamerList();
+
 //        ZegoExpressEngine.getEngine().enableEffectsBeauty(true);
 //        ZegoExpressEngine.getEngine().setEffectsBeautyParam(new ZegoEffectsBeautyParam());
 
@@ -322,6 +333,71 @@ public class LiveStreamingActivity extends AppCompatActivity{
 //            }
 //        });
 
+    }
+
+    private void setTopGamerView() {
+        gameViewSwitcherAdapter = new GameViewSwitcherAdapter(this, topGamer);
+        binding.gameViewPager.setAdapter(gameViewSwitcherAdapter);
+
+        final Handler handler = new Handler();
+        try {
+            final Runnable update = new Runnable() {
+                @Override
+                public void run() {
+                    if (mCurrentPage == topGamer.size() - 1) {
+                        mCurrentPage = 0;
+                    } else {
+                        mCurrentPage++;
+                    }
+                    binding.gameViewPager.setCurrentItem(mCurrentPage, true);
+                }
+            };
+
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(update);
+                }
+            }, 5000, 5000);
+        }catch (Exception e){
+            Log.i("error", "setTopGamerView: "+e);
+        }
+
+        binding.gameViewPager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle click event if needed
+            }
+        });
+    }
+    private void topGamerList() {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.collection("login_details")
+                .orderBy("receiveGameCoin", Query.Direction.DESCENDING)
+                .limit(3)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null) {
+                            for (QueryDocumentSnapshot document : querySnapshot) {
+
+                                UserDetailsModel userDetailsModel = document.toObject(UserDetailsModel.class);
+                                topGamer.add(userDetailsModel);
+                            }
+                            gameViewSwitcherAdapter.updateData(topGamer);
+                        } else {
+                            // Handle the case where the query snapshot is null
+                        }
+                    } else {
+                        // Handle the error
+                        Exception exception = task.getException();
+                        if (exception != null) {
+                            exception.printStackTrace();
+                        }
+                    }
+                });
     }
 
     private void getCommentChatMessageFirebase() {
@@ -1176,6 +1252,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
         binding.previewStart.setVisibility(View.GONE);
         binding.previewBeauty.setVisibility(View.GONE);
         binding.messageBtn.setVisibility(View.VISIBLE);
+        binding.gameViewPager.setVisibility(View.VISIBLE);
         binding.recyclerAllMessage.setVisibility(View.VISIBLE);
         binding.liveBottomMenuBar.setVisibility(View.VISIBLE);
         binding.welcomeText.setVisibility(View.VISIBLE);
@@ -1358,6 +1435,9 @@ public class LiveStreamingActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
         if (mAdapter != null) {
             mAdapter.stopListening();
         }

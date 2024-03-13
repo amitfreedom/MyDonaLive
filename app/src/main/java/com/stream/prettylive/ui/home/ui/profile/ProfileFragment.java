@@ -41,6 +41,7 @@ import com.stream.prettylive.ui.home.ui.profile.activity.LevelActivity;
 import com.stream.prettylive.ui.home.ui.profile.activity.LiveHistoryActivity;
 import com.stream.prettylive.ui.home.ui.profile.activity.UpdateUserDetailsActivity;
 import com.stream.prettylive.ui.home.ui.profile.models.UserDetailsModel;
+import com.stream.prettylive.ui.lucky_game.GameLuckyActivity;
 import com.stream.prettylive.ui.startup.activity.OnboardingActivity;
 import com.stream.prettylive.ui.utill.Constant;
 import com.stream.prettylive.ui.utill.Convert;
@@ -145,7 +146,10 @@ public class ProfileFragment extends Fragment {
         binding.btnGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gameListPopup();
+                Intent intent;
+                intent = new Intent(getActivity().getApplication(), GameLuckyActivity.class);
+                startActivity(intent);
+//                gameListPopup();
             }
         });
         binding.btnLogout.setOnClickListener(new View.OnClickListener() {

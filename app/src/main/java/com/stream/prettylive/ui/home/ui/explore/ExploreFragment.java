@@ -46,6 +46,7 @@ import com.stream.prettylive.ui.home.ui.explore.adapter.CountryAdapter;
 import com.stream.prettylive.ui.home.ui.explore.adapter.ExploreAdapter;
 import com.stream.prettylive.ui.home.ui.explore.models.CountryModel;
 import com.stream.prettylive.ui.home.ui.home.adapter.ImageSliderAdapter;
+import com.stream.prettylive.ui.lucky_game.GameLuckyActivity;
 import com.stream.prettylive.ui.search.activity.SearchUserActivity;
 import com.stream.prettylive.ui.toplist.TopListActivity;
 import com.stream.prettylive.ui.utill.Constant;
@@ -158,7 +159,10 @@ public class ExploreFragment extends Fragment implements ExploreAdapter.OnActive
         binding.gameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gameListPopup();
+                Intent intent;
+                intent = new Intent(getActivity().getApplication(), GameLuckyActivity.class);
+                startActivity(intent);
+//                gameListPopup();
             }
         });
         binding.icFilter.setOnClickListener(new View.OnClickListener() {

@@ -1646,6 +1646,9 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
 //        if (mAdapter != null) {
 //            mAdapter.stopListening();
 //        }

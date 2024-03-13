@@ -3,6 +3,7 @@ package com.stream.prettylive.streaming.activity.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.provider.CalendarContract;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
@@ -71,16 +72,20 @@ public class GameViewSwitcherAdapter extends PagerAdapter {
             int nameStart = builder.length();
             builder.append(mImageUrls.get(position).getUsername());
             int nameEnd = builder.length();
-            builder.setSpan(new ForegroundColorSpan(Color.parseColor("#fb4f90")), nameStart, nameEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            builder.setSpan(new ForegroundColorSpan(Color.GREEN), nameStart, nameEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
 // Append a space
             builder.append(" ");
-
-// Append the message with white color
             int messageStart = builder.length();
-            builder.append("win 500k coins");
+            builder.append("...won "+mImageUrls.get(position).getReceiveGameCoin()+"\n"+"in");
             int messageEnd = builder.length();
             builder.setSpan(new ForegroundColorSpan(Color.WHITE), messageStart, messageEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            builder.append(" ");
+            int messageStart1 = builder.length();
+            builder.append("Teen Patti Join & Win >>");
+            int messageEnd1 = builder.length();
+            builder.setSpan(new ForegroundColorSpan(Color.parseColor("#FFA500")), messageStart1, messageEnd1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
 
             txtMessageView.setText(builder);

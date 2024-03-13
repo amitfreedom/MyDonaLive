@@ -38,6 +38,21 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.lucky_game.DiceRoller.DiceRollerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.lucky_game.HeadsOrTails.HeadsOrTailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.lucky_game.TruthOrDare.TruthOrDareActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.lucky_game.GameLuckyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.lucky_game.LuckyGameActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.toplist.activity.TopUsersSendReceiveCoinsActivity"
             android:exported="false" />
         <activity
