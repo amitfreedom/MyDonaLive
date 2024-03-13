@@ -3,6 +3,7 @@ package com.stream.prettylive.streaming.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -84,6 +85,7 @@ import com.stream.prettylive.streaming.internal.sdk.express.IExpressEngineEventH
 import com.stream.prettylive.streaming.internal.sdk.zim.IZIMEventHandler;
 import com.stream.prettylive.streaming.internal.utils.ToastUtil;
 import com.stream.prettylive.streaming.internal.utils.Utils;
+import com.stream.prettylive.ui.home.HomeActivity;
 import com.stream.prettylive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.prettylive.ui.home.ui.profile.models.UserModel;
 import com.stream.prettylive.ui.utill.Constant;
@@ -813,6 +815,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
     }
 
+    // viewers list
     private void setViewersAdapter() {
         viewUserAdapter = new ViewUserAdapter(mQuery, new ViewUserAdapter.OnActiveUserSelectedListener() {
             @Override
@@ -835,6 +838,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             }
 
             @Override
+
             protected void onError(FirebaseFirestoreException e) {
                 Log.e("FirebaseFirestoreException", "onError: "+e );
             }
@@ -1050,12 +1054,10 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
             protected void onDataChanged() {
                 // Show/hide content if the query returns empty.
                 if (getItemCount() == 0) {
-                    binding.rvViewers.setVisibility(View.GONE);
-                    binding.txtUserCount.setText("0");
+                    rv_gift_user.setVisibility(View.GONE);
 
                 } else {
-                    binding.rvViewers.setVisibility(View.VISIBLE);
-                    binding.txtUserCount.setText(""+getItemCount());
+                    rv_gift_user.setVisibility(View.VISIBLE);
 
                 }
             }
@@ -1300,7 +1302,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                             updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
                             updateRoomStatus(otherUserId,roomID);
                         }
-                        finish();
+                        startActivity(new Intent(LiveAudioRoomActivity.this, HomeActivity.class));
+                        finishAffinity();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

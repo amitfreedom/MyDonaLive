@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -94,6 +95,7 @@ import com.stream.prettylive.streaming.internal.sdk.express.ExpressService;
 import com.stream.prettylive.streaming.internal.sdk.express.IExpressEngineEventHandler;
 import com.stream.prettylive.streaming.internal.sdk.zim.IZIMEventHandler;
 import com.stream.prettylive.streaming.internal.utils.ToastUtil;
+import com.stream.prettylive.ui.home.HomeActivity;
 import com.stream.prettylive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.prettylive.ui.home.ui.profile.models.UserModel;
 import com.stream.prettylive.ui.utill.Constant;
@@ -673,12 +675,10 @@ public class LiveStreamingActivity extends AppCompatActivity{
                 // Show/hide content if the query returns empty.
                 try {
                     if (getItemCount() == 0) {
-                        binding.rvViewers.setVisibility(View.GONE);
-                        binding.txtUserCount.setText("0");
+                        rv_gift_user.setVisibility(View.GONE);
 
                     } else {
-                        binding.rvViewers.setVisibility(View.VISIBLE);
-                        binding.txtUserCount.setText(String.valueOf(getItemCount()));
+                        rv_gift_user.setVisibility(View.VISIBLE);
 
                     }
                 }catch (Exception e){
@@ -921,7 +921,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
                         if (isHost){
                             updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
                         }
-                        finish();
+                        startActivity(new Intent(LiveStreamingActivity.this, HomeActivity.class));
+                        finishAffinity();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

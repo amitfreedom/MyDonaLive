@@ -54,7 +54,7 @@ public class GameLuckyActivity extends AppCompatActivity {
 
 
 
-        binding.mainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        binding.mainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         GamesLuckyAdapter gamesAdapter = new GamesLuckyAdapter(gamesList, new GamesLuckyAdapter.Select() {
             @Override
             public void selectGame(int gameId) {
@@ -74,7 +74,7 @@ public class GameLuckyActivity extends AppCompatActivity {
 //                    startActivity(diceIntent);
 //                }
                 else {
-                    Toast.makeText(GameLuckyActivity.this, "coming soon...", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(GameLuckyActivity.this, "coming soon...", Toast.LENGTH_SHORT).show();
                 }
 //                switch (gameId) {
 //                    case 0:

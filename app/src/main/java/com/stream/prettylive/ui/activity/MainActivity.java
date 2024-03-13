@@ -87,9 +87,8 @@ public class MainActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         usersRef = firestore.collection(Constant.LOGIN_DETAILS);
 
-        ZEGOSDKManager.getInstance().expressService.openCamera(true);
-        ZEGOSDKManager.getInstance().expressService.openMicrophone(true);
-//        binding.mainHostVideo.startPreviewOnly();
+
+        enablePermission();
 
 
 
@@ -213,6 +212,21 @@ public class MainActivity extends AppCompatActivity {
         askNotificationPermission();
     }
 
+    private void enablePermission() {
+        List<String> permissions;
+        permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
+
+        requestPermissionIfNeeded(permissions, new RequestCallback() {
+            @Override
+            public void onResult(boolean allGranted, @NonNull List<String> grantedList,
+                                 @NonNull List<String> deniedList) {
+                if (grantedList.contains(Manifest.permission.CAMERA)) {
+                    ZEGOSDKManager.getInstance().expressService.openCamera(true);
+                    binding.videoView.startPreviewOnly();
+                }
+            }
+        });
+    }
 
 
     private void askNotificationPermission() {
@@ -228,22 +242,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (isFinishing()) {
-//            stopPreview();
-//            binding.mainHostVideo.stopPublishAudioVideo();
-        }
-    }
 
-
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        Log.i("logtest", "onStart: ");
-//    }
 //
     @Override
     protected void onResume() {
@@ -290,14 +289,12 @@ public class MainActivity extends AppCompatActivity {
             ZEGOSDKManager.getInstance().disconnectUser();
             ZEGOLiveStreamingManager.getInstance().removeUserData();
             ZEGOLiveStreamingManager.getInstance().removeUserListeners();
-//            stopPreview();
-            // if Call invitation,init after user login,may receive call request.
-//            ZEGOCallInvitationManager.getInstance().removeUserData();
-//            ZEGOCallInvitationManager.getInstance().removeUserListeners();
-//            Intent intent = new Intent(this, CallBackgroundService.class);
-//            stopService(intent);
+            ZEGOSDKManager.getInstance().expressService.openCamera(false);
+            ZEGOSDKManager.getInstance().expressService.stopPreview();
         }
     }
+
+
 
     private void requestPermissionIfNeeded(List<String> permissions, RequestCallback requestCallback) {
         boolean allGranted = true;

@@ -1,5 +1,6 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/games_card_view"
     android:layout_margin="@dimen/_10dp"
     app:cardBackgroundColor="@color/purple_500"
@@ -8,35 +9,59 @@
     app:contentPadding="2dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/games_relativeLayout"
-        android:padding="16dp">
-
-        <ImageView
-            android:id="@+id/games_item_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/games_item_title"
+            android:paddingLeft="@dimen/_5dp"
+            android:layout_marginTop="@dimen/space5"
+            android:id="@+id/coming_soon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textSize="8sp"
+            android:text="Coming\nsoon..."
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="@dimen/_3dp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/games_item_image"
-            app:layout_constraintStart_toStartOf="@+id/games_item_image"
-            app:layout_constraintTop_toBottomOf="@+id/games_item_image" />
+            android:background="@drawable/bg_coming"
+            tools:ignore="MissingConstraints" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/games_relativeLayout"
+            android:padding="16dp">
+
+
+
+            <ImageView
+                android:id="@+id/games_item_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/games_item_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/games_item_image"
+                app:layout_constraintStart_toStartOf="@+id/games_item_image"
+                app:layout_constraintTop_toBottomOf="@+id/games_item_image" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RelativeLayout>
+
+
 
 </androidx.cardview.widget.CardView>

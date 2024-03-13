@@ -37,6 +37,11 @@ public class GamesLuckyAdapter extends RecyclerView.Adapter<GamesLuckyAdapter.Ga
     public void onBindViewHolder(@NonNull GamesHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.binding.gamesItemTitle.setText(gameList.get(position).getGameName());
         holder.binding.gamesItemImage.setImageResource(gameList.get(position).getGameImage());
+        if (gameList.get(position).getGameID()!=0){
+            holder.binding.comingSoon.setVisibility(View.VISIBLE);
+        }else {
+            holder.binding.comingSoon.setVisibility(View.GONE);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

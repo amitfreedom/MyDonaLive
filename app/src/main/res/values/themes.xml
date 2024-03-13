@@ -11,6 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/pink_top</item>
+        <item name="android:windowDisablePreview">true</item>
         <!-- Customize your theme here. -->
     </style>
 

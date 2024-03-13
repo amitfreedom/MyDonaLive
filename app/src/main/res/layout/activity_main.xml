@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
+    android:background="@color/gray_666"
     tools:context=".ui.activity.MainActivity">
 
     <com.stream.prettylive.streaming.internal.sdk.components.express.ZEGOVideoView
-        android:id="@+id/main_host_video"
+        android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

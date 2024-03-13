@@ -37,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     TextView marqueeTextView;
     FirebaseFirestore db;
-    private String work="1";
+    private String work="0";
     private String dev="0";
     @SuppressLint("MissingInflatedId")
     @Override
@@ -49,8 +49,28 @@ public class SplashActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         relativeLayout=findViewById(R.id.main_logo);
         txt_logo=findViewById(R.id.txt_logo);
+
+        TextView marqueeText = findViewById(R.id.marqueeText);
+
+        // Set up marquee animation
+//        startMarqueeAnimation(marqueeText);
+
+        marqueeTextView = findViewById(R.id.marqueeTextView);
+
+
+        // Call the method to start the marquee animation
+//        startMarqueeAnimation1();
+
+        topAnimantion = AnimationUtils.loadAnimation(this, R.anim.top_animantion);
+        bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_animantion);
+        bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_animantion);
+        relativeLayout.setAnimation(topAnimantion);
+        txt_logo.setAnimation(bottomAnimation);
+
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionRef = db.collection("stop_app");
+
+
 
         collectionRef.get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -59,6 +79,8 @@ public class SplashActivity extends AppCompatActivity {
 
                         work = documentSnapshot.getString("working");
                         dev = documentSnapshot.getString("dev");
+
+                        moveNext(work,dev);
 
                     }
                 })
@@ -70,36 +92,25 @@ public class SplashActivity extends AppCompatActivity {
                     //
                 });
 
-        TextView marqueeText = findViewById(R.id.marqueeText);
-
-        // Set up marquee animation
-//        startMarqueeAnimation(marqueeText);
-
-         marqueeTextView = findViewById(R.id.marqueeTextView);
 
 
-        // Call the method to start the marquee animation
-//        startMarqueeAnimation1();
+    }
 
-        topAnimantion = AnimationUtils.loadAnimation(this, R.anim.top_animantion);
-        bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_animantion);
-        bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_animantion);
-        relativeLayout.setAnimation(topAnimantion);
-        txt_logo.setAnimation(bottomAnimation);
+    private void moveNext(String work, String dev) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 FirebaseUser user = mAuth.getCurrentUser();
 //
-//                if (Objects.equals(work, "0")) {
+                if (Objects.equals(work, "0")) {
+                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (Objects.equals(dev, "0")) {
 //                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                if (Objects.equals(dev, "0")) {
-////                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
+                    return;
+                }
 
                 if (user == null) {
                     Intent intent = new Intent(SplashActivity.this, OnboardingActivity.class);
@@ -114,7 +125,8 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 }
             }
-        }, SPLASH_SCREEN_TIME_OUT);
+        }, 3000);
+
     }
 
     private void startMarqueeAnimation1() {
