@@ -9,6 +9,7 @@
 
     <com.stream.prettylive.streaming.internal.sdk.components.express.ZEGOVideoView
         android:id="@+id/video_view"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -85,6 +86,21 @@
             android:textColor="@color/white"
             android:layout_marginTop="8dp"
             android:text="Go Audio Live" />
+
+        <com.google.android.material.button.MaterialButton
+            android:visibility="gone"
+            android:layout_marginHorizontal="@dimen/_20dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/pipButton"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_gravity="center_horizontal"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:backgroundTint="@color/btn_email"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp"
+            android:text="pip" />
 
     </RelativeLayout>
 

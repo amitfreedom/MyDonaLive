@@ -2,15 +2,19 @@ package com.stream.prettylive.streaming.activity;
 
 import android.Manifest.permission;
 import android.annotation.SuppressLint;
+import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Rational;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -135,6 +139,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
     private String liveID;
     private String userId;
     private String otherUserId;
+    private boolean isInPIPMode = false; // Track PIP mode state
     private String audienceId;
     private String username;
     private String country;
@@ -228,6 +233,11 @@ public class LiveStreamingActivity extends AppCompatActivity{
         binding.cardUserCount.setOnClickListener(v -> {
             showBottomSheetDialog();
         });
+        binding.pipButton.setOnClickListener(v -> {
+            enterPIPMode();
+        });
+
+
 
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -907,6 +917,46 @@ public class LiveStreamingActivity extends AppCompatActivity{
         pressedTime = System.currentTimeMillis();
     }
 
+
+    private void enterPIPMode() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Rational aspectRatio = new Rational(16, 9); // Aspect ratio of PIP screen
+            PictureInPictureParams.Builder pipBuilder = new PictureInPictureParams.Builder();
+            pipBuilder.setAspectRatio(aspectRatio);
+
+            enterPictureInPictureMode(pipBuilder.build());
+            isInPIPMode = true;
+        }
+    }
+
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+        if (isInPictureInPictureMode) {
+            // Hide UI elements in PIP mode if necessary
+            binding.giftButton.setVisibility(View.INVISIBLE);
+            binding.pipButton.setVisibility(View.INVISIBLE);
+            binding.topView.setVisibility(View.INVISIBLE);
+            binding.previewStart.setVisibility(View.INVISIBLE);
+            binding.previewBeauty.setVisibility(View.INVISIBLE);
+            binding.messageBtn.setVisibility(View.INVISIBLE);
+            binding.gameViewPager.setVisibility(View.INVISIBLE);
+            binding.recyclerAllMessage.setVisibility(View.INVISIBLE);
+            binding.liveBottomMenuBar.setVisibility(View.INVISIBLE);
+        } else {
+            // Restore UI elements when PIP mode is exited
+            binding.giftButton.setVisibility(View.VISIBLE);
+            binding.pipButton.setVisibility(View.VISIBLE);
+            binding.topView.setVisibility(View.VISIBLE);
+            binding.previewStart.setVisibility(View.GONE);
+            binding.previewBeauty.setVisibility(View.GONE);
+            binding.messageBtn.setVisibility(View.VISIBLE);
+            binding.gameViewPager.setVisibility(View.VISIBLE);
+            binding.recyclerAllMessage.setVisibility(View.VISIBLE);
+            binding.liveBottomMenuBar.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void exitDialog() {
 
         new MaterialAlertDialogBuilder(this)
@@ -1388,6 +1438,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
         if (mAdapter1 != null) {
             mAdapter1.stopListening();
         }
+
+
     }
 
 
@@ -1397,6 +1449,12 @@ public class LiveStreamingActivity extends AppCompatActivity{
         super.onPause();
         if (isFinishing()) {
             ZEGOLiveStreamingManager.getInstance().leave();
+                ZEGOSDKManager.getInstance().disconnectUser();
+                ZEGOLiveStreamingManager.getInstance().removeUserData();
+                ZEGOLiveStreamingManager.getInstance().removeUserListeners();
+//                ZEGOSDKManager.getInstance().expressService.openCamera(false);
+//                ZEGOSDKManager.getInstance().expressService.stopPreview();
+
             boolean isHost = getIntent().getBooleanExtra("host", true);
             if (isHost){
                 updateLiveStatus(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));

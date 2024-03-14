@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Permissions required by the SDK -->
@@ -49,9 +50,7 @@
         <activity
             android:name=".ui.lucky_game.GameLuckyActivity"
             android:exported="false" />
-        <activity
-            android:name=".ui.lucky_game.LuckyGameActivity"
-            android:exported="false" />
+
         <activity
             android:name=".ui.toplist.activity.TopUsersSendReceiveCoinsActivity"
             android:exported="false" />
@@ -117,6 +116,9 @@
         <activity
             android:name=".streaming.activity.LiveAudioRoomActivity"
             android:exported="false"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
@@ -125,6 +127,9 @@
         <activity
             android:name=".streaming.activity.LiveStreamingActivity"
             android:exported="false"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.auth.activity.OtpVerificationActivity"

@@ -3,12 +3,15 @@ package com.stream.prettylive.ui.activity;
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PictureInPictureParams;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Rational;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -42,6 +45,7 @@ import com.stream.prettylive.streaming.internal.business.call.CallExtendedData;
 import com.stream.prettylive.streaming.internal.business.call.FullCallInfo;
 import com.stream.prettylive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.prettylive.streaming.internal.sdk.basic.ZEGOSDKUser;
+import com.stream.prettylive.ui.home.HomeActivity;
 import com.stream.prettylive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.prettylive.ui.utill.Constant;
 
@@ -126,6 +130,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         });
+
+
+
+        binding.pipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                enterPIPMode();
+            }
+        });
+
+
 
         binding.startLiveAudioroom.setOnClickListener(v -> {
 //            String liveID = binding.liveIdAudioRoom.getEditText().getText().toString();
@@ -212,6 +227,29 @@ public class MainActivity extends AppCompatActivity {
         askNotificationPermission();
     }
 
+    private void enterPIPMode() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Rational aspectRatio = new Rational(16, 9); // Aspect ratio of PIP screen
+            PictureInPictureParams.Builder pipBuilder = new PictureInPictureParams.Builder();
+            pipBuilder.setAspectRatio(aspectRatio);
+
+            enterPictureInPictureMode(pipBuilder.build());
+
+        }
+    }
+
+//    @Override
+//    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
+//        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+//        if (isInPictureInPictureMode) {
+//            // Hide UI elements in PIP mode if necessary
+//            binding.pipButton.setVisibility(View.INVISIBLE);
+//        } else {
+//            // Restore UI elements when PIP mode is exited
+//            binding.pipButton.setVisibility(View.VISIBLE);
+//        }
+//    }
+
     private void enablePermission() {
         List<String> permissions;
         permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
@@ -285,13 +323,13 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onPause() {
         super.onPause();
-        if (isFinishing()) {
-            ZEGOSDKManager.getInstance().disconnectUser();
-            ZEGOLiveStreamingManager.getInstance().removeUserData();
-            ZEGOLiveStreamingManager.getInstance().removeUserListeners();
-            ZEGOSDKManager.getInstance().expressService.openCamera(false);
-            ZEGOSDKManager.getInstance().expressService.stopPreview();
-        }
+//        if (isFinishing()) {
+//            ZEGOSDKManager.getInstance().disconnectUser();
+//            ZEGOLiveStreamingManager.getInstance().removeUserData();
+//            ZEGOLiveStreamingManager.getInstance().removeUserListeners();
+//            ZEGOSDKManager.getInstance().expressService.openCamera(false);
+//            ZEGOSDKManager.getInstance().expressService.stopPreview();
+//        }
     }
 
 
