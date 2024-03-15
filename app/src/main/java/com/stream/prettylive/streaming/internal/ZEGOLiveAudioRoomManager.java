@@ -79,7 +79,7 @@ public class ZEGOLiveAudioRoomManager {
         ZEGOSDKManager.getInstance().zimService.addEventHandler(new IZIMEventHandler() {
             @Override
             public void onRoomAttributesUpdated2(List<Map<String, String>> setProperties,
-                List<Map<String, String>> deleteProperties) {
+                                                 List<Map<String, String>> deleteProperties) {
                 seatService.onRoomAttributesUpdated(setProperties, deleteProperties);
             }
         });
@@ -87,7 +87,7 @@ public class ZEGOLiveAudioRoomManager {
         audioRoomExtraInfo.setValuePairUpdateListener(new ValuePairUpdateListener() {
             @Override
             public void onRoomExtraInfoValuePairUpdateListener(Map<String, Object> updatePairs,
-                Map<String, Object> deletePairs) {
+                                                               Map<String, Object> deletePairs) {
                 if (updatePairs.containsKey(EXTRA_INFO_VALUE_HOST)) {
                     String lastHostUserID = hostUserID;
                     hostUserID = (String) updatePairs.get(EXTRA_INFO_VALUE_HOST);
@@ -139,6 +139,19 @@ public class ZEGOLiveAudioRoomManager {
             JSONObject jsonObject = new JSONObject(extraInfoValueJson.toString());
             jsonObject.put(EXTRA_INFO_VALUE_HOST, localUser.userID);
             jsonObject.put(EXTRA_INFO_VALUE_LOCK_SEAT, true);
+            ZEGOSDKManager.getInstance().expressService.setRoomExtraInfo(EXTRA_INFO_KEY, jsonObject.toString());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+            // add
+        }
+    }
+
+    public void clearHost() {
+        JSONObject extraInfoValueJson = audioRoomExtraInfo.getExtraInfoValueJson();
+        try {
+            ZEGOSDKUser localUser = ZEGOSDKManager.getInstance().expressService.getCurrentUser();
+            JSONObject jsonObject = new JSONObject(extraInfoValueJson.toString());
+            jsonObject.put(EXTRA_INFO_VALUE_HOST, "");
             ZEGOSDKManager.getInstance().expressService.setRoomExtraInfo(EXTRA_INFO_KEY, jsonObject.toString());
         } catch (JSONException e) {
             throw new RuntimeException(e);
@@ -205,7 +218,6 @@ public class ZEGOLiveAudioRoomManager {
         return seatService.findMyRoomSeatIndex();
     }
 
-
     public void takeSeat(int seatIndex, ZIMRoomAttributesOperatedCallback callback) {
         seatService.takeSeat(seatIndex, callback);
     }
@@ -235,8 +247,9 @@ public class ZEGOLiveAudioRoomManager {
     }
 
     public void leave() {
-        ZEGOLiveAudioRoomManager.getInstance().removeRoomData();
-        ZEGOLiveAudioRoomManager.getInstance().removeRoomListeners();
+        clearHost();
+        removeRoomData();
+        removeRoomListeners();
         ZEGOSDKManager.getInstance().logoutRoom(null);
     }
 
