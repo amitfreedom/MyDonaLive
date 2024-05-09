@@ -967,9 +967,14 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
                             long PotC = (long) snapshot.get("PotC");
 
                             ArrayList<Long> Pots = new ArrayList<Long>();
+                            ArrayList<Long> wingPots = new ArrayList<Long>();
                             ArrayList<Long> UnsortedPots = new ArrayList<Long>();
                             int WinnedPot = 0;
                             boolean[] Area = {false, false, false};
+
+                            wingPots.add((long) MyPotA);
+                            wingPots.add((long) MyPotB);
+                            wingPots.add((long) MyPotC);
 
                             Pots.add(PotA);
                             Pots.add(PotB);
@@ -979,6 +984,12 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
                             UnsortedPots.add(PotC);
 
                             Collections.sort(Pots);
+
+//                            findSmallest();
+                            long smallestValue = findSmallestValue(wingPots);
+
+                            Log.i("amit234jh", "ports =>"+wingPots);
+                            Log.i("amit234jh", " =>"+(smallestValue+1));
 
                             for (int i = 0; i < 3; i++) {
                                 if (Pots.get(i).equals(UnsortedPots.get(i))) {
@@ -1003,7 +1014,11 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
 //                               }
 //                           }
 
-                            Area[randomIndex] = true;
+                            try {
+                                Area[(int) (smallestValue +1)] = true;
+                            }catch (Exception e){
+
+                            }
 
 
                             ArrayList<Integer> NewRes = new ArrayList<Integer>();
@@ -1233,6 +1248,30 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
         });
     }
 
+    private void findSmallest() {
+
+    }
+    public long findSmallestValue(ArrayList<Long> array) {
+        if (array == null || array.size() == 0) {
+            throw new IllegalArgumentException("Array must not be empty or null");
+        }
+
+        // Initialize smallestValue with the first element of the array
+        long smallestValue = array.get(0);
+        long smallestIndex = 0;
+
+        // Iterate through the array to find the smallest value
+        for (int i = 1; i < array.size(); i++) {
+            if (array.get(i) < smallestValue) {
+                smallestValue = array.get(i);
+                smallestIndex = array.get(i);
+            }
+        }
+
+        return smallestIndex;
+//        return smallestValue;
+    }
+
     void ShowBanner() {
         for (int a = 0; a < 4; a++) {
             Handler handler1 = new Handler();
@@ -1244,7 +1283,7 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
                         ShowAllCards();
                     }
                 }
-            }, 1000 * a);
+            }, 2000 * a);
         }
     }
 
@@ -1263,7 +1302,6 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
         TestData.put("WinCoins", PrizeCoins);
         TestData.put("username", "Amit");
         TestData.put("userimage", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-HM2SXYoFDGDMERjCJ3iRwYKfYGJdlMrVog8Zpufs-Am_9GY6Tm8bXFUkbEwS7xzWEhU&usqp=CAU");
-
         Coll.set(TestData).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -1661,6 +1699,14 @@ public class BottomSheetGameFragment extends BottomSheetDialogFragment {
                             if (snapshot.get("timer") != null) {
                                 long number = snapshot.getLong("timer");
                                 int nm = (int) number;
+
+                                if(nm>=10){
+                                    binding.timerView.setVisibility(View.VISIBLE);
+                                } if(nm == 10){
+                                    binding.timerView.setVisibility(View.INVISIBLE);
+                                }
+
+
 
                                 if (nm==20){
                                     binding.soundUp.setVisibility(View.VISIBLE);

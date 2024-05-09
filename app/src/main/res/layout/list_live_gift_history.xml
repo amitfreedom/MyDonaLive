@@ -107,12 +107,12 @@
 
             <TextView
                 android:id="@+id/tv_duration"
-                android:padding="@dimen/dp_10"
-                android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_10"
-                android:text="77"/>
+                android:layout_centerInParent="true"
+                android:padding="@dimen/dp_10"
+                android:text="77"
+                android:textSize="@dimen/sp_10" />
 
             <View
                 android:layout_width="@dimen/dp_1"

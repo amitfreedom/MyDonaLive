@@ -1,36 +1,37 @@
 package com.stream.prettylive.ui.home.ui.profile.models;
 
 public class UserDetailsModel {
-    private String userId="";
-    private long uid=0;
-    private long receiveCoin=0;
-    private long senderCoin=0;
-    private long receiveGameCoin=0;
-    private String username="";
-    private String email="";
-    private String phone="";
-    private String countryCode="";
-    private String country_name="";
-    private String loginType="";
-    private String image="";
-    private String regId="";
-    private String deviceId="";
-    private String beans="";
-    private String coins="";
-    private String level="";
-    private String diamond="";
-    private String docId="";
+    private String userId = "";
+    private long uid = 0;
+    private long receiveCoin = 0;
+    private long senderCoin = 0;
+    private long receiveGameCoin = 0;
+    private String username = "";
+    private String email = "";
+    private boolean disabled = false;
+    private String phone = "";
+    private String countryCode = "";
+    private String country_name = "";
+    private String loginType = "";
+    private String image = "";
+    private String regId = "";
+    private String deviceId = "";
+    private String beans = "";
+    private String coins = "";
+    private String level = "";
+    private String diamond = "";
+    private String docId = "";
     private String latitude;
     private String longitude;
-    private String friends="";
-    private String followers="";
-    private String following="";
-    private long loginTime=0;
+    private String friends = "";
+    private String followers = "";
+    private String following = "";
+    private long loginTime = 0;
 
     public UserDetailsModel() {
     }
 
-    public UserDetailsModel(String userId, long uid, long receiveCoin, long senderCoin,long receiveGameCoin, String username, String email, String phone, String countryCode, String country_name, String loginType, String image, String regId, String deviceId, String beans, String coins, String level, String diamond, String docId, String latitude, String longitude, String friends, String followers, String following, long loginTime) {
+    public UserDetailsModel(String userId, long uid, long receiveCoin, long senderCoin, long receiveGameCoin, String username, String email, boolean disabled, String phone, String countryCode, String country_name, String loginType, String image, String regId, String deviceId, String beans, String coins, String level, String diamond, String docId, String latitude, String longitude, String friends, String followers, String following, long loginTime) {
         this.userId = userId;
         this.uid = uid;
         this.receiveCoin = receiveCoin;
@@ -38,6 +39,7 @@ public class UserDetailsModel {
         this.receiveGameCoin = receiveGameCoin;
         this.username = username;
         this.email = email;
+        this.disabled = disabled;
         this.phone = phone;
         this.countryCode = countryCode;
         this.country_name = country_name;
@@ -56,14 +58,6 @@ public class UserDetailsModel {
         this.followers = followers;
         this.following = following;
         this.loginTime = loginTime;
-    }
-
-    public long getReceiveGameCoin() {
-        return receiveGameCoin;
-    }
-
-    public void setReceiveGameCoin(long receiveGameCoin) {
-        this.receiveGameCoin = receiveGameCoin;
     }
 
     public String getUserId() {
@@ -98,6 +92,14 @@ public class UserDetailsModel {
         this.senderCoin = senderCoin;
     }
 
+    public long getReceiveGameCoin() {
+        return receiveGameCoin;
+    }
+
+    public void setReceiveGameCoin(long receiveGameCoin) {
+        this.receiveGameCoin = receiveGameCoin;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -112,6 +114,14 @@ public class UserDetailsModel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     public String getPhone() {

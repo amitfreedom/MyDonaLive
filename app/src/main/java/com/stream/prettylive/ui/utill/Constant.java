@@ -18,4 +18,8 @@ public class Constant {
     public  static final String LOGIN_DETAILS  = "login_details";
     public  static final String USERID  = "userId";
     public  static final String UID  = "uid";
+    public  static final String HOST_REGISTER  = "host_registration";
+    public  static final String HOST_AGENCY  = "host_agency_list";
+    public  static final String TOTAL_COUNTS  = "total_counts";
+    public  static final String ALL_COUNT  = "all_counts";
 }

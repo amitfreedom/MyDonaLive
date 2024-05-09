@@ -23,6 +23,7 @@ import com.stream.prettylive.ui.chat.model.Message;
 import com.stream.prettylive.ui.utill.Constant;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,7 +146,9 @@ public class ConversationActivity extends AppCompatActivity{
     }
 
     public void sendMessage(String senderId, String receiverId, String messageText) {
-        long timestamp = System.currentTimeMillis();
+//        long timestamp = System.currentTimeMillis();
+        Date currentDate = new Date();
+        long timestamp = currentDate.getTime();
         Map<String, Object> message = new HashMap<>();
         message.put("senderId", senderId);
         message.put("receiverId", receiverId);

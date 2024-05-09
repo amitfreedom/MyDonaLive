@@ -208,6 +208,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
         audienceId = getIntent().getStringExtra("audienceId");
         uid = getIntent().getLongExtra("uid",0);
 
+        ApplicationClass.getSharedpref().saveString(AppConstants.ROOM_ID,liveID);
+
         Log.i("liveID", "onCreate: ===="+liveID);
         fetchOtherUserDetails(userId);
         if (!isHost){
@@ -739,7 +741,9 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
     private void sendGift(DocumentSnapshot giftModel, BottomSheetDialog bottomSheetDialog, int giftCount) {
 
-        long timestamp = System.currentTimeMillis();
+//        long timestamp = System.currentTimeMillis();
+        Date currentDate = new Date();
+        long timestamp = currentDate.getTime();
         Map<String, Object> data = new HashMap<>();
         data.put("senderId", ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         data.put("diamond", giftModel.getString("price"));
@@ -1109,7 +1113,9 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
     private void saveLiveData(String userId,long uid,String userName,boolean isHost,String liveID,String liveType,String country,String image) {
 
-        long timestamp = System.currentTimeMillis();
+//        long timestamp = System.currentTimeMillis();
+        Date currentDate = new Date();
+        long timestamp = currentDate.getTime();
         Map<String, Object> liveDetails = new HashMap<>();
         liveDetails.put("userId", userId);
         liveDetails.put("uid", uid);
@@ -1516,7 +1522,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
         CollectionReference liveDetailsRef = firestore.collection(Constant.LIVE_DETAILS);
 
         // Create a query to find the document with the given userId
-        Query query = liveDetailsRef.whereEqualTo("userId", userId);
+        Query query = liveDetailsRef.whereEqualTo("userId", userId).whereEqualTo("liveID",liveID);
 
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -1524,7 +1530,9 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     // Get the document ID for the matched document
                     String documentId = document.getId();
 
-                    long timestamp = System.currentTimeMillis();
+//                    long timestamp = System.currentTimeMillis();
+                    Date currentDate = new Date();
+                    long timestamp = currentDate.getTime();
                     Map<String, Object> updateDetails = new HashMap<>();
                     updateDetails.put("liveStatus", "offline");
                     updateDetails.put("endTime", timestamp);
@@ -1533,6 +1541,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     liveDetailsRef.document(documentId)
                             .update(updateDetails)
                             .addOnSuccessListener(aVoid -> {
+                                ApplicationClass.getSharedpref().saveString(AppConstants.ROOM_ID,"");
                                 Log.i("UpdateLiveType", "liveType updated successfully for user with ID: " + userId);
                             })
                             .addOnFailureListener(e -> {
@@ -2144,7 +2153,9 @@ public class LiveStreamingActivity extends AppCompatActivity{
 
     private void saveRoomUsers(UserModel userDetails) {
 
-        long timestamp = System.currentTimeMillis();
+//        long timestamp = System.currentTimeMillis();
+        Date currentDate = new Date();
+        long timestamp = currentDate.getTime();
         RoomUsers roomUsers = new RoomUsers();
         roomUsers.setLiveId(liveID);
         roomUsers.setUserId(userDetails.getUserId());

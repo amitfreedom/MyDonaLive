@@ -13,6 +13,7 @@ import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
 import com.stream.prettylive.ui.utill.Constant;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +58,7 @@ public class MyService extends Service {
         CollectionReference liveDetailsRef = FirebaseFirestore.getInstance().collection(Constant.LIVE_DETAILS);
 
         // Create a query to find the document with the given userId
-        Query query = liveDetailsRef.whereEqualTo("userId", userId);
+        Query query = liveDetailsRef.whereEqualTo("userId", userId).whereEqualTo("liveID",ApplicationClass.getSharedpref().getString(AppConstants.ROOM_ID));
 
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -67,21 +68,31 @@ public class MyService extends Service {
                        String documentId = document.getId();
                        String liveStatus = document.getString("liveStatus");
 
-                       long timestamp = System.currentTimeMillis();
-                       Map<String, Object> updateDetails = new HashMap<>();
-                       updateDetails.put("liveStatus", "offline");
-                       updateDetails.put("endTime", timestamp);
+//                       assert liveStatus != null;
+//                       if (liveStatus.equals("offline")){
+//                           return;
+//                       }else {
+//                           long timestamp = System.currentTimeMillis();
+                       Date currentDate = new Date();
+                       long timestamp = currentDate.getTime();
+                           Map<String, Object> updateDetails = new HashMap<>();
+                           updateDetails.put("liveStatus", "offline");
+                           updateDetails.put("endTime", timestamp);
 
-                       // Update the liveType field from 0 to 1
-                       liveDetailsRef.document(documentId)
-                               .update(updateDetails)
-                               .addOnSuccessListener(aVoid -> {
-                                   Log.i(TAG, "liveType updated successfully for user with ID: " + userId);
-                                   stopSelf();
-                               })
-                               .addOnFailureListener(e -> {
-                                   Log.e(TAG, "Error updating liveType for user with ID: " + userId, e);
-                               });
+                           // Update the liveType field from 0 to 1
+                           liveDetailsRef.document(documentId)
+                                   .update(updateDetails)
+                                   .addOnSuccessListener(aVoid -> {
+                                       ApplicationClass.getSharedpref().saveString(AppConstants.ROOM_ID,"");
+                                       Log.i(TAG, "liveType updated successfully for user with ID: " + userId);
+                                       stopSelf();
+                                   })
+                                   .addOnFailureListener(e -> {
+                                       Log.e(TAG, "Error updating liveType for user with ID: " + userId, e);
+                                   });
+//                       }
+
+
                    }
                }catch (Exception e){
 

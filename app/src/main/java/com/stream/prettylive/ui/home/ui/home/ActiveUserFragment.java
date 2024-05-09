@@ -49,6 +49,7 @@ import com.stream.prettylive.ui.utill.Constant;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -246,7 +247,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
         CollectionReference liveDetailsRef = FirebaseFirestore.getInstance().collection(Constant.LIVE_DETAILS);
 
         // Create a query to find the document with the given userId
-        Query query = liveDetailsRef.whereEqualTo("userId", userId);
+        Query query = liveDetailsRef.whereEqualTo("userId", userId).whereEqualTo("liveID",ApplicationClass.getSharedpref().getString(AppConstants.ROOM_ID));
 
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -255,20 +256,32 @@ public class ActiveUserFragment extends Fragment implements ActiveUserAdapter.On
                     String documentId = document.getId();
                     String liveStatus = document.getString("liveStatus");
 
-                    long timestamp = System.currentTimeMillis();
-                    Map<String, Object> updateDetails = new HashMap<>();
-                    updateDetails.put("liveStatus", "offline");
-                    updateDetails.put("endTime", timestamp);
 
-                    // Update the liveType field from 0 to 1
-                    liveDetailsRef.document(documentId)
-                            .update(updateDetails)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.i("UpdateLiveType", "liveType updated successfully for user with ID: " + userId);
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e("UpdateLiveType", "Error updating liveType for user with ID: " + userId, e);
-                            });
+                    assert liveStatus != null;
+                    if (liveStatus.equals("offline")){
+                        return;
+                    }else {
+
+//                        long timestamp = System.currentTimeMillis();
+                        Date currentDate = new Date();
+                        long timestamp = currentDate.getTime();
+                        Map<String, Object> updateDetails = new HashMap<>();
+                        updateDetails.put("liveStatus", "offline");
+                        updateDetails.put("endTime", timestamp);
+
+                        // Update the liveType field from 0 to 1
+                        liveDetailsRef.document(documentId)
+                                .update(updateDetails)
+                                .addOnSuccessListener(aVoid -> {
+                                    ApplicationClass.getSharedpref().saveString(AppConstants.ROOM_ID,"");
+                                    Log.i("UpdateLiveType", "liveType updated successfully for user with ID: " + userId);
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("UpdateLiveType", "Error updating liveType for user with ID: " + userId, e);
+                                });
+                    }
+
+
                 }
             } else {
                 Log.e("UpdateLiveType", "Error getting documents: ", task.getException());

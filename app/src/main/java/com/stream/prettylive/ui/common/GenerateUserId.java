@@ -34,23 +34,5 @@ public class GenerateUserId {
                 });
     }
 
-//    public static CompletableFuture<Integer> getLastUserIdFuture(FirebaseFirestore firestore, String collectionPath) {
-//        CompletableFuture<Integer> future = new CompletableFuture<>();
-//
-//        getLastUserId(firestore, collectionPath, new UserIdCallback() {
-//            @Override
-//            public void onUserIdReceived(int userId) {
-//                future.complete(userId);
-//            }
-//
-//            @Override
-//            public void onFailure(Exception e) {
-//                future.completeExceptionally(e);
-//            }
-//        });
-//
-//        return future;
-//    }
-
 
 }

@@ -71,6 +71,23 @@
                 android:layout_marginBottom="@dimen/_20dp"
                 android:orientation="vertical">
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_10dp"
+                    android:text="Application will be rejected if you upload invalid ID#"
+                    android:textColor="@color/app_color3"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="@dimen/_10dp"
+                    style="@style/NormalTextStyle"
+                    android:text="Real Name*"/>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -79,10 +96,18 @@
                         android:id="@+id/edtName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="*Enter your real name"
+                        android:hint="Enter your real name"
                         android:textSize="15sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="@dimen/_10dp"
+                    style="@style/NormalTextStyle"
+                    android:text="Enter your whatsApp number*"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -95,7 +120,7 @@
                         android:id="@+id/edtNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="*Enter your mobile/whatApp number"
+                        android:hint="Enter your whatsapp number"
                         android:textSize="15sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -105,17 +130,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10dp"
-                    android:layout_marginBottom="@dimen/_10dp"
-                    android:text="*Select your country/Region"
+                    android:text="Agency Code*"
                     android:textColor="@color/black"
+                    style="@style/NormalTextStyle"
                     android:textSize="15sp" />
 
-
-                <Spinner
-                    android:id="@+id/spinner"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_50dp"
-                    android:entries="@array/country"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10dp"
+
+                    >
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/etAgencyCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter agency code"
+                        android:textSize="15sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
 
 
                 <View
@@ -125,20 +161,13 @@
                     android:background="@color/very_light" />
 
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10dp">
-
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/edtAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Enter your Address (optional)"
-                        android:textSize="15sp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
+                    android:textColor="@color/black"
+                    android:layout_marginTop="@dimen/_10dp"
+                    style="@style/NormalTextStyle"
+                    android:text="Email Address*"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -151,11 +180,64 @@
                         android:id="@+id/edtEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="*Enter your email Address"
+                        android:hint="Enter your email Address"
                         android:inputType="textEmailAddress"
                         android:textSize="15sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="@dimen/_10dp"
+                    style="@style/NormalTextStyle"
+                    android:text="Documents types"/>
+
+                <RadioGroup
+                    android:id="@+id/documentsType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Driving License"
+                        android:textColor="@color/black"/>
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Passport"
+                        android:textColor="@color/black"/>
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Birth Certificate"
+                        android:textColor="@color/black"/>
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="National Id"
+                        android:textColor="@color/black"/>
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Other"
+                        android:textColor="@color/black"/>
+
+                </RadioGroup>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="@dimen/_10dp"
+                    style="@style/NormalTextStyle"
+                    android:text="@string/id_card_number"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -166,72 +248,10 @@
                         android:id="@+id/edtNationalId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="*Enter your national id number"
+                        android:hint="Enter your id number"
                         android:textSize="15sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:layout_marginBottom="@dimen/_10dp"
-                    android:text="Application will be rejected if you upload invalid ID#"
-                    android:textColor="@color/app_color3"
-                    android:textSize="13sp" />
-
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_150dp"
-                    android:layout_marginTop="@dimen/_10dp"
-                    app:cardCornerRadius="@dimen/_10dp"
-                    app:cardUseCompatPadding="true">
-
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/imgShowNationalId"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop" />
-
-
-                        <RelativeLayout
-                            android:id="@+id/rlNationId"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true">
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/imgAddNationId"
-                                android:layout_width="@dimen/_40dp"
-                                android:layout_height="@dimen/_40dp"
-                                android:layout_centerHorizontal="true"
-                                android:src="@drawable/ic_baseline_add_24"
-                                android:tint="@color/app_color2" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/imgAddNationId"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginTop="@dimen/_10dp"
-                                android:text="Click top upload national ID Images"
-                                android:textColor="@color/black"
-                                android:textSize="15sp" />
-
-                        </RelativeLayout>
-
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
 
                 <androidx.appcompat.widget.AppCompatTextView
 
@@ -293,196 +313,6 @@
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
-
-
-                <androidx.appcompat.widget.AppCompatTextView
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:layout_marginBottom="@dimen/_10dp"
-                    android:text="Upload self-taken photo"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_150dp"
-                    android:layout_marginTop="@dimen/_10dp"
-                    app:cardCornerRadius="@dimen/_10dp"
-                    app:cardUseCompatPadding="true">
-
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/imgProfileImage"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop" />
-
-                        <RelativeLayout
-                            android:id="@+id/rlProfile"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true">
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/imgAddSelfi"
-                                android:layout_width="@dimen/_40dp"
-                                android:layout_height="@dimen/_40dp"
-                                android:layout_centerHorizontal="true"
-                                android:src="@drawable/ic_baseline_add_24"
-                                android:tint="@color/app_color2" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/imgAddSelfi"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginTop="@dimen/_10dp"
-                                android:text="Click to upload"
-                                android:textColor="@color/black"
-                                android:textSize="15sp" />
-
-                        </RelativeLayout>
-
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:layout_marginBottom="@dimen/_10dp"
-                    android:text="Choose how you want to be paid"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/_10dp"
-                    android:text="@string/select_payment_receival_type"
-                    android:textSize="15sp" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <RadioGroup
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RadioButton
-                            android:id="@+id/rbSelf"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Self" />
-
-                        <RadioButton
-                            android:id="@+id/rbAgency"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_20dp"
-                            android:text="Via Agency" />
-
-                        <RadioButton
-                            android:id="@+id/rbTrusted"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_10dp"
-                            android:text="Trusted 3rd Party" />
-
-
-                    </RadioGroup>
-
-                </LinearLayout>
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputAgency"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone">
-
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/edtAgencyID"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="*Enter agency ID" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:background="@color/very_light" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:text="*Select Payment Method"
-                    android:textSize="15sp" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:orientation="horizontal">
-
-                    <RadioGroup
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RadioButton
-                            android:id="@+id/rbCash"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cash" />
-
-                        <RadioButton
-                            android:id="@+id/rbBank"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_20dp"
-                            android:text="Bank" />
-
-                        <RadioButton
-                            android:id="@+id/rbPaypal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_20dp"
-                            android:text="PayPal" />
-
-
-                    </RadioGroup>
-
-                </LinearLayout>
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:background="@color/very_light" />
-
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnApply"

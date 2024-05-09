@@ -26,6 +26,7 @@ import com.stream.prettylive.ui.common.BaseActivity;
 import com.stream.prettylive.ui.common.GenerateUserId;
 import com.stream.prettylive.ui.home.HomeActivity;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -234,7 +235,9 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void updateUI(FirebaseUser user, int nextUserId) {
-        long timestamp = System.currentTimeMillis();
+//        long timestamp = System.currentTimeMillis();
+        Date currentDate = new Date();
+        long timestamp = currentDate.getTime();
         Map<String, Object> loginDetails = new HashMap<>();
         loginDetails.put("userId", user.getUid());
         loginDetails.put("uid", nextUserId);

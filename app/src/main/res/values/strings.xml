@@ -362,4 +362,5 @@
     <string name="fruite_loops">Fruits Loops</string>
     <string name="game_list">Game List</string>
     <string name="game_top">Top Games</string>
+    <string name="id_card_number">ID Card Number*</string>
 </resources>

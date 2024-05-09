@@ -2,6 +2,8 @@ package com.stream.prettylive.ui.startup.activity;
 
 import static android.content.ContentValues.TAG;
 
+import static com.stream.prettylive.global.FirebaseUserHelper.fetchUserDetails;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -10,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -25,6 +28,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.BeginSignInResult;
 import com.google.android.gms.auth.api.identity.GetSignInIntentRequest;
@@ -41,21 +45,28 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.stream.prettylive.R;
 import com.stream.prettylive.databinding.ActivityOnboardingBinding;
 import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
+import com.stream.prettylive.global.FirebaseUserHelper;
 import com.stream.prettylive.streaming.internal.sdk.ZEGOSDKManager;
 import com.stream.prettylive.streaming.internal.sdk.basic.ZEGOSDKCallBack;
+import com.stream.prettylive.streaming.internal.utils.ToastUtil;
 import com.stream.prettylive.ui.auth.activity.LoginActivity;
 //import com.stream.prettylive.ui.auth.activity.PhoneActivity;
 import com.stream.prettylive.ui.auth.activity.OtpVerificationActivity;
 import com.stream.prettylive.ui.common.GenerateUserId;
 import com.stream.prettylive.ui.home.HomeActivity;
+import com.stream.prettylive.ui.home.ui.profile.models.UserDetailsModel;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class OnboardingActivity extends AppCompatActivity {
     private ActivityOnboardingBinding binding;
@@ -64,6 +75,8 @@ public class OnboardingActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private FirebaseAuth mAuth;
     private ProgressDialog progressDialog;
+    private boolean isDisable=false;
+
 
     private final ActivityResultLauncher<IntentSenderRequest> signInLauncher = registerForActivityResult(
             new ActivityResultContracts.StartIntentSenderForResult(),
@@ -112,6 +125,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
             }
         });
+
 
 
 
@@ -182,6 +196,8 @@ public class OnboardingActivity extends AppCompatActivity {
                 });
     }
 
+
+
     private void oneTapSignIn() {
         // Configure One Tap UI
         BeginSignInRequest oneTapRequest = BeginSignInRequest.builder()
@@ -247,8 +263,26 @@ public class OnboardingActivity extends AppCompatActivity {
                             Log.i("Onboard", "checkUserExistenceInFirestore:  else"+task.getResult());
                             // User exists in Firestore
                             // You can retrieve the user's information if needed
-                            ApplicationClass.getSharedpref().saveString(AppConstants.USER_ID, user.getUid());
-                            moveNextPage();
+                            if (task.isSuccessful()) {
+                                QuerySnapshot querySnapshot = task.getResult();
+                                if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                    for (DocumentSnapshot document : querySnapshot) {
+//                                        UserDetailsModel userDetails = document.toObject(UserDetailsModel.class);
+                                        // Pass the fetched user details to the listener
+                                        isDisable = Boolean.TRUE.equals(document.getBoolean("disabled"));
+                                        if (isDisable){
+                                            ToastUtil.show(OnboardingActivity.this,"Your Account has been blocked by Admin");
+                                        }else {
+                                            ApplicationClass.getSharedpref().saveString(AppConstants.USER_ID, user.getUid());
+                                            moveNextPage();
+                                        }
+                                    }
+                                } else {
+                                    String errorMessage = "No user details found";
+                                }
+                            }
+//                            ApplicationClass.getSharedpref().saveString(AppConstants.USER_ID, user.getUid());
+//                            moveNextPage();
                         }
                     } else {
                         // Handle Firestore query failure
@@ -280,14 +314,19 @@ public class OnboardingActivity extends AppCompatActivity {
         });
     }
 
+
+
     private void updateUI(FirebaseUser user, int nextUserId) {
         ApplicationClass.getSharedpref().saveString(AppConstants.USER_ID, user.getUid());
-            long timestamp = System.currentTimeMillis();
+//            long timestamp = System.currentTimeMillis();
+        Date currentDate = new Date();
+        long timestamp = currentDate.getTime();
             Map<String, Object> loginDetails = new HashMap<>();
             loginDetails.put("userId", user.getUid());
             loginDetails.put("uid", nextUserId);
             loginDetails.put("username", user.getDisplayName()!=null?user.getDisplayName():String.valueOf(nextUserId));
             loginDetails.put("email", user.getEmail());
+            loginDetails.put("disabled", false);
             loginDetails.put("phone", "");
             loginDetails.put("country_code", "");
             loginDetails.put("country_name", "");

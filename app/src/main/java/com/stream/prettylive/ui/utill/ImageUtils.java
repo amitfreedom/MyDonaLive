@@ -71,6 +71,7 @@ public class ImageUtils {
                 Log.e(TAG, "Error uploading image: " + e.getMessage()));
     }
 
+
     private void updateLiveStatus(String userId, Uri uri) {
         // Reference to the Firestore collection
         firestore = FirebaseFirestore.getInstance();

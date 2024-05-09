@@ -173,6 +173,8 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent mainIntent = new Intent(getActivity(), HostRegistrationFormActivity.class);
+                mainIntent.putExtra("uid",String.valueOf(userDetails.getUid()));
+                mainIntent.putExtra("image",userDetails.getImage());
                 startActivity(mainIntent);
             }
         });
@@ -340,10 +342,10 @@ public class ProfileFragment extends Fragment {
                         liveDetailsRef.document(documentId)
                                 .update(updateDetails)
                                 .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(requireActivity(), "okk", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(requireActivity(), "okk", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> {
-                                    Toast.makeText(requireActivity(), "eeeee", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(requireActivity(), "eeeee", Toast.LENGTH_SHORT).show();
                                 });
                     }
                 } else {
@@ -355,7 +357,7 @@ public class ProfileFragment extends Fragment {
 
         }
         }else {
-            Toast.makeText(requireActivity(), "else", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(requireActivity(), "else", Toast.LENGTH_SHORT).show();
         }
     }
     private long calculateCoinsForNextLevel(int currentLevel) {
