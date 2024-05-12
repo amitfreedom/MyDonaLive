@@ -62,6 +62,7 @@ import com.stream.prettylive.ui.auth.activity.OtpVerificationActivity;
 import com.stream.prettylive.ui.common.GenerateUserId;
 import com.stream.prettylive.ui.home.HomeActivity;
 import com.stream.prettylive.ui.home.ui.profile.models.UserDetailsModel;
+import com.stream.prettylive.ui.utill.DeviceUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -76,6 +77,7 @@ public class OnboardingActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ProgressDialog progressDialog;
     private boolean isDisable=false;
+    private String reg_id="";
 
 
     private final ActivityResultLauncher<IntentSenderRequest> signInLauncher = registerForActivityResult(
@@ -122,7 +124,18 @@ public class OnboardingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(OnboardingActivity.this, OtpVerificationActivity.class));
+            }
+        });
 
+        DeviceUtils.getDeviceToken(new DeviceUtils.TokenFetchListener() {
+            @Override
+            public void onTokenFetchSuccess(String token) {
+                reg_id=token;
+            }
+
+            @Override
+            public void onTokenFetchFailure(Exception e) {
+                reg_id="";
             }
         });
 
@@ -332,8 +345,8 @@ public class OnboardingActivity extends AppCompatActivity {
             loginDetails.put("country_name", "");
             loginDetails.put("login_type", "google");
             loginDetails.put("image", user.getPhotoUrl()!=null?user.getPhotoUrl():"");
-            loginDetails.put("reg_id", "");
-            loginDetails.put("device_id", "");
+            loginDetails.put("reg_id", reg_id);
+            loginDetails.put("device_id", DeviceUtils.getDeviceId(OnboardingActivity.this));
             loginDetails.put("beans", "0");
             loginDetails.put("coins", "0");
             loginDetails.put("level", "1");

@@ -40,6 +40,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.stream.prettylive.databinding.ActivityHostRegistrationFormBinding;
 import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
+import com.stream.prettylive.global.DateUtils;
 import com.stream.prettylive.ui.home.ui.profile.models.HostModal;
 import com.stream.prettylive.ui.home.ui.profile.models.UserDetailsModel;
 import com.stream.prettylive.ui.utill.Constant;
@@ -184,6 +185,7 @@ public class HostRegistrationFormActivity extends AppCompatActivity {
             }
             else {
                 showProgressBar();
+                String todayDate = DateUtils.getCurrentDate();
                 HostModal hostModal = new HostModal();
                 hostModal.setRealName(realName);
                 hostModal.setPhoneNumber(whatsAppNumber);
@@ -196,6 +198,7 @@ public class HostRegistrationFormActivity extends AppCompatActivity {
                 hostModal.setUid(uid);
                 hostModal.setPhoto(photo);
                 hostModal.setUserId(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
+                hostModal.setJoiningDate(todayDate);
 
                 db.collection(Constant.HOST_REGISTER).document("pending").collection("host").document(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID)).set(hostModal).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

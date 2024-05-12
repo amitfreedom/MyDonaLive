@@ -12,12 +12,13 @@ public class HostModal {
     private String userId ="";
     private String uid ="";
     private String photo ="";
+    private String joiningDate ="";
 
 
     public HostModal() {
     }
 
-    public HostModal(String realName, String phoneNumber, String agencyCode, String emailAddress, String docType, String idCardNumber, String idCardImage, String status, String userId, String uid, String photo) {
+    public HostModal(String realName, String phoneNumber, String agencyCode, String emailAddress, String docType, String idCardNumber, String idCardImage, String status, String userId, String uid, String photo, String joiningDate) {
         this.realName = realName;
         this.phoneNumber = phoneNumber;
         this.agencyCode = agencyCode;
@@ -29,6 +30,15 @@ public class HostModal {
         this.userId = userId;
         this.uid = uid;
         this.photo = photo;
+        this.joiningDate=joiningDate;
+    }
+
+    public String getJoiningDate() {
+        return joiningDate;
+    }
+
+    public void setJoiningDate(String joiningDate) {
+        this.joiningDate = joiningDate;
     }
 
     public String getUid() {
