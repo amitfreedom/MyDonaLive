@@ -1,5 +1,8 @@
 package com.stream.prettylive.streaming.activity;
 
+
+import static com.stream.prettylive.global.DateUtils.getFormattedDateTime;
+
 import android.Manifest.permission;
 import android.annotation.SuppressLint;
 import android.app.PictureInPictureParams;
@@ -1128,6 +1131,8 @@ public class LiveStreamingActivity extends AppCompatActivity{
         liveDetails.put("liveStatus", "online");
         liveDetails.put("startTime", timestamp);
         liveDetails.put("endTime", timestamp);
+        liveDetails.put("startDate", getFormattedDateTime());
+        liveDetails.put("endDate", getFormattedDateTime());
         liveDetails.put("country", country);
 
         // Add the login details to Firestore
@@ -1536,6 +1541,7 @@ public class LiveStreamingActivity extends AppCompatActivity{
                     Map<String, Object> updateDetails = new HashMap<>();
                     updateDetails.put("liveStatus", "offline");
                     updateDetails.put("endTime", timestamp);
+                    updateDetails.put("endDate", getFormattedDateTime());
 
                     // Update the liveType field from 0 to 1
                     liveDetailsRef.document(documentId)

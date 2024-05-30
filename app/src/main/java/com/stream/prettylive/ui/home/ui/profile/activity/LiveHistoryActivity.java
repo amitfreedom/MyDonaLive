@@ -1,11 +1,11 @@
 package com.stream.prettylive.ui.home.ui.profile.activity;
 
-import static com.stream.prettylive.streaming.functions.Duration.calculateDuration;
+import static com.stream.prettylive.streaming.functions.Duration1.calculateDuration;
 
-import static okhttp3.internal.concurrent.TaskLoggerKt.formatDuration;
-
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -23,13 +24,19 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.stream.prettylive.databinding.ActivityLiveHistoryBinding;
 import com.stream.prettylive.global.AppConstants;
 import com.stream.prettylive.global.ApplicationClass;
+import com.stream.prettylive.ui.activity.MainActivity;
+import com.stream.prettylive.ui.home.ui.home.models.LiveUser;
 import com.stream.prettylive.ui.home.ui.profile.LiveHistoryAdapter;
 import com.stream.prettylive.ui.utill.Constant;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class LiveHistoryActivity extends AppCompatActivity implements LiveHistoryAdapter.OnActiveUserSelectedListener {
@@ -39,6 +46,8 @@ public class LiveHistoryActivity extends AppCompatActivity implements LiveHistor
     private FirebaseFirestore mFirestore;
     private LiveHistoryAdapter liveHistoryAdapter;
     private Query mQuery;
+    private String totalTime ="";
+    private String totalDays ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,65 +62,19 @@ public class LiveHistoryActivity extends AppCompatActivity implements LiveHistor
 
         getData(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
         setCurrentDate();
+//        getAllData(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
 
-        getAllData(ApplicationClass.getSharedpref().getString(AppConstants.USER_ID));
-    }
-long totalDurationMillis =0;
-    private void getAllData(String userId) {
+        // Get current date and time
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDateTime = currentDateTime.format(formatter);
 
-        // Get the date 15 days ago
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, -29);
-        Date fifteenDaysAgo = calendar.getTime();
-
-// Get the current date
-        Date currentDate = new Date();
-
-// Convert currentDate to timestamp
-        long timestamp = currentDate.getTime();
-
-        mFirestore.collection(Constant.LIVE_DETAILS)
-                .orderBy("startTime", Query.Direction.DESCENDING)
-                .whereEqualTo("liveStatus","offline")
-                .whereEqualTo("userId",userId)
-                .limit(10)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            // Iterate through each document
-                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                // Access document data
-//                                Map<String, Object> data = document.getData();
-//                                // Process document data as needed
-//                                // For example:
-//                                String liveStatus = (String) data.get("liveStatus");
-//                                String startTime = (String) data.get("startTime");
-//                                String endTime = (String) data.get("liveStatus");
-////                                String userId = (String) data.get("userId");
-//                                // Process other fields...
-
-                                long startTime = document.getLong("startTime");
-                                long endTime = document.getLong("endTime");
-
-                                long durationMillis = calculateDuration(startTime, endTime);
-                                totalDurationMillis += durationMillis; // Add to total duration
-
-                                Log.i("jhgsejfhgejhfg", "totalDurationMillis =>"+formatDuration(totalDurationMillis));
-
-                            }
-                        } else {
-                            Log.i("jhgsejfhgejhfg", "onSuccess: ====>else");
-
-                            // Handle case when there are no documents
-                        }
-                    }
-                });
+        fetchUsersByDate("2024-05-15 10:10:10");
     }
 
     private void setCurrentDate() {
         binding.tvMonthdate.setText(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+
     }
 
 
@@ -210,4 +173,112 @@ long totalDurationMillis =0;
     public void onActiveUserSelected(DocumentSnapshot user) {
 
     }
-}
+
+    private void fetchUsersByDate(String dateFormat) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+        String currentDate = LocalDateTime.now().format(formatter);
+
+        Log.i("jhgsjfhgjkhsdf", "checkdate: "+currentDate);
+
+        mFirestore.collection(Constant.LIVE_DETAILS)
+                .orderBy("startDate", Query.Direction.DESCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Toast.makeText(LiveHistoryActivity.this, "Error fetching users: " + e, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        List<LiveUser> userList = new ArrayList<>();
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            LiveUser user = document.toObject(LiveUser.class);
+                            if (user != null) {
+                                // Extract the date part from startDate and compare with currentDate
+                                String userDate = LocalDateTime.parse(user.getStartDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).format(formatter);
+
+                                Log.i("jhgsjfhgjkhsdf", "userDate: "+userDate+"   =>"+currentDate + user.getStartDate());
+                                if (userDate.equals(currentDate)) {
+                                    userList.add(user);
+                                }
+                            }
+                        }
+
+                        // Handle the user list (e.g., display in UI)
+                        displayUserList(userList);
+                    }
+                });
+    }
+
+
+    @SuppressLint({"DefaultLocale", "SetTextI18n"})
+    private void displayUserList(List<LiveUser> userList) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            long totalSeconds = 0;
+            long totalHours = 0;
+            long totalMinutes = 0;
+
+            for (LiveUser user : userList) {
+                LocalDateTime startDateTime = LocalDateTime.parse(user.getStartDate(), formatter);
+                LocalDateTime endDateTime = LocalDateTime.parse(user.getEndDate(), formatter);
+                Duration duration = Duration.between(startDateTime, endDateTime);
+                long userSeconds = duration.getSeconds();
+
+                totalSeconds += userSeconds;
+                totalMinutes += userSeconds / 60;
+                totalHours += userSeconds / 3600;
+            }
+
+            // Calculate remaining hours, minutes, and seconds
+            long days = totalSeconds / (24 * 3600);
+            long hours = totalSeconds % (24 * 3600) / 3600;
+            long minutes = (totalSeconds % 3600) / 60;
+            long seconds = totalSeconds % 60;
+
+            totalMinutes += minutes;
+            totalHours += hours;
+
+            totalTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            totalDays = String.format("%d days", days);
+            binding.tvTotalDays.setText(totalDays);
+            binding.tvTotalMin.setText("Total time : "+totalTime);
+
+            Log.i("TotalTime", String.format("Total Hours: %d, Total Minutes: %d, Total Seconds: %d", totalHours, totalMinutes, totalSeconds));
+
+            @SuppressLint("DefaultLocale")
+            String totalTimeDifference = String.format("Total Difference: %d days, %02d hours, %02d minutes, %02d seconds", days, hours, minutes, seconds);
+            Log.i("TotalTimeDifference", totalTimeDifference);
+
+            for (LiveUser user : userList) {
+                if (user.getStartDate() != null && user.getEndDate() != null) {
+                    String userTimeDifference = calculateDateDifference(user.getStartDate(), user.getEndDate());
+
+                }
+            }
+        }catch (Exception e){
+
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
+    private String calculateDateDifference(String startDate, String endDate) {
+       try {
+           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+           LocalDateTime startDateTime = LocalDateTime.parse(startDate, formatter);
+           LocalDateTime endDateTime = LocalDateTime.parse(endDate, formatter);
+
+           Duration duration = Duration.between(startDateTime, endDateTime);
+           long totalSeconds = duration.getSeconds();
+
+           long hours = totalSeconds / 3600;
+           long minutes = (totalSeconds % 3600) / 60;
+           long seconds = totalSeconds % 60;
+
+           return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+       }catch (Exception e){
+           return "";
+       }
+    }
+
+    }

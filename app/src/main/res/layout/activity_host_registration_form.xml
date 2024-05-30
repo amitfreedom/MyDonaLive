@@ -192,6 +192,34 @@
                     android:textColor="@color/black"
                     android:layout_marginTop="@dimen/_10dp"
                     style="@style/NormalTextStyle"
+                    android:text="Live types"/>
+
+                <RadioGroup
+                    android:id="@+id/liveType"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Video"
+                        android:textColor="@color/black"/>
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Audio"
+                        android:textColor="@color/black"/>
+
+                </RadioGroup>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="@dimen/_10dp"
+                    style="@style/NormalTextStyle"
                     android:text="Documents types"/>
 
                 <RadioGroup
@@ -212,6 +240,7 @@
                         android:textColor="@color/black"/>
 
                     <RadioButton
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Birth Certificate"

@@ -6,6 +6,7 @@ public class HostModal {
     private String agencyCode ="";
     private String emailAddress ="";
     private String docType ="";
+    private String liveType ="";
     private String idCardNumber ="";
     private String idCardImage ="";
     private String status ="";
@@ -18,43 +19,20 @@ public class HostModal {
     public HostModal() {
     }
 
-    public HostModal(String realName, String phoneNumber, String agencyCode, String emailAddress, String docType, String idCardNumber, String idCardImage, String status, String userId, String uid, String photo, String joiningDate) {
+    public HostModal(String realName, String phoneNumber, String agencyCode, String emailAddress, String docType, String liveType, String idCardNumber, String idCardImage, String status, String userId, String uid, String photo, String joiningDate) {
         this.realName = realName;
         this.phoneNumber = phoneNumber;
         this.agencyCode = agencyCode;
         this.emailAddress = emailAddress;
         this.docType = docType;
+        this.liveType = liveType;
         this.idCardNumber = idCardNumber;
         this.idCardImage = idCardImage;
         this.status = status;
         this.userId = userId;
         this.uid = uid;
         this.photo = photo;
-        this.joiningDate=joiningDate;
-    }
-
-    public String getJoiningDate() {
-        return joiningDate;
-    }
-
-    public void setJoiningDate(String joiningDate) {
         this.joiningDate = joiningDate;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
     }
 
     public String getRealName() {
@@ -97,6 +75,14 @@ public class HostModal {
         this.docType = docType;
     }
 
+    public String getLiveType() {
+        return liveType;
+    }
+
+    public void setLiveType(String liveType) {
+        this.liveType = liveType;
+    }
+
     public String getIdCardNumber() {
         return idCardNumber;
     }
@@ -127,6 +113,30 @@ public class HostModal {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public String getJoiningDate() {
+        return joiningDate;
+    }
+
+    public void setJoiningDate(String joiningDate) {
+        this.joiningDate = joiningDate;
     }
 }
 

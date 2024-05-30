@@ -61,6 +61,7 @@ public class HostRegistrationFormActivity extends AppCompatActivity {
     private String whatsAppNumber="";
     private String email="";
     private String docType="";
+    private String liveType="";
     private String idCardNumber="";
     private String idImage="";
     private String agencyCode="";
@@ -160,6 +161,17 @@ public class HostRegistrationFormActivity extends AppCompatActivity {
             }
         });
 
+        binding.liveType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                RadioButton selectedRadioButton = radioGroup.findViewById(checkedId);
+                if (selectedRadioButton != null) {
+                    liveType = selectedRadioButton.getText().toString();
+
+                }
+            }
+        });
+
         binding.btnApply.setOnClickListener(view -> {
             realName = Objects.requireNonNull(binding.edtName.getText()).toString();
             whatsAppNumber = Objects.requireNonNull(binding.edtNumber.getText()).toString();
@@ -192,6 +204,7 @@ public class HostRegistrationFormActivity extends AppCompatActivity {
                 hostModal.setAgencyCode(agencyCode);
                 hostModal.setEmailAddress(email);
                 hostModal.setDocType(docType);
+                hostModal.setLiveType(liveType);
                 hostModal.setIdCardNumber(idCardNumber);
                 hostModal.setIdCardImage(idImage);
                 hostModal.setStatus("pending");

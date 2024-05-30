@@ -1,5 +1,7 @@
 package com.stream.prettylive.streaming.activity;
 
+import static com.stream.prettylive.global.DateUtils.getFormattedDateTime;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -1363,14 +1365,13 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
 
     private void saveLiveData(String userId, long uid, String userName, boolean isHost, String liveID, String liveType, String country,String image) {
 
-//        long timestamp = System.currentTimeMillis();
         Date currentDate = new Date();
         long timestamp = currentDate.getTime();
         Map<String, Object> liveDetails = new HashMap<>();
         liveDetails.put("userId", userId);
         liveDetails.put("uid", uid);
         liveDetails.put("username", userName);
-        liveDetails.put("photo", image!=""?image:Constant.USER_PLACEHOLDER_PATH);
+        liveDetails.put("photo", !Objects.equals(image, "") ?image:Constant.USER_PLACEHOLDER_PATH);
         liveDetails.put("tag", "");
         liveDetails.put("host", isHost);
         liveDetails.put("liveID", liveID);
@@ -1378,6 +1379,8 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
         liveDetails.put("liveStatus", "online");
         liveDetails.put("startTime", timestamp);
         liveDetails.put("endTime", timestamp);
+        liveDetails.put("startDate", getFormattedDateTime());
+        liveDetails.put("endDate", getFormattedDateTime());
         liveDetails.put("country", country);
 
         // Add the login details to Firestore
@@ -1613,6 +1616,7 @@ public class LiveAudioRoomActivity extends AppCompatActivity {
                     Map<String, Object> updateDetails = new HashMap<>();
                     updateDetails.put("liveStatus", "offline");
                     updateDetails.put("endTime", timestamp);
+                    updateDetails.put("endDate", getFormattedDateTime());
 
                     // Update the liveType field from 0 to 1
                     liveDetailsRef.document(documentId)

@@ -119,7 +119,239 @@
 
         </RelativeLayout>
 
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/space200"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:layout_marginBottom="@dimen/_10dp">
+
+            <RelativeLayout
+                android:layout_marginEnd="@dimen/space10"
+                android:layout_weight="2.1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                >
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/restaurantItemImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    app:riv_corner_radius="@dimen/_10dp"
+                    android:src="@drawable/ic_launcher_background"/>
+
+                <RelativeLayout
+                    android:layout_alignBottom="@id/restaurantItemImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@drawable/name_bottom_view">
+
+                    <TextView
+                        android:layout_marginHorizontal="@dimen/_10dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/restaurantItemName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_12sp"
+                        tools:text="Name" />
+
+                    <!--            <com.airbnb.lottie.LottieAnimationView-->
+                    <!--                android:layout_alignParentRight="true"-->
+                    <!--                android:id="@+id/animationView1"-->
+                    <!--                android:layout_width="@dimen/space80"-->
+                    <!--                android:layout_height="match_parent"-->
+                    <!--                app:lottie_rawRes="@raw/mus"-->
+                    <!--                app:lottie_autoPlay="true"-->
+                    <!--                app:lottie_loop="true"/>-->
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/name_top_view">
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:id="@+id/liveType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="3dp"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        tools:text="Name" />
+
+                </RelativeLayout>
+
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_weight="0.9"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="3dp"
+                    >
+
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/restaurantItemImage1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        app:riv_corner_radius="@dimen/_10dp"
+                        android:src="@drawable/ic_launcher_background"/>
+
+                    <RelativeLayout
+                        android:layout_alignBottom="@id/restaurantItemImage1"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_25"
+                        android:background="@drawable/name_bottom_view">
+
+                        <TextView
+                            android:layout_marginHorizontal="@dimen/_10dp"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/restaurantItemName1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_10sp"
+                            tools:text="Name" />
+
+                        <!--            <com.airbnb.lottie.LottieAnimationView-->
+                        <!--                android:layout_alignParentRight="true"-->
+                        <!--                android:id="@+id/animationView1"-->
+                        <!--                android:layout_width="@dimen/space80"-->
+                        <!--                android:layout_height="match_parent"-->
+                        <!--                app:lottie_rawRes="@raw/mus"-->
+                        <!--                app:lottie_autoPlay="true"-->
+                        <!--                app:lottie_loop="true"/>-->
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/name_top_view">
+
+                        <TextView
+                            android:layout_centerVertical="true"
+                            android:id="@+id/liveType1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp"
+                            android:textColor="@color/white"
+                            android:textSize="10sp"
+                            tools:text="Name" />
+
+                    </RelativeLayout>
+
+
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/space3"
+                    >
+
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/restaurantItemImage2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        app:riv_corner_radius="@dimen/_10dp"
+                        android:src="@drawable/ic_launcher_background"/>
+
+                    <RelativeLayout
+                        android:layout_alignBottom="@id/restaurantItemImage2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_25"
+                        android:background="@drawable/name_bottom_view">
+
+                        <TextView
+                            android:layout_marginHorizontal="@dimen/_10dp"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/restaurantItemName2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_10sp"
+                            tools:text="Name" />
+
+                        <!--            <com.airbnb.lottie.LottieAnimationView-->
+                        <!--                android:layout_alignParentRight="true"-->
+                        <!--                android:id="@+id/animationView1"-->
+                        <!--                android:layout_width="@dimen/space80"-->
+                        <!--                android:layout_height="match_parent"-->
+                        <!--                app:lottie_rawRes="@raw/mus"-->
+                        <!--                app:lottie_autoPlay="true"-->
+                        <!--                app:lottie_loop="true"/>-->
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/name_top_view">
+
+                        <TextView
+                            android:layout_centerVertical="true"
+                            android:id="@+id/liveType2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp"
+                            android:textColor="@color/white"
+                            android:textSize="10sp"
+                            tools:text="Name" />
+
+                    </RelativeLayout>
+
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
         <RelativeLayout
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="130dp"
             android:layout_marginBottom="@dimen/_10dp">

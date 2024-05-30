@@ -160,7 +160,7 @@
                 android:drawablePadding="@dimen/dp_5"
                 android:gravity="center"
                 android:padding="@dimen/dp_10"
-                android:text="Coins"
+                android:text="0"
                 android:textSize="@dimen/sp_10" />
 
 

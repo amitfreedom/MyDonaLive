@@ -70,8 +70,6 @@ public class SplashActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionRef = db.collection("stop_app");
 
-
-
         collectionRef.get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     // Iterate through the documents
@@ -92,8 +90,6 @@ public class SplashActivity extends AppCompatActivity {
                     //
                 });
 
-
-
     }
 
     private void moveNext(String work, String dev) {
@@ -102,15 +98,15 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 FirebaseUser user = mAuth.getCurrentUser();
 //
-//                if (Objects.equals(work, "0")) {
-//                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                if (Objects.equals(dev, "0")) {
-////                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
+                if (Objects.equals(work, "0")) {
+                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (Objects.equals(dev, "0")) {
+                    Toast.makeText(SplashActivity.this, "Work in progress so you can't use this time try after somme time and contact with Admin", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if (user == null) {
                     Intent intent = new Intent(SplashActivity.this, OnboardingActivity.class);

@@ -61,18 +61,18 @@ public class GameLuckyActivity extends AppCompatActivity {
                 if (gameId == 0) {
                     showBottomSheetDialog();
                 }
-//                else if (gameId == 1) {
-//                    Toast.makeText(GameLuckyActivity.this, "coming soon...", Toast.LENGTH_SHORT).show();
-//                }else if (gameId == 2) {
-//                    Intent headsOrTailsIntent = new Intent(GameLuckyActivity.this, HeadsOrTailsActivity.class);
-//                    startActivity(headsOrTailsIntent);
-//                }else if (gameId == 3) {
-//                    Intent diceIntent = new Intent(GameLuckyActivity.this, DiceRollerActivity.class);
-//                    startActivity(diceIntent);
-//                }else if (gameId == 4) {
-//                    Intent diceIntent = new Intent(GameLuckyActivity.this, TruthOrDareActivity.class);
-//                    startActivity(diceIntent);
-//                }
+                else if (gameId == 1) {
+                    Toast.makeText(GameLuckyActivity.this, "coming soon...", Toast.LENGTH_SHORT).show();
+                }else if (gameId == 2) {
+                    Intent headsOrTailsIntent = new Intent(GameLuckyActivity.this, HeadsOrTailsActivity.class);
+                    startActivity(headsOrTailsIntent);
+                }else if (gameId == 3) {
+                    Intent diceIntent = new Intent(GameLuckyActivity.this, DiceRollerActivity.class);
+                    startActivity(diceIntent);
+                }else if (gameId == 4) {
+                    Intent diceIntent = new Intent(GameLuckyActivity.this, TruthOrDareActivity.class);
+                    startActivity(diceIntent);
+                }
                 else {
 //                    Toast.makeText(GameLuckyActivity.this, "coming soon...", Toast.LENGTH_SHORT).show();
                 }

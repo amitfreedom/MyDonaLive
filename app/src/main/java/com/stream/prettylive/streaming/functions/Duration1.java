@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-public class Duration {
+public class Duration1 {
     public static String convertTimestampToDate(long timestamp) {
         // Convert the timestamp to milliseconds
         Date date = new Date(timestamp);
@@ -28,30 +28,13 @@ public class Duration {
         // Return the duration in minutes
         return TimeUnit.MILLISECONDS.toMinutes(durationInMillis);
     }
-//
-//    public static String calculateDuration(long startTime, long endTime) {
-//        // Calculate the difference between the end time and start time
-//        long duration = endTime - startTime;
-//
-//        // Convert the duration to seconds, minutes, and hours
-//        long seconds = duration / 1000;
-//        long minutes = seconds / 60;
-//        long hours = minutes / 60;
-//
-//        // Calculate the remaining seconds and minutes after subtracting the hours
-//        seconds %= 60;
-//        minutes %= 60;
-//
-//        // Format the duration as HH:mm:ss
-//        String durationString = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
-//
-//        return durationString;
-//    }
 
     public static long calculateDuration(long startTime, long endTime) {
         // Calculate the difference between the end time and start time
         return endTime - startTime;
     }
+
+
 
 
 }

@@ -1,6 +1,8 @@
 package com.stream.prettylive.global;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
@@ -15,6 +17,13 @@ public class DateUtils {
 
         // Format the current date
         return dateFormat.format(currentDate);
+    }
+
+    public static String getFormattedDateTime() {
+        // Get current date and time
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return currentDateTime.format(formatter);
     }
 }
 
