@@ -70,6 +70,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class OnboardingActivity extends AppCompatActivity {
+    private static final String TAG = "OnboardingActivity";
     private ActivityOnboardingBinding binding;
     Animation bottomAnimation,middleAnimation;
     private SignInClient signInClient;
